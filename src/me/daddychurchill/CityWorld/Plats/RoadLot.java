@@ -30,8 +30,8 @@ public class RoadLot extends ConnectedLot {
 	
 	protected final static Material airMaterial = Material.AIR;
 	protected final static Material lightpostbaseMaterial = Material.DOUBLE_STEP;
-	protected final static Material lightpostMaterial = Material.FENCE;
-	protected final static Material sewerWallMaterial = Material.MOSSY_COBBLESTONE;
+	protected final static Material lightpostMaterial = Material.COBBLE_WALL;
+	protected final static Material sewerWallMaterial = Material.SMOOTH_BRICK;
 	//protected final static Material vineMaterial = Material.VINE;
 
 	protected final static byte airId = (byte) airMaterial.getId();
@@ -41,7 +41,7 @@ public class RoadLot extends ConnectedLot {
 	protected final static byte pavementId = (byte) Material.STONE.getId();
 	protected final static byte crosswalkId = (byte) Material.CLAY.getId();
 	protected final static byte sidewalkId = (byte) Material.STEP.getId();
-	protected final static Material sewerPlankMaterial = Material.STEP; //TODO should be Material.WOODSTEP (or whatever it is called)
+	protected final static Material sewerPlankMaterial = Material.STEP;
 	protected final static byte sewerPlankData = 2;
 	
 	protected final static byte retainingWallId = (byte) Material.SMOOTH_BRICK.getId();
@@ -1153,13 +1153,18 @@ public class RoadLot extends ConnectedLot {
 	}
 	
 	protected void decayRoad(RealChunk chunk, int x1, int x2, int y, int z1, int z2) {
-		int amount = (x2 - x1) * (z2 - z1) / 10;
+		int amount = (x2 - x1) * (z2 - z1) / 3;
 		while (amount > 0) {
 			int x = x1 + chunkOdds.getRandomInt(x2 - x1);
 			int z = z1 + chunkOdds.getRandomInt(z2 - z1);
-			if (chunkOdds.flipCoin())
+			if (chunkOdds.playOdds(DataContext.oddsUnlikely))
 				chunk.setBlock(x, y, z, Material.COBBLESTONE);
-			else
+			else if (chunkOdds.playOdds(DataContext.oddsPrettyUnlikely))
+				chunk.setBlock(x, y, z, Material.MOSSY_COBBLESTONE);
+			else if (chunkOdds.playOdds(DataContext.oddsVeryUnlikely)) {
+				chunk.setBlock(x, y, z, Material.DIRT);
+				chunk.setBlock(x, y+1, z, Material.LONG_GRASS, (byte) chunkOdds.getRandomInt(2) );
+			} else if ( chunkOdds.playOdds(DataContext.oddsVeryUnlikely) )
 				chunk.setBlock(x, y, z, Material.STEP.getId(), (byte) 3);
 			amount--;
 		}

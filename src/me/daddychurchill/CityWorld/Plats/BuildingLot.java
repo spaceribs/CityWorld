@@ -393,9 +393,9 @@ public abstract class BuildingLot extends ConnectedLot {
 			byte glassId = (byte) materialGlass.getId();
 			int y2 = y1 + height;
 			int x1 = heights.toWest() ? 0 : insetNS + 1;
-			int x2 = chunk.width - (heights.toEast() ? 0 : (insetNS + 1));
+			//int x2 = chunk.width - (heights.toEast() ? 0 : (insetNS + 1));
 			int z1 = heights.toNorth() ? 0 : insetEW + 1;
-			int z2 = chunk.width - (heights.toSouth() ? 0 : (insetEW + 1));
+			//int z2 = chunk.width - (heights.toSouth() ? 0 : (insetEW + 1));
 			
 			// NW corner
 			if (where != StairWell.NORTHWEST || where != StairWell.WEST || where != StairWell.NORTH) {
@@ -512,10 +512,10 @@ public abstract class BuildingLot extends ConnectedLot {
 		chunk.setBlocks(x1, x2, y1, y2, z, z + 1, wallId, glassId, wallsInterior);
 	}
 	
-	private void drawInteriorNSDoors(RealChunk chunk, int x, int y1, int y2, int z, Material wall) {
-		drawDoor(chunk, x, x, x, y1, y2, z, z + 1, z + 2, Door.WESTBYNORTHWEST, wall);
-		drawDoor(chunk, x, x, x, y1, y2, z + 2, z + 3, z + 4, Door.EASTBYSOUTHEAST, wall);
-	}
+//	private void drawInteriorNSDoors(RealChunk chunk, int x, int y1, int y2, int z, Material wall) {
+//		drawDoor(chunk, x, x, x, y1, y2, z, z + 1, z + 2, Door.WESTBYNORTHWEST, wall);
+//		drawDoor(chunk, x, x, x, y1, y2, z + 2, z + 3, z + 4, Door.EASTBYSOUTHEAST, wall);
+//	}
 	
 	private void drawInteriorWEDoors(RealChunk chunk, int x, int y1, int y2, int z, Material wall) {
 		drawDoor(chunk, x, x + 1, x + 2, y1, y2, z, z, z, Door.NORTHBYNORTHWEST, wall);

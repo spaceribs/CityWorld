@@ -16,7 +16,7 @@ public class UnfinishedBuildingLot extends BuildingLot {
 
 	private final static int FloorHeight = DataContext.FloorHeight;
 	
-	private final static byte girderId = (byte) Material.CLAY.getId();
+	private final static byte girderId = (byte) Material.STONE.getId();
 	
 	private final static Material dirtMaterial = Material.DIRT;
 	private final static Material stairMaterial = Material.WOOD_STAIRS;

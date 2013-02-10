@@ -308,9 +308,45 @@ public class WorldBlocks extends SupportChunk {
 	private void disperseLine(int x1, int x2, int y, int z1, int z2, Stack<debrisItem> debris) {
 		for (int x = x1; x < x2; x++) {
 			for (int z = z1; z < z2; z++) {
+				
 				Block block = world.getBlockAt(x, y, z);
-				if (!block.isEmpty()) {
-					debris.push(new debrisItem(block.getTypeId(), block.getData()));
+				
+				int blockId = block.getTypeId();
+				if ( blockId != glassId && blockId != thinGlassId ) {
+					
+					if (!block.isEmpty()) {
+						debris.push(new debrisItem(blockId, block.getData()));
+						
+						if( odds.playOdds( DataContext.oddsExtremelyUnlikely ) ) {
+							block.setTypeId(airId);
+						} else {
+							
+							int blockBelow = world.getBlockAt(x, y-1, z).isEmpty() ? 1 : 0;
+							int blockNorth = world.getBlockAt(x, y, z-1).isEmpty() ? 1 : 0;
+							int blockSouth = world.getBlockAt(x, y, z+1).isEmpty() ? 1 : 0;
+							int blockEast = world.getBlockAt(x+1, y, z).isEmpty() ? 1 : 0;
+							int blockWest = world.getBlockAt(x-1, y, z).isEmpty() ? 1 : 0;
+							int blockAbove = world.getBlockAt(x, y+1, z).isEmpty() ? 1 : 0;
+							
+							int supportTotal = blockBelow + blockNorth + blockSouth + blockEast + blockWest + blockAbove;
+							
+							if ( supportTotal > 3 ) {
+								block.setTypeIdAndData(Material.LEAVES.getId(), (byte) odds.getRandomInt(3) , true);
+							} else if ( supportTotal > 0 ) {
+								if ( blockAbove == 1 )
+									block.setTypeId(Material.VINE.getId());
+								if ( blockSouth == 1 )
+									block.setTypeIdAndData(Material.VINE.getId(), (byte) 4, true);
+								else if ( blockNorth == 1 )
+									block.setTypeIdAndData(Material.VINE.getId(), (byte) 1, true);
+								else if ( blockWest == 1 )
+									block.setTypeIdAndData(Material.VINE.getId(), (byte) 8, true);
+								else if ( blockEast == 1 )
+									block.setTypeIdAndData(Material.VINE.getId(), (byte) 2, true);
+							}
+						}
+					}
+				} else {
 					block.setTypeId(airId);
 				}
 			}
@@ -381,7 +417,7 @@ public class WorldBlocks extends SupportChunk {
 				// look out for half blocks
 				Block block = getActualBlock(x, y - 1, z);
 				int blockId = block.getTypeId();
-				
+					
 				// partial blocks
 				if (blockId == stepId || blockId == snowId)
 					block.setTypeIdAndData(item.typeId, item.data, false);

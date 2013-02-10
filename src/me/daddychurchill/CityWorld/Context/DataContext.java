@@ -64,7 +64,7 @@ public abstract class DataContext {
 	public static final int FudgeFloorsAbove = 0;//3;
 	public static final int absoluteMinimumFloorsAbove = 5; // shortest tallest building
 	public static final int absoluteAbsoluteMaximumFloorsBelow = 3; // that is as many basements as I personally can tolerate
-	public static final int absoluteAbsoluteMaximumFloorsAbove = 20; // that is tall enough folks
+	public static final int absoluteAbsoluteMaximumFloorsAbove = 30; // that is tall enough folks
 	public int buildingMaximumY;
 	public int maximumFloorsAbove = 2;
 	public int maximumFloorsBelow = 2;
