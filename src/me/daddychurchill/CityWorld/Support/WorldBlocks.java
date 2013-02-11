@@ -330,27 +330,29 @@ public class WorldBlocks extends SupportChunk {
 								block.setType(Material.AIR);
 								break;
 						}
+						
 						if ( leavesNoise > 0.1D && block.isEmpty() )
 							block.setTypeIdAndData(Material.LEAVES.getId(), odds.getRandomByte(4) , true);
-						if ( !block.isEmpty() || block.getType() != Material.VINE ) {
+						if ( block.isEmpty() || block.getType() == Material.VINE ) {
 							
-							Block lowerBlock = block.getRelative(0, -1, 0);
-							
+							//Block lowerBlock = block.getRelative(0, -1, 0);
 							Block northBlock = block.getRelative(0, 0, -1);
 							Block southBlock = block.getRelative(0, 0, 1);
 							Block eastBlock = block.getRelative(1, 0, 0);
 							Block westBlock = block.getRelative(-1, 0, 0);
 							
-							if( lowerBlock.isEmpty() )
-								lowerBlock.setTypeIdAndData(Material.VINE.getId(), (byte) 0, true);
-							if( northBlock.isEmpty() )
-								northBlock.setTypeIdAndData(Material.VINE.getId(), (byte) 1, true);
-							if( southBlock.isEmpty() )
-								southBlock.setTypeIdAndData(Material.VINE.getId(), (byte) 4, true);
-							if( eastBlock.isEmpty() )
-								eastBlock.setTypeIdAndData(Material.VINE.getId(), (byte) 2, true);
-							if( westBlock.isEmpty() )
-								westBlock.setTypeIdAndData(Material.VINE.getId(), (byte) 8, true);
+							byte meta = 0;
+							
+							if( !northBlock.isEmpty() )
+								meta += 1;
+							if( !southBlock.isEmpty() )
+								meta += 4;
+							if( !eastBlock.isEmpty() )
+								meta += 2;
+							if( !westBlock.isEmpty() )
+								meta += 8;
+							
+							block.setTypeIdAndData(Material.VINE.getId(), meta, true);
 						}
 					}
 				}
