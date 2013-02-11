@@ -1,9 +1,11 @@
 package me.daddychurchill.CityWorld.Support;
 
 import java.util.Stack;
+import java.util.Random;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.util.noise.SimplexOctaveGenerator;
 import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
 
@@ -276,23 +278,103 @@ public class WorldBlocks extends SupportChunk {
 	}
 	
 	public void destroyWithin(int x1, int x2, int y1, int y2, int z1, int z2) {
-		int count = Math.max(1, (y2 - y1) / DataContext.FloorHeight);
+		//int count = Math.max(1, (y2 - y1) / DataContext.FloorHeight);
 		
-		// now destroy it
-		while (count > 0) {
-			
-			// find a place
-			int cx = getBlockX(odds.getRandomInt(x2 - x1) + x1);
-			int cz = getBlockZ(odds.getRandomInt(z2 - z1) + z1);
-			int cy = odds.getRandomInt(Math.max(1, y2 - y1)) + y1;
-			int radius = odds.getRandomInt(3) + 3;
-			
-			// make it go away
-			desperseArea(cx, cy, cz, radius);
-			
-			// done with this round
-			count--;
+		double holeScale = 1.0 / 20.0;
+		double leavesScale = 1.0 / 10.0;
+		
+		long seed = generator.getWorldSeed();
+		SimplexOctaveGenerator noiseGen = new SimplexOctaveGenerator(seed,2);
+		
+		//double[] leavesArray = new double[buffer.length*buffer[0].length*buffer[0][0].length];
+		//.noise(lengthX, lengthY, lengthZ, 0.3D, 0.3D, true);  // .noise(noiseArray, 0, 0, 0, lengthZ, lengthY, lengthX, 0.3D, 0.3D, 0.3D);
+		
+		for(int z=z1;z<z2;z++){ 
+			for(int x=x1;x<x2;x++){
+				for(int y=y1;y<y2;y++) {
+					
+					double holeNoise = noiseGen.noise(x * leavesScale, y * leavesScale, z * leavesScale, 0.3D, 0.6D, true);
+					double leavesNoise = noiseGen.noise(x * holeScale, y * holeScale, z * holeScale, 0.3D, 0.3D, false);
+					
+					Block block = world.getBlockAt(x, y, z);
+					
+					if (!block.isEmpty() && holeNoise > 0.50D) {
+						block.setType(Material.AIR);
+					} else if ( holeNoise > 0.30D ) {
+						switch(block.getType()) {
+							case STONE:
+								if(odds.flipCoin())
+									block.setType(Material.COBBLESTONE);
+								else
+									block.setType(Material.MOSSY_COBBLESTONE);
+								break;
+							case SANDSTONE:
+								block.setTypeIdAndData(Material.SANDSTONE_STAIRS.getId(), odds.getRandomByte(4), true);
+								break;
+							case BRICK:
+								block.setTypeIdAndData(Material.BRICK_STAIRS.getId(), odds.getRandomByte(4), true);
+								break;
+							case COBBLESTONE:
+								block.setTypeIdAndData(Material.MOSSY_COBBLESTONE.getId(), odds.getRandomByte(4), true);
+								break;
+							case SMOOTH_BRICK:
+								block.setTypeIdAndData(Material.SMOOTH_BRICK.getId(), odds.getRandomByte(3), true);
+								break;
+							case DOUBLE_STEP:
+								block.setTypeIdAndData(Material.STEP.getId(), block.getData(), true);
+								break;
+							case WOOD:
+								block.setTypeIdAndData(Material.WOOD_STAIRS.getId(), odds.getRandomByte(4), true);
+								break;
+							default:
+								block.setType(Material.AIR);
+								break;
+						}
+						if ( leavesNoise > 0.1D && block.isEmpty() )
+							block.setTypeIdAndData(Material.LEAVES.getId(), odds.getRandomByte(4) , true);
+						if ( !block.isEmpty() || block.getType() != Material.VINE ) {
+							
+							Block lowerBlock = block.getRelative(0, -1, 0);
+							
+							Block northBlock = block.getRelative(0, 0, -1);
+							Block southBlock = block.getRelative(0, 0, 1);
+							Block eastBlock = block.getRelative(1, 0, 0);
+							Block westBlock = block.getRelative(-1, 0, 0);
+							
+							if( lowerBlock.isEmpty() )
+								lowerBlock.setTypeIdAndData(Material.VINE.getId(), (byte) 0, true);
+							if( northBlock.isEmpty() )
+								northBlock.setTypeIdAndData(Material.VINE.getId(), (byte) 1, true);
+							if( southBlock.isEmpty() )
+								southBlock.setTypeIdAndData(Material.VINE.getId(), (byte) 4, true);
+							if( eastBlock.isEmpty() )
+								eastBlock.setTypeIdAndData(Material.VINE.getId(), (byte) 2, true);
+							if( westBlock.isEmpty() )
+								westBlock.setTypeIdAndData(Material.VINE.getId(), (byte) 8, true);
+						}
+					}
+				}
+			}
 		}
+		
+		//leavesArray = noiseGen.generateNoiseOctaves(noiseArray, 0, 0, 0, zLim, yLim, xLim, 1.0D, 1.0D, 1.0D);
+		
+	//Old Destruction
+//		// now destroy it
+//		while (count > 0) {
+//			
+//			// find a place
+//			int cx = getBlockX(odds.getRandomInt(x2 - x1) + x1);
+//			int cz = getBlockZ(odds.getRandomInt(z2 - z1) + z1);
+//			int cy = odds.getRandomInt(Math.max(1, y2 - y1)) + y1;
+//			int radius = odds.getRandomInt(3) + 3;
+//			
+//			// make it go away
+//			desperseArea(cx, cy, cz, radius);
+//			
+//			// done with this round
+//			count--;
+//		}
 	}
 	
 	private class debrisItem {
@@ -320,30 +402,32 @@ public class WorldBlocks extends SupportChunk {
 						if( odds.playOdds( DataContext.oddsExtremelyUnlikely ) ) {
 							block.setTypeId(airId);
 						} else {
+							if (( x == x1 || x == x2-1 ) || ( z == z1 || z == z2-1 ))
+								block.setTypeIdAndData(Material.AIR.getId(), (byte) odds.getRandomInt(3) , true);
 							
-							int blockBelow = world.getBlockAt(x, y-1, z).isEmpty() ? 1 : 0;
-							int blockNorth = world.getBlockAt(x, y, z-1).isEmpty() ? 1 : 0;
-							int blockSouth = world.getBlockAt(x, y, z+1).isEmpty() ? 1 : 0;
-							int blockEast = world.getBlockAt(x+1, y, z).isEmpty() ? 1 : 0;
-							int blockWest = world.getBlockAt(x-1, y, z).isEmpty() ? 1 : 0;
-							int blockAbove = world.getBlockAt(x, y+1, z).isEmpty() ? 1 : 0;
-							
-							int supportTotal = blockBelow + blockNorth + blockSouth + blockEast + blockWest + blockAbove;
-							
-							if ( supportTotal > 3 ) {
-								block.setTypeIdAndData(Material.LEAVES.getId(), (byte) odds.getRandomInt(3) , true);
-							} else if ( supportTotal > 0 ) {
-								if ( blockAbove == 1 )
-									block.setTypeId(Material.VINE.getId());
-								if ( blockSouth == 1 )
-									block.setTypeIdAndData(Material.VINE.getId(), (byte) 4, true);
-								else if ( blockNorth == 1 )
-									block.setTypeIdAndData(Material.VINE.getId(), (byte) 1, true);
-								else if ( blockWest == 1 )
-									block.setTypeIdAndData(Material.VINE.getId(), (byte) 8, true);
-								else if ( blockEast == 1 )
-									block.setTypeIdAndData(Material.VINE.getId(), (byte) 2, true);
-							}
+//							int blockBelow = world.getBlockAt(x, y-1, z).isEmpty() ? 1 : 0;
+//							int blockNorth = world.getBlockAt(x, y, z-1).isEmpty() ? 1 : 0;
+//							int blockSouth = world.getBlockAt(x, y, z+1).isEmpty() ? 1 : 0;
+//							int blockEast = world.getBlockAt(x+1, y, z).isEmpty() ? 1 : 0;
+//							int blockWest = world.getBlockAt(x-1, y, z).isEmpty() ? 1 : 0;
+//							int blockAbove = world.getBlockAt(x, y+1, z).isEmpty() ? 1 : 0;
+//							
+//							int supportTotal = blockBelow + blockNorth + blockSouth + blockEast + blockWest + blockAbove;
+//							
+//							if ( supportTotal > 3 ) {
+//								block.setTypeIdAndData(Material.LEAVES.getId(), (byte) odds.getRandomInt(3) , true);
+//							} else if ( supportTotal > 0 ) {
+//								if ( blockAbove == 1 )
+//									block.setTypeId(Material.VINE.getId());
+//								if ( blockSouth == 1 )
+//									block.setTypeIdAndData(Material.VINE.getId(), (byte) 4, true);
+//								else if ( blockNorth == 1 )
+//									block.setTypeIdAndData(Material.VINE.getId(), (byte) 1, true);
+//								else if ( blockWest == 1 )
+//									block.setTypeIdAndData(Material.VINE.getId(), (byte) 8, true);
+//								else if ( blockEast == 1 )
+//									block.setTypeIdAndData(Material.VINE.getId(), (byte) 2, true);
+//							}
 						}
 					}
 				} else {
@@ -449,6 +533,8 @@ public class WorldBlocks extends SupportChunk {
 		desperseSphere(x, y, z, radius, debris);
 		
 		// now sprinkle blocks around
-		sprinkleDebris(x, y, z, radius, debris);
+		if (odds.playOdds(DataContext.oddsVeryUnlikely)) {
+			sprinkleDebris(x, y, z, radius, debris);
+		}
 	}
 }
