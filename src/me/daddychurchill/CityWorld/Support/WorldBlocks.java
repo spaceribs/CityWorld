@@ -277,8 +277,16 @@ public class WorldBlocks extends SupportChunk {
 		return world.getBlockAt(x, y, z).getTypeId() == grassId;
 	}
 	
+	public boolean isSupporting(Block block) {
+		return (
+			block.getType() != Material.LEAVES 
+			&& block.getType() != Material.VINE
+			&& block.getType() != Material.LOG
+			&& !block.isEmpty()
+		);
+	}
+	
 	public void destroyWithin(int x1, int x2, int y1, int y2, int z1, int z2) {
-		//int count = Math.max(1, (y2 - y1) / DataContext.FloorHeight);
 		
 		double holeScale = 1.0 / 20.0;
 		double leavesScale = 1.0 / 10.0;
@@ -286,15 +294,12 @@ public class WorldBlocks extends SupportChunk {
 		long seed = generator.getWorldSeed();
 		SimplexOctaveGenerator noiseGen = new SimplexOctaveGenerator(seed,2);
 		
-		//double[] leavesArray = new double[buffer.length*buffer[0].length*buffer[0][0].length];
-		//.noise(lengthX, lengthY, lengthZ, 0.3D, 0.3D, true);  // .noise(noiseArray, 0, 0, 0, lengthZ, lengthY, lengthX, 0.3D, 0.3D, 0.3D);
-		
 		for(int z=z1;z<z2;z++){ 
 			for(int x=x1;x<x2;x++){
 				for(int y=y1;y<y2;y++) {
 					
-					double holeNoise = noiseGen.noise(x * leavesScale, y * leavesScale, z * leavesScale, 0.3D, 0.6D, true);
-					double leavesNoise = noiseGen.noise(x * holeScale, y * holeScale, z * holeScale, 0.3D, 0.3D, false);
+					double holeNoise = noiseGen.noise(x * holeScale, y * holeScale, z * holeScale, 0.3D, 0.6D, true);
+					double leavesNoise = noiseGen.noise(x * leavesScale, y * leavesScale, z * leavesScale, 0.3D, 0.6D, false);
 					
 					Block block = world.getBlockAt(x, y, z);
 					
@@ -320,9 +325,6 @@ public class WorldBlocks extends SupportChunk {
 							case SMOOTH_BRICK:
 								block.setTypeIdAndData(Material.SMOOTH_BRICK.getId(), odds.getRandomByte(3), true);
 								break;
-							case DOUBLE_STEP:
-								block.setTypeIdAndData(Material.STEP.getId(), block.getData(), true);
-								break;
 							case WOOD:
 								block.setTypeIdAndData(Material.WOOD_STAIRS.getId(), odds.getRandomByte(4), true);
 								break;
@@ -331,37 +333,131 @@ public class WorldBlocks extends SupportChunk {
 								break;
 						}
 						
-						if ( leavesNoise > 0.1D && block.isEmpty() )
-							block.setTypeIdAndData(Material.LEAVES.getId(), odds.getRandomByte(4) , true);
-						if ( block.isEmpty() || block.getType() == Material.VINE ) {
+						Block[] neighbors = {
+							block.getRelative(0, 1, 0),
+							block.getRelative(0, 0, -1),
+							block.getRelative(0, 0, 1),
+							block.getRelative(1, 0, 0),
+							block.getRelative(-1, 0, 0),
+							block.getRelative(0, -1, 0)
+						};
+						
+						if ( leavesNoise > 0.1D && block.isEmpty() ) {
+							int support = 0;
 							
-							//Block lowerBlock = block.getRelative(0, -1, 0);
-							Block northBlock = block.getRelative(0, 0, -1);
-							Block southBlock = block.getRelative(0, 0, 1);
-							Block eastBlock = block.getRelative(1, 0, 0);
-							Block westBlock = block.getRelative(-1, 0, 0);
+							for(int n=0;n<neighbors.length;n++)
+								support += this.isSupporting(neighbors[n]) ? 1 : 0;
 							
-							byte meta = 0;
+							if (support > 0)
+								block.setTypeIdAndData(Material.LEAVES.getId(), odds.getRandomByte(4) , true);
+						}
+						if ( block.isEmpty() && odds.flipCoin() ) {
 							
-							if( !northBlock.isEmpty() )
-								meta += 1;
-							if( !southBlock.isEmpty() )
-								meta += 4;
-							if( !eastBlock.isEmpty() )
-								meta += 2;
-							if( !westBlock.isEmpty() )
-								meta += 8;
+							byte vineMeta = 0;
 							
-							block.setTypeIdAndData(Material.VINE.getId(), meta, true);
+							if( !neighbors[1].isEmpty() && neighbors[1].getType() != Material.VINE )
+								vineMeta += 4;
+							if( !neighbors[2].isEmpty() && neighbors[2].getType() != Material.VINE )
+								vineMeta += 1;
+							if( !neighbors[3].isEmpty() && neighbors[3].getType() != Material.VINE )
+								vineMeta += 8;
+							if( !neighbors[4].isEmpty() && neighbors[4].getType() != Material.VINE )
+								vineMeta += 2;
+							
+							block.setTypeIdAndData(Material.VINE.getId(), vineMeta, true);
 						}
 					}
 				}
 			}
 		}
 		
-		//leavesArray = noiseGen.generateNoiseOctaves(noiseArray, 0, 0, 0, zLim, yLim, xLim, 1.0D, 1.0D, 1.0D);
+//		int[][][] support=new int[y1-y2][z1-z2][x1-x2];
+//		
+//		for(int z=z1;z<z2;z++) for(int x=x1;x<x2;x++) {
+//			Block block = world.getBlockAt(x, y1, z);
+//		
+//			support[y1][z][x] = this.isSupporting(block) ? 2 : 0;
+//		}
+//		
+//		//Check lower block support
+//		for(int z=z1;z<z2;z++){ 
+//			for(int x=x1;x<x2;x++){
+//				for(int y=y1;y<y2;y++) {
+//					Block block = world.getBlockAt(x, y, z);
+//					Block bottomBlock = block.getRelative(0, -1, 0);
+//					
+//					support[y][z][x] += this.isSupporting(bottomBlock) ? 2 : 0;
+//				}
+//			}
+//			for(int x=x1;x<x2;x++){
+//				for(int y=y1;y<y2;y++) {
+//					Block block = world.getBlockAt(x, y, z);
+//					
+//					boolean[] neighbors = {
+//						this.isSupporting(block.getRelative(0, 0, -1)),
+//						this.isSupporting(block.getRelative(0, 0, 1)),
+//						this.isSupporting(block.getRelative(1, 0, 0)),
+//						this.isSupporting(block.getRelative(-1, 0, 0)),
+//					};
+//					
+//					for(int n=0;n<neighbors.length;n++)
+//						support[y][z][x] += neighbors[n] ? 1 : 0;
+//					
+//					if ( support[y][z][x] < 8 && block.getType() != Material.AIR ) {
+//						block.setType(Material.WOOL);
+//					}
+//				}
+//			}
+//		}
 		
-	//Old Destruction
+//		//Remove floaters
+//		for(int y=y1;y<y2;y++) {
+//			for(int z=z1;z<z2;z++){ 
+//				for(int x=x1;x<x2;x++){
+//					
+//				}
+//			}
+//			for(int z=z1;z<z2;z++){ 
+//				for(int x=x1;x<x2;x++){
+//					
+//					Block block = world.getBlockAt(x, y, z);
+//					
+//					Block[] neighbors = {
+//						block.getRelative(0, 1, 0),
+//						block.getRelative(0, 0, -1),
+//						block.getRelative(0, 0, 1),
+//						block.getRelative(1, 0, 0),
+//						block.getRelative(-1, 0, 0),
+//						block.getRelative(0, -1, 0)
+//					};
+//					
+//					int support = 0;
+//					int leaves = 0;
+//					
+//					for (int i=0;i<neighbors.length;i++) {
+//						if ( neighbors[i].getType() == Material.LEAVES || neighbors[i].getType() == Material.LOG )
+//							leaves += 1;
+//						else if ( neighbors[i].isEmpty() && neighbors[i].getType() != Material.VINE ) {
+//							support += 1;
+//						}
+//					}
+//					
+//					if ( block.getType() == Material.LEAVES ) {
+//						if ( leaves > 4 && support > 0 ) {
+//							block.setType(Material.LOG);
+//						} else if ( ( (leaves < 4 && leaves > 1) || support > 0 ) && odds.flipCoin() ) {
+//							block.setType(Material.AIR);
+//						} else if ( leaves == 0 && support == 0 ) {
+//							block.setType(Material.AIR);
+//						}
+//					}
+//					
+//				}
+//			}
+//		}
+		
+//		int count = Math.max(1, (y2 - y1) / DataContext.FloorHeight);
+//		
 //		// now destroy it
 //		while (count > 0) {
 //			
@@ -406,30 +502,6 @@ public class WorldBlocks extends SupportChunk {
 						} else {
 							if (( x == x1 || x == x2-1 ) || ( z == z1 || z == z2-1 ))
 								block.setTypeIdAndData(Material.AIR.getId(), (byte) odds.getRandomInt(3) , true);
-							
-//							int blockBelow = world.getBlockAt(x, y-1, z).isEmpty() ? 1 : 0;
-//							int blockNorth = world.getBlockAt(x, y, z-1).isEmpty() ? 1 : 0;
-//							int blockSouth = world.getBlockAt(x, y, z+1).isEmpty() ? 1 : 0;
-//							int blockEast = world.getBlockAt(x+1, y, z).isEmpty() ? 1 : 0;
-//							int blockWest = world.getBlockAt(x-1, y, z).isEmpty() ? 1 : 0;
-//							int blockAbove = world.getBlockAt(x, y+1, z).isEmpty() ? 1 : 0;
-//							
-//							int supportTotal = blockBelow + blockNorth + blockSouth + blockEast + blockWest + blockAbove;
-//							
-//							if ( supportTotal > 3 ) {
-//								block.setTypeIdAndData(Material.LEAVES.getId(), (byte) odds.getRandomInt(3) , true);
-//							} else if ( supportTotal > 0 ) {
-//								if ( blockAbove == 1 )
-//									block.setTypeId(Material.VINE.getId());
-//								if ( blockSouth == 1 )
-//									block.setTypeIdAndData(Material.VINE.getId(), (byte) 4, true);
-//								else if ( blockNorth == 1 )
-//									block.setTypeIdAndData(Material.VINE.getId(), (byte) 1, true);
-//								else if ( blockWest == 1 )
-//									block.setTypeIdAndData(Material.VINE.getId(), (byte) 8, true);
-//								else if ( blockEast == 1 )
-//									block.setTypeIdAndData(Material.VINE.getId(), (byte) 2, true);
-//							}
 						}
 					}
 				} else {

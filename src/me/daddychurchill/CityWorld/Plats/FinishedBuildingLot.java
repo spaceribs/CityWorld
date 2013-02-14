@@ -343,68 +343,34 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 	
 	//TODO make the material settable by users
 	protected static Material pickWallMaterial(Odds odds) {
-		switch (odds.getRandomInt(15)) {
+		switch (odds.getRandomInt(6)) {
 		case 1:
 			return Material.COBBLESTONE;
 		case 2:
-			return Material.SAND;
-		case 3:
-			return Material.GRAVEL;
-		case 4:
 			return Material.WOOD;
-		case 5:
-			return Material.SANDSTONE;
-		case 6:
-			return Material.WOOL;
-		case 7:
+		case 3:
 			return Material.DOUBLE_STEP;
-		case 8:
+		case 4:
 			return Material.BRICK;
-		case 9:
-			return Material.MOSSY_COBBLESTONE;
-		case 10:
-			return Material.CLAY;
-		case 11:
-			return Material.NETHERRACK;
-		case 12:
-			return Material.SOUL_SAND;
-		case 13:
+		case 5:
 			return Material.SMOOTH_BRICK;
-		case 14:
-			return Material.NETHER_BRICK;
-//			case 15:
-//			return Material.IRON_BLOCK;
 		default:
 			return Material.STONE;
 		}
 	}
 
 	static protected Material pickRoofMaterial(Odds odds) {
-		switch (odds.getRandomInt(12)) {
+		switch (odds.getRandomInt(6)) {
 		case 1:
 			return Material.COBBLESTONE;
 		case 2:
 			return Material.WOOD;
 		case 3:
-			return Material.SANDSTONE;
-		case 4:
-			return Material.WOOL;
-		case 5:
 			return Material.DOUBLE_STEP;
-		case 6:
+		case 4:
 			return Material.BRICK;
-		case 7:
-			return Material.MOSSY_COBBLESTONE;
-		case 8:
-			return Material.CLAY;
-		case 9:
-			return Material.NETHERRACK;
-		case 10:
+		case 5:
 			return Material.SMOOTH_BRICK;
-		case 11:
-			return Material.NETHER_BRICK;
-//			case 15:
-//			return Material.IRON_BLOCK;
 		default:
 			return Material.STONE;
 		}
@@ -419,7 +385,6 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 		case STONE:
 		case SMOOTH_BRICK:
 		case CLAY:
-//		case IRON_BLOCK:
 		case DOUBLE_STEP:
 			return Material.SMOOTH_STAIRS;
 
@@ -464,8 +429,6 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 		case STONE:
 		case SMOOTH_BRICK:
 			return Material.IRON_FENCE;
-
-//		case IRON_BLOCK:
 		case DOUBLE_STEP:
 		case WOOL:
 		case BRICK:
@@ -486,26 +449,12 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 			return Material.COBBLESTONE;
 		case 2:
 			return Material.WOOD;
-		case 3:
-			return Material.SANDSTONE;
-		case 4:
-			return Material.WOOL;
 		case 5:
 			return Material.DOUBLE_STEP;
 		case 6:
 			return Material.BRICK;
-		case 7:
-			return Material.MOSSY_COBBLESTONE;
-		case 8:
-			return Material.CLAY;
-		case 9:
-			return Material.NETHERRACK;
 		case 10:
 			return Material.SMOOTH_BRICK;
-		case 11:
-			return Material.NETHER_BRICK;
-//			case 15:
-//			return Material.IRON_BLOCK;
 		default:
 			return Material.STONE;
 		}

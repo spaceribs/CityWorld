@@ -328,12 +328,13 @@ public class HouseProvider extends Provider {
 					doorEast = roomEast;
 				}
 				
-//				chunk.setBlock((x2 - x1) / 2 + x1, y1, (z2 - z1) / 2 + z1, Material.CHEST);
+				chunk.setBlock((x2 - x1) / 2 + x1, y1, (z2 - z1) / 2 + z1, Material.CHEST);
 				break;
 			case DINING:
 				
-//				chunk.setBlock((x2 - x1) / 2 + x1, y1, (z2 - z1) / 2 + z1, Material.FENCE);
-//				chunk.setBlock((x2 - x1) / 2 + x1, y1 + 1, (z2 - z1) / 2 + z1, Material.WOOD_PLATE);
+				chunk.setBlock((x2 - x1) / 2 + x1, y1, (z2 - z1) / 2 + z1, Material.FENCE);
+				chunk.setBlock((x2 - x1) / 2 + x1, y1 + 1, (z2 - z1) / 2 + z1, Material.WOOD_PLATE);
+				
 				break;
 			case ENTRY:
 				
@@ -657,7 +658,7 @@ public class HouseProvider extends Provider {
 				rooms[0][roomX][roomZ].style = Room.Style.DINING;
 			}
 			
-			// put the bed in the last spot
+			// put the bedroom in the last spot
 			roomZ = flip(roomZ);
 			rooms[0][roomX][roomZ].missing = false;
 			rooms[0][roomX][roomZ].style = Room.Style.BED;
@@ -747,6 +748,9 @@ public class HouseProvider extends Provider {
 					}
 				}
 			}
+			
+			//add trick/treat
+			chunk.setBlock(Math.round(chunk.width/2), roofY+1, Math.round(chunk.width/2), Material.DIAMOND_BLOCK);
 
 //			// extrude roof
 //			int roofY = baseY + floors * ContextData.FloorHeight - 1;
@@ -817,23 +821,17 @@ public class HouseProvider extends Provider {
 	}
 	
 	private Material pickWallMaterial(Odds odds) {
-		switch (odds.getRandomInt(9)) {
+		switch (odds.getRandomInt(6)) {
 		case 1:
 			return Material.COBBLESTONE;
 		case 2:
-			return Material.MOSSY_COBBLESTONE;
-		case 3:
 			return Material.STONE;
-		case 4:
+		case 3:
 			return Material.SMOOTH_BRICK;
+		case 4:
+			return Material.BRICK;
 		case 5:
 			return Material.SANDSTONE;
-		case 6:
-			return Material.NETHER_BRICK;
-		case 7:
-			return Material.BRICK;
-		case 8:
-			return Material.CLAY;
 		default:
 			return Material.WOOD;
 		}
@@ -868,16 +866,14 @@ public class HouseProvider extends Provider {
 	}
 
 	private Material pickRoofMaterial(Odds odds) {
-		switch (odds.getRandomInt(6)) {
+		switch (odds.getRandomInt(5)) {
 		case 1:
 			return Material.COBBLESTONE;
 		case 2:
-			return Material.MOSSY_COBBLESTONE;
-		case 3:
 			return Material.STONE;
-		case 4:
+		case 3:
 			return Material.SMOOTH_BRICK;
-		case 5:
+		case 4:
 			return Material.SANDSTONE;
 		default:
 			return Material.WOOD;
