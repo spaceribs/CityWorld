@@ -290,6 +290,7 @@ public class WorldBlocks extends SupportChunk {
 		
 		double holeScale = 1.0 / 20.0;
 		double leavesScale = 1.0 / 10.0;
+		double weatheringScale = 1.0 / 5.0;
 		
 		long seed = generator.getWorldSeed();
 		SimplexOctaveGenerator noiseGen = new SimplexOctaveGenerator(seed,2);
@@ -300,12 +301,13 @@ public class WorldBlocks extends SupportChunk {
 					
 					double holeNoise = noiseGen.noise(x * holeScale, y * holeScale, z * holeScale, 0.3D, 0.6D, true);
 					double leavesNoise = noiseGen.noise(x * leavesScale, y * leavesScale, z * leavesScale, 0.3D, 0.6D, false);
+					double weatheringNoise = noiseGen.noise(x * weatheringScale, y * weatheringScale, z * weatheringScale, 0.6D, 0.6D, true);
 					
 					Block block = world.getBlockAt(x, y, z);
 					
-					if (!block.isEmpty() && holeNoise > 0.50D) {
+					if (!block.isEmpty() && ( holeNoise > 0.5D || weatheringNoise > 0.7D ) ) {
 						block.setType(Material.AIR);
-					} else if ( holeNoise > 0.30D ) {
+					} else if ( holeNoise > 0.30D || weatheringNoise > 0.5D ) {
 						switch(block.getType()) {
 							case STONE:
 								if(odds.flipCoin())
@@ -342,7 +344,7 @@ public class WorldBlocks extends SupportChunk {
 							block.getRelative(0, -1, 0)
 						};
 						
-						if ( leavesNoise > 0.1D && block.isEmpty() ) {
+						if ( leavesNoise > 0.1D && holeNoise > 0.30D && block.isEmpty() ) {
 							int support = 0;
 							
 							for(int n=0;n<neighbors.length;n++)
@@ -370,91 +372,6 @@ public class WorldBlocks extends SupportChunk {
 				}
 			}
 		}
-		
-//		int[][][] support=new int[y1-y2][z1-z2][x1-x2];
-//		
-//		for(int z=z1;z<z2;z++) for(int x=x1;x<x2;x++) {
-//			Block block = world.getBlockAt(x, y1, z);
-//		
-//			support[y1][z][x] = this.isSupporting(block) ? 2 : 0;
-//		}
-//		
-//		//Check lower block support
-//		for(int z=z1;z<z2;z++){ 
-//			for(int x=x1;x<x2;x++){
-//				for(int y=y1;y<y2;y++) {
-//					Block block = world.getBlockAt(x, y, z);
-//					Block bottomBlock = block.getRelative(0, -1, 0);
-//					
-//					support[y][z][x] += this.isSupporting(bottomBlock) ? 2 : 0;
-//				}
-//			}
-//			for(int x=x1;x<x2;x++){
-//				for(int y=y1;y<y2;y++) {
-//					Block block = world.getBlockAt(x, y, z);
-//					
-//					boolean[] neighbors = {
-//						this.isSupporting(block.getRelative(0, 0, -1)),
-//						this.isSupporting(block.getRelative(0, 0, 1)),
-//						this.isSupporting(block.getRelative(1, 0, 0)),
-//						this.isSupporting(block.getRelative(-1, 0, 0)),
-//					};
-//					
-//					for(int n=0;n<neighbors.length;n++)
-//						support[y][z][x] += neighbors[n] ? 1 : 0;
-//					
-//					if ( support[y][z][x] < 8 && block.getType() != Material.AIR ) {
-//						block.setType(Material.WOOL);
-//					}
-//				}
-//			}
-//		}
-		
-//		//Remove floaters
-//		for(int y=y1;y<y2;y++) {
-//			for(int z=z1;z<z2;z++){ 
-//				for(int x=x1;x<x2;x++){
-//					
-//				}
-//			}
-//			for(int z=z1;z<z2;z++){ 
-//				for(int x=x1;x<x2;x++){
-//					
-//					Block block = world.getBlockAt(x, y, z);
-//					
-//					Block[] neighbors = {
-//						block.getRelative(0, 1, 0),
-//						block.getRelative(0, 0, -1),
-//						block.getRelative(0, 0, 1),
-//						block.getRelative(1, 0, 0),
-//						block.getRelative(-1, 0, 0),
-//						block.getRelative(0, -1, 0)
-//					};
-//					
-//					int support = 0;
-//					int leaves = 0;
-//					
-//					for (int i=0;i<neighbors.length;i++) {
-//						if ( neighbors[i].getType() == Material.LEAVES || neighbors[i].getType() == Material.LOG )
-//							leaves += 1;
-//						else if ( neighbors[i].isEmpty() && neighbors[i].getType() != Material.VINE ) {
-//							support += 1;
-//						}
-//					}
-//					
-//					if ( block.getType() == Material.LEAVES ) {
-//						if ( leaves > 4 && support > 0 ) {
-//							block.setType(Material.LOG);
-//						} else if ( ( (leaves < 4 && leaves > 1) || support > 0 ) && odds.flipCoin() ) {
-//							block.setType(Material.AIR);
-//						} else if ( leaves == 0 && support == 0 ) {
-//							block.setType(Material.AIR);
-//						}
-//					}
-//					
-//				}
-//			}
-//		}
 		
 //		int count = Math.max(1, (y2 - y1) / DataContext.FloorHeight);
 //		
