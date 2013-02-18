@@ -181,9 +181,12 @@ public abstract class PlatLot {
 			for(int x=x1;x<x2;x++){
 				for(int y=y1;y<y2;y++) {
 					Material material = chunk.getBlock(x, y, z);
-					if (material == Material.CHEST && chunkOdds.playOdds(odds)) {
-						chunk.setChest(x, y, z, chunkOdds, generator.lootProvider, chestName);
-					}
+					if (material == Material.CHEST)
+						if (chunkOdds.playOdds(odds)) {
+							chunk.setChest(x, y, z, chunkOdds, generator.lootProvider, chestName);
+						} else {
+							chunk.setBlock(x, y, z, Material.AIR);
+						}
 				}
 			}
 		}
