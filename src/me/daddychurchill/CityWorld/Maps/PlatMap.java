@@ -106,7 +106,7 @@ public abstract class PlatMap {
 		}
 	}
 	
-	
+	private final static double oddsOfConstruction = DataContext.oddsSomewhatUnlikely;
 	private final static double oddsOfCentralPark = DataContext.oddsUnlikely;
 	protected DataContext getContext() {
 		
@@ -117,14 +117,17 @@ public abstract class PlatMap {
 			else
 				return generator.highriseContext;
 		} else if (naturalPlats < 15)
-			return generator.constructionContext;
+			if (getOddsGenerator().playOdds(oddsOfConstruction))
+				return generator.constructionContext;
+			else
+				return generator.highriseContext;
 		else if (naturalPlats < 25)
 			return generator.midriseContext;
 		else if (naturalPlats < 37)
 			return generator.municipalContext;
-		else if (naturalPlats < 50)
+		else if (naturalPlats < 45)
 			return generator.industrialContext;
-		else if (naturalPlats < 65)
+		else if (naturalPlats < 55)
 			return generator.lowriseContext;
 		else if (naturalPlats < 80)
 			return generator.neighborhoodContext;

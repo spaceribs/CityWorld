@@ -170,6 +170,25 @@ public abstract class PlatLot {
 		generator.decayBlocks.destroyWithin(x1, x1 + SupportChunk.chunksBlockWidth, y1, y2, z1, z1 + SupportChunk.chunksBlockWidth);
 	}
 	
+	protected void setChests(WorldGenerator generator, RealChunk chunk, Double odds, int y1, int y2, String chestName) {
+		int x1 = chunkX * SupportChunk.chunksBlockWidth;
+		int z1 = chunkZ * SupportChunk.chunksBlockWidth;
+		setChestsWithin(generator, x1, x1 + SupportChunk.chunksBlockWidth, y1, y2, z1, z1 + SupportChunk.chunksBlockWidth, chunk, odds, chestName);
+	}
+	
+	protected void setChestsWithin(WorldGenerator generator, int x1, int x2, int y1, int y2, int z1, int z2, RealChunk chunk, Double odds, String chestName){
+		for(int z=z1;z<z2;z++){ 
+			for(int x=x1;x<x2;x++){
+				for(int y=y1;y<y2;y++) {
+					Material material = chunk.getBlock(x, y, z);
+					if (material == Material.CHEST && chunkOdds.playOdds(odds)) {
+						chunk.setChest(x, y, z, chunkOdds, generator.lootProvider, chestName);
+					}
+				}
+			}
+		}
+	}
+	
 	public void destroyBuilding(WorldGenerator generator, int y, int floors) {
 		destroyLot(generator, y, y + DataContext.FloorHeight * (floors + 1));
 	}

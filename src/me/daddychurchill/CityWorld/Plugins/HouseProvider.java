@@ -18,7 +18,6 @@ public class HouseProvider extends Provider {
 		super();
 		// TODO Auto-generated constructor stub
 	}
-
 	
 	public final static HouseProvider loadProvider(WorldGenerator generator) {
 		// for now
@@ -741,15 +740,12 @@ public class HouseProvider extends Provider {
 				for (int x = 1; x < chunk.width - 1; x++) {
 					for (int z = 1; z < chunk.width - 1; z++) {
 						int yAt = y + roofY;
-						if (chunk.getBlock(x, yAt + 1, z) != materialAir) {
+						if (chunk.getBlock(x, yAt + 1, z) != materialAir && chunk.getBlock(x, yAt + 1, z) != Material.CHEST) {
 							chunk.setBlock(x, yAt, z, materialAir);
 						}
 					}
 				}
 			}
-			
-			//add trick/treat
-			chunk.setBlock(Math.round(chunk.width/2), roofY+1, Math.round(chunk.width/2), Material.DIAMOND_BLOCK);
 
 //			// extrude roof
 //			int roofY = baseY + floors * ContextData.FloorHeight - 1;

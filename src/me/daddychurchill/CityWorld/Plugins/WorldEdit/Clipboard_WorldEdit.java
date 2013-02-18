@@ -42,6 +42,8 @@ public class Clipboard_WorldEdit extends Clipboard {
 	private final static String tagOddsOfAppearance = "OddsOfAppearance";
 	private final static String tagBroadcastLocation = "BroadcastLocation";
 	private final static String tagDecayable = "Decayable";
+	private final static String tagChestName = "ChestName";
+	private final static String tagChestOdds = "ChestOdds";
 	
 	public Clipboard_WorldEdit(WorldGenerator generator, File file) throws Exception {
 		super(generator, file);
@@ -66,6 +68,8 @@ public class Clipboard_WorldEdit extends Clipboard {
 		metaYaml.addDefault(tagOddsOfAppearance, oddsOfAppearance);
 		metaYaml.addDefault(tagBroadcastLocation, broadcastLocation);
 		metaYaml.addDefault(tagDecayable, decayable);
+		metaYaml.addDefault(tagChestName, chestName);
+		metaYaml.addDefault(tagChestOdds, chestOdds);
 		
 		// start reading it
 		File metaFile = new File(file.getAbsolutePath() + metaExtension);
@@ -81,6 +85,8 @@ public class Clipboard_WorldEdit extends Clipboard {
 			oddsOfAppearance = Math.max(0.0, Math.min(1.0, metaYaml.getDouble(tagOddsOfAppearance, oddsOfAppearance)));
 			broadcastLocation = metaYaml.getBoolean(tagBroadcastLocation, broadcastLocation);
 			decayable = metaYaml.getBoolean(tagDecayable, decayable);
+			chestName = metaYaml.getString(tagChestName, chestName);
+			chestOdds = Math.max(0.0, Math.min(1.0, metaYaml.getDouble(tagChestOdds, chestOdds)));
 		}
 		
 		// load the actual blocks

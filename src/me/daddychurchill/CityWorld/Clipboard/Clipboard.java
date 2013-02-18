@@ -13,6 +13,8 @@ import me.daddychurchill.CityWorld.Support.SupportChunk;
 public abstract class Clipboard {
 
 	public String name;
+	public String chestName = "Default";
+	public double chestOdds = DataContext.oddsLikely;
 	public double oddsOfAppearance = DataContext.oddsSomewhatUnlikely;
 	public int groundLevelY = 0;
 	public boolean broadcastLocation = false;

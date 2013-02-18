@@ -111,6 +111,9 @@ public class ClipboardLot extends IsolatedLot {
 		// mr. creeper says: that is a nice building you have there, too bad something bad has to happen to it
 		if (clip.decayable && generator.settings.includeDecayedBuildings)
 			destroyLot(generator, originY, originY + clip.sizeY);
+		
+		if ( !clip.chestName.isEmpty() )
+			setChests(generator, chunk, clip.chestOdds, originY, originY + clip.sizeY, clip.chestName);
 	}
 	
 	private void calculateEdges(WorldGenerator generator) {

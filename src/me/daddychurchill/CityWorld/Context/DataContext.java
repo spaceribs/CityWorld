@@ -78,8 +78,8 @@ public abstract class DataContext {
 	
 	protected ClipboardList mapsSchematics;
 	public SchematicFamily schematicFamily = SchematicFamily.NATURE;
-	public int schematicMaxX = 4;
-	public int schematicMaxZ = 4;
+	public int schematicMaxX = 6;
+	public int schematicMaxZ = 6;
 	
 	public DataContext(WorldGenerator generator) {
 		super();
@@ -116,6 +116,28 @@ public abstract class DataContext {
 		// finally load any schematics if they exists
 		mapsSchematics = generator.pasteProvider.getFamilyClips(generator, schematicFamily, schematicMaxX, schematicMaxZ);
 	}
+	
+//	public void setChests(SchematicFamily schematicFamily) {
+//		LootLocation lootLocation;
+//		switch(schematicFamily){
+//			case ROUNDABOUT:
+//			case PARK:
+//				lootLocation = LootLocation.PARK;
+//				break;
+//			case HIGHRISE:
+//			case MIDRISE:
+//			case LOWRISE:
+//			case INDUSTRIAL:
+//			case MUNICIPAL:
+//			case CONSTRUCTION:
+//			case NEIGHBORHOOD:
+//			case FARM:
+//			case NATURE:
+//			default:
+//			break;
+//		}
+//		SEWER, MINE, BUNKER, STORAGESHED, HOUSE, OFFICE, APARTMENT, HOSPITAL, CONSTRUCTION, MUNICIPAL, INDUSTRIAL, PARK
+//	}
 	
 	protected abstract void initialize();
 	public abstract void populateMap(WorldGenerator generator, PlatMap platmap);
