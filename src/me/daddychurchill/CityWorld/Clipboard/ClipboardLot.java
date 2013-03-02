@@ -113,7 +113,7 @@ public class ClipboardLot extends IsolatedLot {
 			destroyLot(generator, originY, originY + clip.sizeY);
 		
 		if ( !clip.chestName.isEmpty() )
-			setChests(generator, chunk, clip.chestOdds, originY, originY + clip.sizeY, clip.chestName);
+			setChests(generator, chunk, clip.chestOdds, clip.spawnerOdds, originY, originY + clip.sizeY, clip.chestName);
 	}
 	
 	private void calculateEdges(WorldGenerator generator) {

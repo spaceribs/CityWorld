@@ -2,6 +2,8 @@ package me.daddychurchill.CityWorld.Plats;
 
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Sign;
+import org.bukkit.entity.EntityType;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
 import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
@@ -170,23 +172,85 @@ public abstract class PlatLot {
 		generator.decayBlocks.destroyWithin(x1, x1 + SupportChunk.chunksBlockWidth, y1, y2, z1, z1 + SupportChunk.chunksBlockWidth);
 	}
 	
-	protected void setChests(WorldGenerator generator, RealChunk chunk, Double odds, int y1, int y2, String chestName) {
+	protected void setChests(WorldGenerator generator, RealChunk chunk, Double chestOdds, Double spawnerOdds, int y1, int y2, String chestName) {
 		int x1 = chunkX * SupportChunk.chunksBlockWidth;
 		int z1 = chunkZ * SupportChunk.chunksBlockWidth;
-		setChestsWithin(generator, x1, x1 + SupportChunk.chunksBlockWidth, y1, y2, z1, z1 + SupportChunk.chunksBlockWidth, chunk, odds, chestName);
+		setChestsWithin(generator, x1, x1 + SupportChunk.chunksBlockWidth, y1, y2, z1, z1 + SupportChunk.chunksBlockWidth, chunk, chestOdds, spawnerOdds, chestName);
 	}
 	
-	protected void setChestsWithin(WorldGenerator generator, int x1, int x2, int y1, int y2, int z1, int z2, RealChunk chunk, Double odds, String chestName){
+	protected void setChestsWithin(WorldGenerator generator, int x1, int x2, int y1, int y2, int z1, int z2, RealChunk chunk, Double chestOdds, Double spawnerOdds, String chestName){
 		for(int z=z1;z<z2;z++){ 
 			for(int x=x1;x<x2;x++){
 				for(int y=y1;y<y2;y++) {
 					Material material = chunk.getBlock(x, y, z);
-					if (material == Material.CHEST)
-						if (chunkOdds.playOdds(odds)) {
+					if (material == Material.CHEST) {
+						if (chunkOdds.playOdds(chestOdds)) {
 							chunk.setChest(x, y, z, chunkOdds, generator.lootProvider, chestName);
 						} else {
-							chunk.setBlock(x, y, z, Material.AIR);
+							chunk.clearBlock(x, y, z);
 						}
+					} else if (material == Material.MOB_SPAWNER) {
+						if (chunkOdds.playOdds(spawnerOdds)) {
+							chunk.setSpawner(x, y, z, EntityType.ZOMBIE );
+						} else {
+							chunk.clearBlock(x, y, z);
+						}
+					} else if (material == Material.WALL_SIGN || material == Material.SIGN_POST) {
+						Sign sign = (Sign) chunk.getActualBlock(x, y, z).getState();
+						if (sign.getLine(0).contains("[[CHEST]]") ) {
+							
+							String newChestName = sign.getLine(1).trim();
+							newChestName = (newChestName.length() < 2 || newChestName == null ) ? chestName : newChestName;
+							
+							Double newChestOdds = Double.parseDouble( sign.getLine(2).trim() );
+							newChestOdds = (newChestOdds <= 0 || newChestOdds == null ) ? chestOdds : newChestOdds;
+							
+							Byte meta = 0x0;
+							
+							// 2:North 3:South 4:West 5:East
+							if (material == Material.SIGN_POST) {
+								switch(sign.getRawData()){
+									case 0x8:
+										meta = 0x2;
+										break;
+									case 0x0:
+										meta = 0x3;
+										break;
+									case 0x4:
+										meta = 0x4;
+										break;
+									case 0xC:
+										meta = 0x5;
+										break;
+									default:
+										meta = 0x2;
+										break;
+								}
+							} else {
+								meta = sign.getRawData();
+							}
+							
+							if (chunkOdds.playOdds(newChestOdds)) {
+								chunk.clearBlock(x, y, z);
+								chunk.setBlock(x, y, z, Material.CHEST, meta);
+								chunk.setChest(x, y, z, chunkOdds, generator.lootProvider, newChestName);
+							}
+						} else if (sign.getLine(0).contains("[[SPAWNER]]") ) {
+							try {
+								chunk.clearBlock(x, y, z);
+								
+								Double newSpawnerOdds = Double.parseDouble( sign.getLine(2).trim() );
+								newSpawnerOdds = (newSpawnerOdds <= 0 || newSpawnerOdds == null ) ? spawnerOdds : newSpawnerOdds;
+								if (chunkOdds.playOdds(newSpawnerOdds)) {
+									chunk.setSpawner(x, y, z, EntityType.valueOf( sign.getLine(1).trim() ) );
+								}
+							} catch (IllegalArgumentException ex) {
+								if (chunkOdds.playOdds(spawnerOdds)) {
+									chunk.setSpawner(x, y, z, EntityType.ZOMBIE );
+								}
+							}
+						}
+					}
 				}
 			}
 		}
