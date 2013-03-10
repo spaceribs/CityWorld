@@ -391,7 +391,7 @@ public class WorldBlocks extends SupportChunk {
 //		}
 	}
 	
-	private class debrisItem {
+	private static class debrisItem {
 		int typeId;
 		byte data;
 		
