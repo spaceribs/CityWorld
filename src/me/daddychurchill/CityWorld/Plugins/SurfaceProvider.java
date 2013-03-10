@@ -15,10 +15,10 @@ public abstract class SurfaceProvider extends Provider {
 	}
 
 	
-	protected final static double treeOdds = DataContext.oddsPrettyUnlikely;
+	protected final static double treeOdds = DataContext.oddsPrettyLikely;
 	protected final static double treeTallOdds = DataContext.oddsLikely;
 	protected final static double treeAltOdds = DataContext.oddsLikely;
-	protected final static double treeAltTallOdds = DataContext.oddsPrettyUnlikely;
+	protected final static double treeAltTallOdds = DataContext.oddsExtremelyLikely;
 	protected final static double foliageOdds = DataContext.oddsSomewhatLikely;
 	protected final static double cactusOdds = DataContext.oddsVeryUnlikely;
 	protected final static double reedOdds = DataContext.oddsPrettyUnlikely;

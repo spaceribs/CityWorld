@@ -55,11 +55,11 @@ public class SurfaceProvider_Normal extends SurfaceProvider {
 				// trees? but only if we are not too close to the edge of the chunk
 				if (includeTrees && primary < treeOdds && x > 0 && x < 15 && z > 0 && z < 15 && x % 2 == 0 && z % 2 != 0) {
 					if (secondary < treeAltTallOdds && x > 5 && x < 11 && z > 5 && z < 11)
-						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.TALL_OAK);
+						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.TALL_JUNGLE);
 					else if (secondary < treeAltOdds)
-						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.BIRCH);
+						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.TALL_JUNGLE);
 					else 
-						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.OAK);
+						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.TALL_BIRCH);
 				
 				// foliage?
 				} else if (primary < foliageOdds) {

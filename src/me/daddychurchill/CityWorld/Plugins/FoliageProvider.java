@@ -15,8 +15,8 @@ import org.bukkit.block.Block;
 
 public abstract class FoliageProvider extends Provider {
 	
-    public enum LigneousType {SHORT_OAK, SHORT_PINE, SHORT_BIRCH, OAK, PINE, BIRCH, TALL_OAK, TALL_PINE, TALL_BIRCH};
-	public enum HerbaceousType {FLOWER_RED, FLOWER_YELLOW, GRASS, FERN, CACTUS, REED, COVER};
+    public enum LigneousType {SHORT_OAK, SHORT_PINE, SHORT_BIRCH, OAK, PINE, BIRCH, JUNGLE, TALL_OAK, TALL_PINE, TALL_BIRCH, TALL_JUNGLE};
+	public enum HerbaceousType {FLOWER_RED, FLOWER_YELLOW, GRASS, FERN, CACTUS, REED, COVER, BUSHES};
 	
 	protected final static double oddsOfDarkFlora = DataContext.oddsLikely;
 	
@@ -104,6 +104,8 @@ public abstract class FoliageProvider extends Provider {
 			return generateNormalTree(chunk, odds, x, y, z, TreeType.BIG_TREE, trunk, leaves1, leaves2);
 		case TALL_PINE:
 			return generateNormalTree(chunk, odds, x, y, z, TreeType.TALL_REDWOOD, trunk, leaves1, leaves2);
+		case TALL_JUNGLE:
+			return generateNormalTree(chunk, odds, x, y, z, TreeType.JUNGLE, trunk, leaves1, leaves2);
 		default:
 			return false;
 		}
@@ -147,7 +149,7 @@ public abstract class FoliageProvider extends Provider {
 	protected boolean generateNormalTree(RealChunk chunk, Odds odds, int x, int y, int z, 
 			TreeType treeType, Material trunk, Material leaves1, Material leaves2) {
 		boolean result = false;
-		boolean customTree = trunk != log || leaves1 != leaves || leaves2 != leaves;
+		boolean customTree = (trunk != log || leaves1 != leaves || leaves2 != leaves) && (treeType != TreeType.JUNGLE);
 		
 		// where do we start?
 		int bottomY = y;

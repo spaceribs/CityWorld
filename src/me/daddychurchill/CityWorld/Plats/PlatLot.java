@@ -201,9 +201,14 @@ public abstract class PlatLot {
 							
 							String newChestName = sign.getLine(1).trim();
 							newChestName = (newChestName.length() < 2 || newChestName == null ) ? chestName : newChestName;
+							Double newChestOdds = chestOdds;
 							
-							Double newChestOdds = Double.parseDouble( sign.getLine(2).trim() );
-							newChestOdds = (newChestOdds <= 0 || newChestOdds == null ) ? chestOdds : newChestOdds;
+							try {
+								newChestOdds = Double.parseDouble( sign.getLine(2).trim() );
+								newChestOdds = (newChestOdds <= 0 || newChestOdds == null ) ? chestOdds : newChestOdds;
+							} catch (IllegalArgumentException ex) {
+								newChestOdds = chestOdds;
+							}
 							
 							Byte meta = 0x0;
 							
@@ -234,15 +239,26 @@ public abstract class PlatLot {
 								chunk.clearBlock(x, y, z);
 								chunk.setBlock(x, y, z, Material.CHEST, meta);
 								chunk.setChest(x, y, z, chunkOdds, generator.lootProvider, newChestName);
+							} else {
+								chunk.clearBlock(x, y, z);
 							}
 						} else if (sign.getLine(0).contains("[[SPAWNER]]") ) {
 							try {
 								chunk.clearBlock(x, y, z);
 								
-								Double newSpawnerOdds = Double.parseDouble( sign.getLine(2).trim() );
-								newSpawnerOdds = (newSpawnerOdds <= 0 || newSpawnerOdds == null ) ? spawnerOdds : newSpawnerOdds;
+								Double newSpawnerOdds = spawnerOdds;
+								
+								try {
+									newSpawnerOdds = Double.parseDouble( sign.getLine(2).trim() );
+									newSpawnerOdds = (newSpawnerOdds <= 0 || newSpawnerOdds == null ) ? chestOdds : newSpawnerOdds;
+								} catch (IllegalArgumentException ex) {
+									newSpawnerOdds = chestOdds;
+								}
+								
 								if (chunkOdds.playOdds(newSpawnerOdds)) {
 									chunk.setSpawner(x, y, z, EntityType.valueOf( sign.getLine(1).trim() ) );
+								} else {
+									chunk.clearBlock(x, y, z);
 								}
 							} catch (IllegalArgumentException ex) {
 								if (chunkOdds.playOdds(spawnerOdds)) {
