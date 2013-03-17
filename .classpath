@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/Users/abrewer/Dropbox/Development/libraries/craftbukkit/plugins/PhatLoots.jar"/>
 	<classpathentry kind="lib" path="/Users/abrewer/Dropbox/Development/libraries/craftbukkit/plugins/WorldEdit.jar"/>
-	<classpathentry kind="lib" path="/Users/abrewer/Dropbox/Development/libraries/craftbukkit/craftbukkit.jar">
+	<classpathentry kind="lib" path="/Users/abrewer/Dropbox/Development/libraries/craftbukkit/craftbukkit.jar" sourcepath="/Spigot/src">
 		<attributes>
 			<attribute name="javadoc_location" value="http://jd.bukkit.org/apidocs/"/>
 		</attributes>

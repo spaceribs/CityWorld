@@ -86,7 +86,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 		
 		// get ranges
 		height = world.getMaxHeight();
-		seaLevel = world.getSeaLevel();
+		seaLevel = world.getSeaLevel() - 2;
 		landRange = height - seaLevel - fudgeVerticalScale + landFlattening;
 		seaRange = seaLevel - fudgeVerticalScale + seaFlattening;
 		constructMin = seaLevel;
