@@ -96,12 +96,12 @@ public class RoadLot extends ConnectedLot {
 	
 	@Override
 	public boolean isValidStrataY(WorldGenerator generator, int blockX, int blockY, int blockZ) {
-		return blockY < bottomOfRoad || blockY > topOfRoad;
+		return blockY < bottomOfRoad || blockY > topOfRoad - 5;
 	}
 
 	@Override
-	protected boolean isShaftableLevel(WorldGenerator generator, int y) {
-		return (y < bottomOfRoad - 32 || y > topOfRoad + 16 ) && super.isShaftableLevel(generator, y);
+	protected boolean isShaftableLevel(WorldGenerator generator, int blockY) {
+		return (blockY < bottomOfRoad - 32 || blockY > topOfRoad + 16 ) && super.isShaftableLevel(generator, blockY);
 	}
 	
 	private boolean sewerCenterBit;
@@ -978,7 +978,7 @@ public class RoadLot extends ConnectedLot {
 				centerEast = sewerCenterBit || (vaultNorthEast && vaultSouthEast);
 			}
 			
-			byte fluidId = generator.oreProvider.fluidSubsurfaceId;
+			byte fluidId = generator.oreProvider.fluidFluidId;
 			
 			// cardinal directions known walls and ditches
 			if (roads.toNorth()) {
