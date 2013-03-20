@@ -11,14 +11,14 @@ import me.daddychurchill.CityWorld.Context.DataContext;
 public class WorldBlocks extends SupportChunk {
 
 	private boolean doPhysics;
-//	WorldGenerator generator;
+	WorldGenerator generator;
 	Odds odds;
 	
 	public WorldBlocks(WorldGenerator generator, Odds odds) {
 		super(generator);
 		
 		doPhysics = false;
-//		this.generator = generator;
+		this.generator = generator;
 		this.odds = odds;
 	}
 
