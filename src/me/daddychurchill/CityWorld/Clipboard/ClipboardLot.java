@@ -159,6 +159,9 @@ public class ClipboardLot extends IsolatedLot {
 		// mr. creeper says: that is a nice building you have there, too bad something bad has to happen to it
 		if (clip.decayable && generator.settings.includeDecayedBuildings)
 			destroyLot(generator, depth, edgeY3);
+		
+		if ( !clip.chestName.isEmpty() )
+			setChestsAndSpawners(generator, chunk, clip.chestOdds, clip.spawnerOdds, depth, edgeY3, clip.chestName);
 	}
 	
 	// Added by Sablednah

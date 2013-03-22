@@ -177,8 +177,13 @@ public abstract class FoliageProvider extends Provider {
 				if (result) {
 					
 					// copy the trunk down a bit
-					Block root = chunk.getActualBlock(x, y, z);
-					chunk.setBlocks(x, bottomY, y, z, root.getType(), root.getData());
+					Block root = chunk.getActualBlock(x, y+1, z);
+					
+					if (treeType == TreeType.JUNGLE) {
+						chunk.setBlocks(x, x+1, y, y-2, z, z+1, root.getType(), root.getData());
+					} else {
+						chunk.setBlocks(x, bottomY, y, z, root.getType(), root.getData());
+					}
 					
 					// all done
 					break;

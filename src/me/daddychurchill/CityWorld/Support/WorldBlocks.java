@@ -345,7 +345,20 @@ public class WorldBlocks extends SupportChunk {
 								block.setTypeIdAndData(Material.SMOOTH_BRICK.getId(), odds.getRandomByte(3), true);
 								break;
 							case WOOD:
-								block.setTypeIdAndData(Material.WOOD_STAIRS.getId(), odds.getRandomByte(4), true);
+								switch(block.getData()){
+									case 0:
+										block.setTypeIdAndData(Material.WOOD_STAIRS.getId(), odds.getRandomByte(4), true);
+										break;
+									case 1:
+										block.setTypeIdAndData(Material.SPRUCE_WOOD_STAIRS.getId(), odds.getRandomByte(4), true);
+										break;
+									case 2:
+										block.setTypeIdAndData(Material.BIRCH_WOOD_STAIRS.getId(), odds.getRandomByte(4), true);
+										break;
+									default:
+										block.setTypeIdAndData(Material.JUNGLE_WOOD_STAIRS.getId(), odds.getRandomByte(4), true);
+										break;
+								}
 								break;
 							default:
 								block.setType(Material.AIR);

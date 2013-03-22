@@ -168,13 +168,13 @@ public abstract class PlatLot {
 		generator.decayBlocks.destroyWithin(x1, x1 + SupportChunk.chunksBlockWidth, y1, y2, z1, z1 + SupportChunk.chunksBlockWidth);
 	}
 	
-	protected void setChests(WorldGenerator generator, RealChunk chunk, Double chestOdds, Double spawnerOdds, int y1, int y2, String chestName) {
+	protected void setChestsAndSpawners(WorldGenerator generator, RealChunk chunk, Double chestOdds, Double spawnerOdds, int y1, int y2, String chestName) {
 		int x1 = chunkX * SupportChunk.chunksBlockWidth;
 		int z1 = chunkZ * SupportChunk.chunksBlockWidth;
-		setChestsWithin(generator, x1, x1 + SupportChunk.chunksBlockWidth, y1, y2, z1, z1 + SupportChunk.chunksBlockWidth, chunk, chestOdds, spawnerOdds, chestName);
+		setChestsAndSpawnersWithin(generator, x1, x1 + SupportChunk.chunksBlockWidth, y1, y2, z1, z1 + SupportChunk.chunksBlockWidth, chunk, chestOdds, spawnerOdds, chestName);
 	}
 	
-	protected void setChestsWithin(WorldGenerator generator, int x1, int x2, int y1, int y2, int z1, int z2, RealChunk chunk, Double chestOdds, Double spawnerOdds, String chestName){
+	protected void setChestsAndSpawnersWithin(WorldGenerator generator, int x1, int x2, int y1, int y2, int z1, int z2, RealChunk chunk, Double chestOdds, Double spawnerOdds, String chestName){
 		for(int z=z1;z<z2;z++){ 
 			for(int x=x1;x<x2;x++){
 				for(int y=y1;y<y2;y++) {
