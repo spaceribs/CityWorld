@@ -81,9 +81,9 @@ public class SurfaceProvider_Normal extends SurfaceProvider {
 					
 					// range change?
 					if (secondary > ((double) (y - generator.treeLevel) / (double) generator.deciduousRange))
-						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.OAK);
+						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.TALL_JUNGLE);
 					else
-						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.PINE);
+						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.TALL_BIRCH);
 				
 				// foliage?
 				} else if (primary < foliageOdds) {
@@ -101,7 +101,7 @@ public class SurfaceProvider_Normal extends SurfaceProvider {
 				// trees? 
 				if (includeTrees && primary < treeOdds && x % 2 == 0 && z % 2 != 0) {
 					if (secondary < treeTallOdds)
-						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.PINE);
+						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.TALL_JUNGLE);
 					else
 						foliage.generateTree(generator, chunk, x, y + 1, z, LigneousType.TALL_PINE);
 				

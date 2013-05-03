@@ -15,7 +15,7 @@ public abstract class SurfaceProvider extends Provider {
 	}
 
 	
-	protected final static double treeOdds = DataContext.oddsSomewhatLikely;
+	protected final static double treeOdds = DataContext.oddsVeryLikely;
 	protected final static double treeTallOdds = DataContext.oddsLikely;
 	protected final static double treeAltOdds = DataContext.oddsLikely;
 	protected final static double treeAltTallOdds = DataContext.oddsExtremelyLikely;
@@ -35,7 +35,7 @@ public abstract class SurfaceProvider extends Provider {
 		FoliageProvider foliage = generator.foliageProvider;
 		for (int x = 0; x < chunk.width; x++) {
 			for (int z = 0; z < chunk.width; z++) {
-				generateSurfacePoint(generator, lot, chunk, foliage, x, blockYs.getPerciseY(x, z), z, includeTrees);
+				//generateSurfacePoint(generator, lot, chunk, foliage, x, blockYs.getPerciseY(x, z), z, includeTrees);
 			}
 		}
 	}

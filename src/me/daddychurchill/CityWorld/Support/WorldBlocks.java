@@ -307,7 +307,6 @@ public class WorldBlocks extends SupportChunk {
 		
 		double holeScale = 1.0 / 20.0;
 		double leavesScale = 1.0 / 10.0;
-		double weatheringScale = 1.0 / 5.0;
 		
 		long seed = generator.getWorldSeed();
 		SimplexOctaveGenerator noiseGen = new SimplexOctaveGenerator(seed,2);
@@ -318,13 +317,12 @@ public class WorldBlocks extends SupportChunk {
 					
 					double holeNoise = noiseGen.noise(x * holeScale, y * holeScale, z * holeScale, 0.3D, 0.6D, true);
 					double leavesNoise = noiseGen.noise(x * leavesScale, y * leavesScale, z * leavesScale, 0.3D, 0.6D, false);
-					double weatheringNoise = noiseGen.noise(x * weatheringScale, y * weatheringScale, z * weatheringScale, 0.6D, 0.6D, true);
 					
 					Block block = world.getBlockAt(x, y, z);
 					
-					if (!block.isEmpty() && ( holeNoise > 0.5D || weatheringNoise > 0.7D ) ) {
+					if (!block.isEmpty() && ( holeNoise > 0.5D ) ) {
 						block.setType(Material.AIR);
-					} else if ( holeNoise > 0.30D || weatheringNoise > 0.5D ) {
+					} else if ( holeNoise > 0.30D ) {
 						switch(block.getType()) {
 							case STONE:
 								if(odds.flipCoin())
@@ -396,7 +394,8 @@ public class WorldBlocks extends SupportChunk {
 							if( !neighbors[4].isEmpty() && neighbors[4].getType() != Material.VINE )
 								vineMeta += 2;
 							
-							block.setTypeIdAndData(Material.VINE.getId(), vineMeta, true);
+							if (vineMeta > 0)
+								block.setTypeIdAndData(Material.VINE.getId(), vineMeta, true);
 						}
 					}
 				}

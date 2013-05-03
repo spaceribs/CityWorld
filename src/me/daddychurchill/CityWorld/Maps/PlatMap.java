@@ -130,10 +130,8 @@ public abstract class PlatMap {
 			return generator.lowriseContext;
 		else if (naturalPlats < 80)
 			return generator.neighborhoodContext;
-		else if (naturalPlats < 90 && generator.settings.includeFarms)
+		else if (naturalPlats < 100 && generator.settings.includeFarms)
 			return generator.farmContext;
-		else if (naturalPlats < 100)
-			return generator.neighborhoodContext;
 		
 		// otherwise just keep what we have
 		else
@@ -290,11 +288,11 @@ public abstract class PlatMap {
 			  isRoad(Width - RoadLot.PlatMapRoadInset, Width - 1))) {
 			
 			// reclaim all of the silly roads
-			for (int x = 0; x < Width; x++) {
-				for (int z = 0; z < Width; z++) {
-					this.recycleLot(x, z);
-				}
-			}
+//			for (int x = 0; x < Width; x++) {
+//				for (int z = 0; z < Width; z++) {
+//					this.recycleLot(x, z);
+//				}
+//			}
 			
 		} else {
 			

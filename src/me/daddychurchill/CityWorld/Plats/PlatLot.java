@@ -303,23 +303,24 @@ public abstract class PlatLot {
 	private void generateHorizontalMineLevel(WorldGenerator generator, ByteChunk chunk, int y) {
 		int y1 = y + 6;
 		int y2 = y1 + 1;
+		int y3 = y1 + 6;
 		
 		// draw the shafts/walkways
 		boolean pathFound = false;
 		if (generator.shapeProvider.isHorizontalNSShaft(chunk.chunkX, y, chunk.chunkZ)) {
-			generateMineShaftSpace(chunk, 6, 10, y1, y1 + 4, 0, 6);
+			generateMineShaftSpace(chunk, 6, 10, y1, y3, 0, 6);
 			generateMineNSSupport(chunk, 6, y2, 1);
 			generateMineNSSupport(chunk, 6, y2, 4);
-			generateMineShaftSpace(chunk, 6, 10, y1, y1 + 4, 10, 16);
+			generateMineShaftSpace(chunk, 6, 10, y1, y3, 10, 16);
 			generateMineNSSupport(chunk, 6, y2, 11);
 			generateMineNSSupport(chunk, 6, y2, 14);
 			pathFound = true;
 		}
 		if (generator.shapeProvider.isHorizontalWEShaft(chunk.chunkX, y, chunk.chunkZ)) {
-			generateMineShaftSpace(chunk, 0, 6, y1, y1 + 4, 6, 10);
+			generateMineShaftSpace(chunk, 0, 6, y1, y3, 6, 10);
 			generateMineWESupport(chunk, 1, y2, 6);
 			generateMineWESupport(chunk, 4, y2, 6);
-			generateMineShaftSpace(chunk, 10, 16, y1, y1 + 4, 6, 10);
+			generateMineShaftSpace(chunk, 10, 16, y1, y3, 6, 10);
 			generateMineWESupport(chunk, 11, y2, 6);
 			generateMineWESupport(chunk, 14, y2, 6);
 			pathFound = true;
@@ -327,12 +328,12 @@ public abstract class PlatLot {
 		
 		// draw the center bit
 		if (pathFound)
-			generateMineShaftSpace(chunk, 6, 10, y1, y1 + 4, 6, 10);
+			generateMineShaftSpace(chunk, 6, 10, y1, y3, 6, 10);
 	}
 	
-	private final static byte shaftBridgeId = (byte) Material.WOOD.getId(); 
-	private final static byte shaftSupportId = (byte) Material.FENCE.getId();
-	private final static byte shaftBeamId = (byte) Material.WOOD.getId();
+	private final static byte shaftBridgeId = (byte) Material.SMOOTH_BRICK.getId(); 
+	private final static byte shaftSupportId = (byte) Material.COBBLE_WALL.getId();
+	private final static byte shaftBeamId = (byte) Material.SMOOTH_BRICK.getId();
 
 	private void generateMineShaftSpace(ByteChunk chunk, int x1, int x2, int y1, int y2, int z1, int z2) {
 		chunk.setEmptyBlocks(x1, x2, y1, z1, z2, shaftBridgeId);
@@ -351,11 +352,9 @@ public abstract class PlatLot {
 			
 		// in a tunnel
 		} else {
-			chunk.setBlock(x, y, z, shaftSupportId);
-			chunk.setBlock(x, y + 1, z, shaftSupportId);
-			chunk.setBlock(x + 3, y, z, shaftSupportId);
-			chunk.setBlock(x + 3, y + 1, z, shaftSupportId);
-			chunk.setBlocks(x, x + 4, y + 2, z, z + 1, shaftBeamId);
+			chunk.setBlocks(x, y, y+4, z, shaftSupportId);
+			chunk.setBlocks(x+3, y, y+4, z, shaftSupportId);
+			chunk.setBlocks(x, x + 4, y+4, z, z + 1, shaftBeamId);
 		}
 	}
 	
@@ -370,18 +369,15 @@ public abstract class PlatLot {
 			
 		// in a tunnel
 		} else {
-			chunk.setBlock(x, y, z, shaftSupportId);
-			chunk.setBlock(x, y + 1, z, shaftSupportId);
-			chunk.setBlock(x, y, z + 3, shaftSupportId);
-			chunk.setBlock(x, y + 1, z + 3, shaftSupportId);
-			chunk.setBlocks(x, x + 1, y + 2, z, z + 4, shaftBeamId);
+			chunk.setBlocks(x, y, y+4, z, shaftSupportId);
+			chunk.setBlocks(x, y, y+4, z + 3, shaftSupportId);
+			chunk.setBlocks(x, x + 1, y+4, z, z + 4, shaftBeamId);
 		}
 	}
 	
 	private void generateMineSupport(ByteChunk chunk, int x, int y, int z) {
-		int aboveSupport = chunk.findLastEmptyAbove(x, y, z);
-		if (aboveSupport < maxHeight)
-			chunk.setBlocks(x, y + 1, aboveSupport + 1, z, shaftSupportId);
+		int belowSupport = chunk.findLastEmptyBelow(x, y, z);
+		chunk.setBlocks(x, belowSupport, y, z, shaftSupportId);
 	}
 	
 	public void generateMines(WorldGenerator generator, RealChunk chunk) {
