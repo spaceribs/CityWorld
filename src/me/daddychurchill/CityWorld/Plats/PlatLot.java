@@ -50,7 +50,7 @@ public abstract class PlatLot {
 		
 		initializeDice(platmap, chunkX, chunkZ);
 	}
-	
+
 	protected final static byte airId = (byte) Material.AIR.getId();
 	protected final static byte stoneId = (byte) Material.STONE.getId();
 	protected final static byte dirtId = (byte) Material.DIRT.getId();
@@ -84,6 +84,8 @@ public abstract class PlatLot {
 	public abstract boolean isConnectable(PlatLot relative);
 	public abstract boolean isConnected(PlatLot relative);
 	
+	public abstract PlatLot newLike(PlatMap platmap, int chunkX, int chunkZ);
+
 	protected abstract void generateActualChunk(WorldGenerator generator, PlatMap platmap, ByteChunk chunk, BiomeGrid biomes, DataContext context, int platX, int platZ);
 	protected abstract void generateActualBlocks(WorldGenerator generator, PlatMap platmap, RealChunk chunk, DataContext context, int platX, int platZ);
 
@@ -93,6 +95,10 @@ public abstract class PlatLot {
 	
 	public boolean isPlaceableAt(WorldGenerator generator, int chunkX, int chunkZ) {
 		return generator.settings.inCityRange(chunkX, chunkZ);
+	}
+	
+	public PlatLot validateLot(PlatMap platmap, int platX, int platZ) {
+		return null; // assume that we don't do anything
 	}
 	
 	private void initializeDice(PlatMap platmap, int chunkX, int chunkZ) {

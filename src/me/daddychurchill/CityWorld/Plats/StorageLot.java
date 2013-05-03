@@ -18,7 +18,12 @@ public class StorageLot extends BuildingLot {
 		depth = 0;
 		trulyIsolated = true;
 	}
-	
+
+	@Override
+	public PlatLot newLike(PlatMap platmap, int chunkX, int chunkZ) {
+		return new StorageLot(platmap, chunkX, chunkZ);
+	}
+
 	@Override
 	protected void generateActualChunk(WorldGenerator generator,
 			PlatMap platmap, ByteChunk chunk, BiomeGrid biomes,

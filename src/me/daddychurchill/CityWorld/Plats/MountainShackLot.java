@@ -18,6 +18,11 @@ public class MountainShackLot extends ConstructLot {
 		trulyIsolated = true;
 	}
 	
+	@Override
+	public PlatLot newLike(PlatMap platmap, int chunkX, int chunkZ) {
+		return new MountainShackLot(platmap, chunkX, chunkZ);
+	}
+
 	private final static byte retainingWallId = (byte) Material.SMOOTH_BRICK.getId();
 
 	@Override

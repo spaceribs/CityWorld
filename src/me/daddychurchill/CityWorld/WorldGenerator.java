@@ -27,10 +27,6 @@ import me.daddychurchill.CityWorld.Plugins.HouseProvider;
 import me.daddychurchill.CityWorld.Plugins.LootProvider;
 import me.daddychurchill.CityWorld.Plugins.OdonymProvider;
 import me.daddychurchill.CityWorld.Plugins.OreProvider;
-import me.daddychurchill.CityWorld.Plugins.RoomProvider;
-import me.daddychurchill.CityWorld.Plugins.RoomProvider_Cafe;
-import me.daddychurchill.CityWorld.Plugins.RoomProvider_Library;
-import me.daddychurchill.CityWorld.Plugins.RoomProvider_Office;
 import me.daddychurchill.CityWorld.Plugins.ShapeProvider;
 import me.daddychurchill.CityWorld.Plugins.SpawnProvider;
 import me.daddychurchill.CityWorld.Plugins.SurfaceProvider;
@@ -68,10 +64,6 @@ public class WorldGenerator extends ChunkGenerator {
 	public OdonymProvider odonymProvider;
 	public BalloonProvider balloonProvider;
 	public HouseProvider houseProvider;
-	
-	public RoomProvider roomProvider_Office;
-	public RoomProvider roomProvider_Library;
-	public RoomProvider roomProvider_Cafe;
 	
 	public WorldBlocks decayBlocks;
 	
@@ -173,11 +165,6 @@ public class WorldGenerator extends ChunkGenerator {
 			decayBlocks = new WorldBlocks(this, new Odds(worldSeed + 6));
 			pasteProvider = PasteProvider.loadProvider(this);
 			
-			// room populators
-			roomProvider_Office = new RoomProvider_Office();
-			roomProvider_Library = new RoomProvider_Library();
-			roomProvider_Cafe = new RoomProvider_Cafe();
-			
 			// get ranges
 			height = shapeProvider.getWorldHeight();
 			seaLevel = shapeProvider.getSeaLevel();
@@ -273,6 +260,36 @@ public class WorldGenerator extends ChunkGenerator {
 		} 
 	}
 	
+//	@Override
+//	public short[][] generateExtBlockSections(World world, Random random, int chunkX, int chunkZ, BiomeGrid biomes) {
+//		try {
+//
+//			initializeWorldInfo(world);
+//
+//			// place to work
+//			ShortChunk shortChunk = new ShortChunk(this, chunkX, chunkZ);
+//		
+//			// figure out what everything looks like
+//			PlatMap platmap = getPlatMap(chunkX, chunkZ);
+//			if (platmap != null) {
+//				//CityWorld.reportMessage("generate X,Z = " + chunkX + "," + chunkZ);
+//				platmap.generateChunk(shortChunk, biomes);
+//			}
+//			
+//			// This was added by Sablednah
+//			// https://github.com/echurchill/CityWorld/pull/5
+//			// MOVED to the chunk populator by DaddyChurchill 10/27/12
+//			//CityWorldEvent event = new CityWorldEvent(chunkX, chunkZ, platmap.context, platmap.getPlatLots()[chunkX - platmap.originX][chunkZ - platmap.originZ]);
+//			//Bukkit.getServer().getPluginManager().callEvent(event);
+//			
+//			return shortChunk.blocks;
+//			
+//		} catch (Exception e) {
+//			reportException("ChunkPopulator FAILED", e);
+//			return null;
+//		} 
+//	}
+
 	public long getConnectionKey() {
 		return connectionKeyGen.getRandomLong();
 	}

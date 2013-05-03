@@ -2,7 +2,6 @@ package me.daddychurchill.CityWorld.Plats;
 
 import org.bukkit.Material;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
-import org.bukkit.material.*;
 
 import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
@@ -31,34 +30,25 @@ public class RoadLot extends ConnectedLot {
 	
 	protected final static Material airMaterial = Material.AIR;
 	protected final static Material lightpostbaseMaterial = Material.DOUBLE_STEP;
-	protected final static Material lightpostMaterial = Material.COBBLE_WALL;
-	protected final static Material lightpostStemMaterial = Material.NETHER_FENCE;
-	protected final static Material sewerWallMaterial = Material.SMOOTH_BRICK;
+	protected final static Material lightpostMaterial = Material.FENCE;
+	protected final static Material sewerWallMaterial = Material.MOSSY_COBBLESTONE;
 	//protected final static Material vineMaterial = Material.VINE;
 
 	protected final static byte airId = (byte) airMaterial.getId();
 	protected final static byte sewerFloorId = (byte) Material.COBBLESTONE.getId();
 	protected final static byte sewerWallId = (byte) sewerWallMaterial.getId();
 	protected final static byte sewerCeilingId = sewerFloorId;
-	
-	protected final static Material sewerTunnelMaterial = Material.SMOOTH_BRICK;
-	protected final static Material sewerTunnelStairs = Material.SMOOTH_STAIRS;
-	protected final static Material sewerTunnelSlab = Material.STEP;
-	protected final static Material sewerTunnelDoubleSlab = Material.DOUBLE_STEP;
-	protected final static Material sewerTunnelWater = Material.WATER;
-	protected final static byte sewerTunnelSlabData = 5;
-	
 	protected final static byte pavementId = (byte) Material.STONE.getId();
-	protected final static byte crosswalkId = (byte) Material.QUARTZ_BLOCK.getId();
+	protected final static byte crosswalkId = (byte) Material.CLAY.getId();
 	protected final static byte sidewalkId = (byte) Material.STEP.getId();
-	protected final static Material sewerPlankMaterial = Material.STEP;
+	protected final static Material sewerPlankMaterial = Material.STEP; //TODO should be Material.WOODSTEP (or whatever it is called)
 	protected final static byte sewerPlankData = 2;
 	
 	protected final static byte retainingWallId = (byte) Material.SMOOTH_BRICK.getId();
 	protected final static byte retainingFenceId = (byte) Material.IRON_FENCE.getId();
 
 	protected final static byte tunnelWallId = (byte) Material.SMOOTH_BRICK.getId();
-	protected final static byte tunnelTileId = (byte) Material.SMOOTH_BRICK.getId();
+	protected final static byte tunnelTileId = (byte) Material.SANDSTONE.getId();
 	protected final static byte tunnelCeilingId = (byte) Material.GLASS.getId();
 	
 	protected final static byte bridgePavement1Id = (byte) Material.STEP.getId(); //TODO WOOD_STEP
@@ -84,16 +74,18 @@ public class RoadLot extends ConnectedLot {
 		roundaboutRoad = roundaboutPart;
 	}
 	
-	private int sewerTopLevel;
-	private int sewerBottomLevel;
+	@Override
+	public PlatLot newLike(PlatMap platmap, int chunkX, int chunkZ) {
+		return new RoadLot(platmap, chunkX, chunkZ, connectedkey, roundaboutRoad);
+	}
+
 	private int bottomOfRoad;
 	private int topOfRoad;
 	
 	@Override
 	protected void initializeContext(WorldGenerator generator, SupportChunk chunk) {
 		super.initializeContext(generator, chunk);
-		sewerTopLevel = generator.streetLevel - 4;
-		sewerBottomLevel = sewerTopLevel - 9;
+		
 		bottomOfRoad = generator.streetLevel - 1;
 //		if (generator.settings.includeSewers && cityRoad)
 //			bottomOfRoad -= DataContext.FloorHeight * 2 + 1;
@@ -179,7 +171,8 @@ public class RoadLot extends ConnectedLot {
 		
 		// where do we start
 		int base1Y = generator.streetLevel - DataContext.FloorHeight * 2 + 1;
-		int base2Y = base1Y + DataContext.FloorHeight;
+		int sewerY = base1Y + 1;
+		int base2Y = base1Y + DataContext.FloorHeight + 1;
 		int pavementLevel = generator.streetLevel;
 		int sidewalkLevel = pavementLevel + 1;
 		boolean doSewer = generator.settings.includeSewers && cityRoad;
@@ -446,169 +439,8 @@ public class RoadLot extends ConnectedLot {
 		if (doSewer) {
 			
 			// empty out the sewer
-			//chunk.setLayer(sewerBottomLevel, sewerTopLevel - sewerBottomLevel, airId);
-			
-			// base of the road
-			chunk.setLayer(sewerTopLevel, pavementLevel - sewerTopLevel, pavementId);
-			
-			//sewer tunnels
-			
-			/*
-			00000++==++00000
-			0000+-    -+0000
-			000+/      \+000
-			000+        +000
-			000+        +000
-			000+        +000
-			000+++    +++000
-			00000+~~~~+00000
-			000000++++000000
-			*/
-			
-			if (roads.toNorth()) {
-				
-				//first layer
-				chunk.setBlocks(5, 7, sewerTopLevel-1, sewerTopLevel, 0, 13, sewerTunnelMaterial);
-				chunk.setBlocks(7, 9, sewerTopLevel-1, sewerTopLevel, 0, 13, sewerTunnelDoubleSlab);
-				chunk.setBlocks(9, 11, sewerTopLevel-1, sewerTopLevel, 0, 13, sewerTunnelMaterial);
-				
-				//second layer
-				chunk.setBlocks(4, 5, sewerTopLevel-2, sewerTopLevel-1, 0, 13, sewerTunnelMaterial);
-				chunk.setBlocks(11, 12, sewerTopLevel-2, sewerTopLevel-1, 0, 13, sewerTunnelMaterial);
-				
-				//third layer
-				chunk.setBlocks(3, 4, sewerBottomLevel+3, sewerTopLevel-2, 0, 13, sewerTunnelMaterial);
-				chunk.setBlocks(12, 13, sewerBottomLevel+3, sewerTopLevel-2, 0, 13, sewerTunnelMaterial);
-				
-				//fourth layer
-				chunk.setBlocks(3, 6, sewerBottomLevel+2, sewerBottomLevel+3, 0, 13, sewerTunnelMaterial);
-				chunk.setBlocks(10, 13, sewerBottomLevel+2, sewerBottomLevel+3, 0, 13, sewerTunnelMaterial);
-				
-				//fifth layer
-				chunk.setBlocks(5, 6, sewerBottomLevel+1, sewerBottomLevel+2, 0, 13, Material.COBBLESTONE);
-				chunk.setBlocks(10, 11, sewerBottomLevel+1, sewerBottomLevel+2, 0, 13, Material.COBBLESTONE);
-				
-				//sixth layer
-				chunk.setBlocks(6, 10, sewerBottomLevel, sewerBottomLevel+1, 0, 13, Material.MOSSY_COBBLESTONE);
-			} else {
-			}
-			
-			if (roads.toSouth()) {
-				
-				//first layer
-				chunk.setBlocks(5, 7,	sewerTopLevel-1, sewerTopLevel, 3, 16, sewerTunnelMaterial);
-				chunk.setBlocks(7, 9,	sewerTopLevel-1, sewerTopLevel, 3, 16, sewerTunnelDoubleSlab);
-				chunk.setBlocks(9, 11,	sewerTopLevel-1, sewerTopLevel, 3, 16, sewerTunnelMaterial);
-				
-				//second layer
-				chunk.setBlocks(4, 5,	sewerTopLevel-2, sewerTopLevel-1, 3, 16, sewerTunnelMaterial);
-				chunk.setBlocks(11, 12,	sewerTopLevel-2, sewerTopLevel-1, 3, 16, sewerTunnelMaterial);
-				
-				//third layer
-				chunk.setBlocks(3, 4,	sewerBottomLevel+3, sewerTopLevel-2, 3, 16, sewerTunnelMaterial);
-				chunk.setBlocks(12, 13, sewerBottomLevel+3, sewerTopLevel-2, 3, 16, sewerTunnelMaterial);
-				
-				//fourth layer
-				chunk.setBlocks(3, 6,	sewerBottomLevel+2, sewerBottomLevel+3, 3, 16, sewerTunnelMaterial);
-				chunk.setBlocks(10, 13, sewerBottomLevel+2, sewerBottomLevel+3, 3, 16, sewerTunnelMaterial);
-				
-				//fifth layer
-				chunk.setBlocks(5, 6,	sewerBottomLevel+1, sewerBottomLevel+2, 3, 16, Material.COBBLESTONE);
-				chunk.setBlocks(10, 11,	sewerBottomLevel+1, sewerBottomLevel+2, 3, 16, Material.COBBLESTONE);
-				
-				//sixth layer
-				chunk.setBlocks(6, 10,	sewerBottomLevel, sewerBottomLevel+1, 3, 16, Material.MOSSY_COBBLESTONE);
-				
-			} else {
-			}
-			
-			if (roads.toWest()) {
-				
-				//first layer
-				chunk.setBlocks(0, 13,	sewerTopLevel-1, sewerTopLevel, 5, 7, sewerTunnelMaterial);
-				chunk.setBlocks(0, 13,	sewerTopLevel-1, sewerTopLevel, 7, 9, sewerTunnelDoubleSlab);
-				chunk.setBlocks(0, 13,	sewerTopLevel-1, sewerTopLevel, 9, 11, sewerTunnelMaterial);
-				
-				//second layer
-				chunk.setBlocks(0, 13,	sewerTopLevel-2, sewerTopLevel-1, 4, 5, sewerTunnelMaterial);
-				chunk.setBlocks(0, 13,	sewerTopLevel-2, sewerTopLevel-1, 11, 12, sewerTunnelMaterial);
-				
-				//third layer
-				chunk.setBlocks(0, 13,	sewerBottomLevel+3, sewerTopLevel-2, 3, 4, sewerTunnelMaterial);
-				chunk.setBlocks(0, 13, sewerBottomLevel+3, sewerTopLevel-2, 12, 13, sewerTunnelMaterial);
-				
-				//fourth layer
-				chunk.setBlocks(0, 13,	sewerBottomLevel+2, sewerBottomLevel+3, 3, 6, sewerTunnelMaterial);
-				chunk.setBlocks(0, 13, sewerBottomLevel+2, sewerBottomLevel+3, 10, 13, sewerTunnelMaterial);
-				
-				//fifth layer
-				chunk.setBlocks(0, 13,	sewerBottomLevel+1, sewerBottomLevel+2, 5, 6, Material.COBBLESTONE);
-				chunk.setBlocks(0, 13,	sewerBottomLevel+1, sewerBottomLevel+2, 10, 11, Material.COBBLESTONE);
-				
-				//sixth layer
-				chunk.setBlocks(0, 13,	sewerBottomLevel, sewerBottomLevel+1, 6, 10, Material.MOSSY_COBBLESTONE);
-				
-			} else {
-			}
-			
-			if (roads.toEast()) {
-				
-				//first layer
-				chunk.setBlocks(3, 16,	sewerTopLevel-1, sewerTopLevel, 5, 7, sewerTunnelMaterial);
-				chunk.setBlocks(3, 16,	sewerTopLevel-1, sewerTopLevel, 7, 9, sewerTunnelDoubleSlab);
-				chunk.setBlocks(3, 16,	sewerTopLevel-1, sewerTopLevel, 9, 11, sewerTunnelMaterial);
-				
-				//second layer
-				chunk.setBlocks(3, 16,	sewerTopLevel-2, sewerTopLevel-1, 4, 5, sewerTunnelMaterial);
-				chunk.setBlocks(3, 16,	sewerTopLevel-2, sewerTopLevel-1, 11, 12, sewerTunnelMaterial);
-				
-				//third layer
-				chunk.setBlocks(3, 16,	sewerBottomLevel+3, sewerTopLevel-2, 3, 4, sewerTunnelMaterial);
-				chunk.setBlocks(3, 16, sewerBottomLevel+3, sewerTopLevel-2, 12, 13, sewerTunnelMaterial);
-				
-				//fourth layer
-				chunk.setBlocks(3, 16,	sewerBottomLevel+2, sewerBottomLevel+3, 3, 6, sewerTunnelMaterial);
-				chunk.setBlocks(3, 16, sewerBottomLevel+2, sewerBottomLevel+3, 10, 13, sewerTunnelMaterial);
-				
-				//fifth layer
-				chunk.setBlocks(3, 16,	sewerBottomLevel+1, sewerBottomLevel+2, 5, 6, Material.COBBLESTONE);
-				chunk.setBlocks(3, 16,	sewerBottomLevel+1, sewerBottomLevel+2, 10, 11, Material.COBBLESTONE);
-				
-				//sixth layer
-				chunk.setBlocks(3, 16,	sewerBottomLevel, sewerBottomLevel+1, 6, 10, Material.MOSSY_COBBLESTONE);
-				
-			} else {
-			}
-			
-			//Empty Tunnels
-			if (roads.toNorth()) {
-				chunk.setBlocks(5, 11,	sewerTopLevel-2, sewerTopLevel-1, 0, 13, airId);
-				chunk.setBlocks(4, 12,	sewerBottomLevel+3, sewerTopLevel-2, 0, 13, airId);
-				chunk.setBlocks(6, 10,	sewerBottomLevel+2, sewerBottomLevel+3, 0, 13, airId);
-				chunk.setBlocks(6, 10,	sewerBottomLevel+1, sewerBottomLevel+2, 0, 13, sewerTunnelWater);
-			}
-			if (roads.toSouth()) {
-				chunk.setBlocks(5, 11,	sewerTopLevel-2, sewerTopLevel-1, 3, 16, airId);
-				chunk.setBlocks(4, 12,	sewerBottomLevel+3, sewerTopLevel-2, 3, 16, airId);
-				chunk.setBlocks(6, 10,	sewerBottomLevel+2, sewerBottomLevel+3, 3, 16, airId);
-				chunk.setBlocks(6, 10,	sewerBottomLevel+1, sewerBottomLevel+2, 3, 16, sewerTunnelWater);
-			}
-			if (roads.toEast()) {
-				chunk.setBlocks(0, 13,	sewerTopLevel-2, sewerTopLevel-1, 5, 11, airId);
-				chunk.setBlocks(0, 13,	sewerBottomLevel+3, sewerTopLevel-2, 4, 12, airId);
-				chunk.setBlocks(0, 13,	sewerBottomLevel+2, sewerBottomLevel+3, 6, 10, airId);
-				chunk.setBlocks(0, 13,	sewerBottomLevel+1, sewerBottomLevel+2, 6, 10, sewerTunnelWater);
-			}
-			if (roads.toWest()) {
-				chunk.setBlocks(3, 16,	sewerTopLevel-2, sewerTopLevel-1, 5, 11, airId);
-				chunk.setBlocks(3, 16,	sewerBottomLevel+3, sewerTopLevel-2, 4, 12, airId);
-				chunk.setBlocks(3, 16,	sewerBottomLevel+2, sewerBottomLevel+3, 6, 10, airId);
-				chunk.setBlocks(3, 16,	sewerBottomLevel+1, sewerBottomLevel+2, 6, 10, sewerTunnelWater);
-			}
-			
-			//chunk.setLayer(sewerY - 1, 1, sewerFloorId);
-			
-			/*		
+			chunk.setLayer(base1Y, base2Y - base1Y, airId);
+					
 			// draw the floor of the sewer
 			chunk.setLayer(sewerY - 1, 1, sewerFloorId);
 			chunk.setBlocks(crossDitchEdge, chunk.width - crossDitchEdge, 
@@ -752,7 +584,6 @@ public class RoadLot extends ConnectedLot {
 			
 			// ceiling please
 			chunk.setLayer(base2Y, 2, sewerCeilingId);
-			*/
 		}
 	}
 	
@@ -970,7 +801,7 @@ public class RoadLot extends ConnectedLot {
 		
 		// where do we start
 		int base1Y = generator.streetLevel - DataContext.FloorHeight * 2 + 1;
-		int sewerY = sewerBottomLevel + 3;
+		int sewerY = base1Y + 1;
 		int base2Y = base1Y + DataContext.FloorHeight + 1;
 		int pavementLevel = generator.streetLevel;
 		int sidewalkLevel = pavementLevel + 1;
@@ -1115,264 +946,193 @@ public class RoadLot extends ConnectedLot {
 			boolean centerWest = !roads.toWest();
 			boolean centerEast = !roads.toEast();
 			
-//			
-//			// show our bias
-//			if (roads.toNorth()) {
-//				vaultNorthWest = sewerNorthWestBias;
-//				vaultNorthEast = sewerNorthEastBias;
-//			}
-//			if (roads.toSouth()) {
-//				vaultSouthWest = sewerSouthWestBias;
-//				vaultSouthEast = sewerSouthEastBias;
-//			}
-//			if (roads.toWest()) {
-//				vaultNorthWest = sewerNorthWestBias;
-//				vaultSouthWest = sewerSouthWestBias;
-//			}
-//			if (roads.toEast()) {
-//				vaultNorthEast = sewerNorthEastBias;
-//				vaultSouthEast = sewerSouthEastBias;
-//			}
-//			
-//			// make sure there is a way down
-//			if (roads.toNorth() && roads.toWest()) {
-//				vaultNorthWest = true;
-//				
-//				// place the manhole
-//				chunk.setTrapDoor(3, sidewalkLevel, 2, Direction.TrapDoor.WEST);
-//				
-//				// ladder
-//				chunk.setLadder(3, sewerY, sidewalkLevel, 2, Direction.General.WEST);
-//			}
-//			
-//			// figure out the center
-//			if (!(vaultNorthWest && vaultNorthEast && vaultSouthWest && vaultSouthEast)) {
-//				centerNorth = sewerCenterBit || (vaultNorthWest && vaultNorthEast);
-//				centerSouth = sewerCenterBit || (vaultSouthWest && vaultSouthEast);
-//				centerWest = sewerCenterBit || (vaultNorthWest && vaultSouthWest);
-//				centerEast = sewerCenterBit || (vaultNorthEast && vaultSouthEast);
-//			}
-//			
-//			byte fluidId = generator.oreProvider.fluidFluidId;
-//			
-//			// drainage
-//			if (!roads.toNorth()) {
-//				generateDrain( chunk, sewerY, sidewalkLevel, Direction.Facing.NORTH );
-//			}
-//			if (!roads.toSouth()) {
-//				generateDrain( chunk, sewerY, sidewalkLevel, Direction.Facing.SOUTH );
-//			}
-//			if (!roads.toWest()) {
-//				generateDrain( chunk, sewerY, sidewalkLevel, Direction.Facing.WEST );
-//			}
-//			if (!roads.toEast()) {
-//				generateDrain( chunk, sewerY, sidewalkLevel, Direction.Facing.EAST );
-//			}
-//			
-//			// add the various doors
-//			if (vaultNorthWest) {
-//				generateDoor(chunk, 4, sewerY, 1, Direction.Door.EASTBYNORTHEAST);
-//				generateDoor(chunk, 1, sewerY, 4, Direction.Door.SOUTHBYSOUTHWEST);
-//			}
-//			if (vaultNorthEast) {
-//				generateDoor(chunk, 11, sewerY, 1, Direction.Door.WESTBYNORTHWEST);
-//				generateDoor(chunk, 14, sewerY, 4, Direction.Door.SOUTHBYSOUTHEAST);
-//			}
-//			if (vaultSouthWest) {
-//				generateDoor(chunk, 1, sewerY, 11, Direction.Door.NORTHBYNORTHWEST);
-//				generateDoor(chunk, 4, sewerY, 14, Direction.Door.EASTBYSOUTHEAST);
-//			}
-//			if (vaultSouthEast) {
-//				generateDoor(chunk, 14, sewerY, 11, Direction.Door.NORTHBYNORTHEAST);
-//				generateDoor(chunk, 11, sewerY, 14, Direction.Door.WESTBYSOUTHWEST);
-//			}
-
+			// show our bias
+			if (roads.toNorth()) {
+				vaultNorthWest = sewerNorthWestBias;
+				vaultNorthEast = sewerNorthEastBias;
+			}
+			if (roads.toSouth()) {
+				vaultSouthWest = sewerSouthWestBias;
+				vaultSouthEast = sewerSouthEastBias;
+			}
+			if (roads.toWest()) {
+				vaultNorthWest = sewerNorthWestBias;
+				vaultSouthWest = sewerSouthWestBias;
+			}
+			if (roads.toEast()) {
+				vaultNorthEast = sewerNorthEastBias;
+				vaultSouthEast = sewerSouthEastBias;
+			}
+			
+			// make sure there is a way down
+			if (roads.toNorth() && roads.toWest()) {
+				vaultNorthWest = true;
+				
+				// place the manhole
+				chunk.setTrapDoor(3, sidewalkLevel, 2, Direction.TrapDoor.WEST);
+				
+				// ladder
+				chunk.setLadder(3, sewerY, sidewalkLevel, 2, Direction.General.WEST);
+			}
+			
+			// figure out the center
+			if (!(vaultNorthWest && vaultNorthEast && vaultSouthWest && vaultSouthEast)) {
+				centerNorth = sewerCenterBit || (vaultNorthWest && vaultNorthEast);
+				centerSouth = sewerCenterBit || (vaultSouthWest && vaultSouthEast);
+				centerWest = sewerCenterBit || (vaultNorthWest && vaultSouthWest);
+				centerEast = sewerCenterBit || (vaultNorthEast && vaultSouthEast);
+			}
+			
+			byte fluidId = generator.oreProvider.fluidFluidId;
+			
+			// cardinal directions known walls and ditches
+			if (roads.toNorth()) {
+				chunk.setBlock(8, sewerY - 1, 3, fluidId);
+				generateEntryVines(chunk, base2Y - 1, Direction.Vine.NORTH, 6, 1, 7, 1, 8, 1, 9, 1);
+			}
+			if (roads.toSouth()) {
+				chunk.setBlock(7, sewerY - 1, 12, fluidId);
+				generateEntryVines(chunk, base2Y - 1, Direction.Vine.SOUTH, 6, 14, 7, 14, 8, 14, 9, 14);
+			}
+			if (roads.toWest()) {
+				chunk.setBlock(3, sewerY - 1, 7, fluidId);
+				generateEntryVines(chunk, base2Y - 1, Direction.Vine.WEST, 1, 6, 1, 7, 1, 8, 1, 9);
+			}
+			if (roads.toEast()) {
+				chunk.setBlock(12, sewerY - 1, 8, fluidId);
+				generateEntryVines(chunk, base2Y - 1, Direction.Vine.EAST, 14, 6, 14, 7, 14, 8, 14, 9);
+			}
+			
+			// add the various doors
+			if (vaultNorthWest) {
+				generateDoor(chunk, 4, sewerY, 1, Direction.Door.EASTBYNORTHEAST);
+				generateDoor(chunk, 1, sewerY, 4, Direction.Door.SOUTHBYSOUTHWEST);
+			}
+			if (vaultNorthEast) {
+				generateDoor(chunk, 11, sewerY, 1, Direction.Door.WESTBYNORTHWEST);
+				generateDoor(chunk, 14, sewerY, 4, Direction.Door.SOUTHBYSOUTHEAST);
+			}
+			if (vaultSouthWest) {
+				generateDoor(chunk, 1, sewerY, 11, Direction.Door.NORTHBYNORTHWEST);
+				generateDoor(chunk, 4, sewerY, 14, Direction.Door.EASTBYSOUTHEAST);
+			}
+			if (vaultSouthEast) {
+				generateDoor(chunk, 14, sewerY, 11, Direction.Door.NORTHBYNORTHEAST);
+				generateDoor(chunk, 11, sewerY, 14, Direction.Door.WESTBYSOUTHWEST);
+			}
+			
+			// we might put down a plank... or maybe not...
 			boolean placedPlank = false;
 			
-			if (!placedPlank && roads.toNorth() && chunkOdds.flipCoin()) {
+			// fancy up the center walls?
+			if (centerNorth) {
+				generateDoor(chunk, 10, sewerY, 4, Direction.Door.NORTHBYNORTHEAST);
+				chunk.setStoneSlab(7, sewerY, 4, Direction.StoneSlab.COBBLESTONEFLIP);
+				chunk.setStoneSlab(8, sewerY, 4, Direction.StoneSlab.COBBLESTONEFLIP);
+			} else if (!placedPlank && roads.toNorth() && chunkOdds.flipCoin()) {
 				placedPlank = true;
-				chunk.setBlocks(5, 11, sewerY, 4, 6, sewerTunnelSlab, sewerTunnelSlabData); 
+				chunk.setBlocks(6, 10, sewerY, 5, 6, sewerPlankMaterial, sewerPlankData); 
 			}
-			if (!placedPlank && roads.toSouth() && chunkOdds.flipCoin()) {
+			if (centerSouth) {
+				generateDoor(chunk, 5, sewerY, 11, Direction.Door.SOUTHBYSOUTHWEST);
+				chunk.setStoneSlab(7, sewerY, 11, Direction.StoneSlab.COBBLESTONEFLIP);
+				chunk.setStoneSlab(8, sewerY, 11, Direction.StoneSlab.COBBLESTONEFLIP);
+			} else if (!placedPlank && roads.toSouth() && chunkOdds.flipCoin()) {
 				placedPlank = true;
-				chunk.setBlocks(5, 11, sewerY, 10, 12, sewerTunnelSlab, sewerTunnelSlabData);
+				chunk.setBlocks(6, 10, sewerY, 10, 11, sewerPlankMaterial, sewerPlankData);
 			} 
-			if (!placedPlank && roads.toWest() && chunkOdds.flipCoin()) {
+			if (centerWest) {
+				generateDoor(chunk, 4, sewerY, 5, Direction.Door.WESTBYNORTHWEST);
+				chunk.setStoneSlab(4, sewerY, 7, Direction.StoneSlab.COBBLESTONEFLIP);
+				chunk.setStoneSlab(4, sewerY, 8, Direction.StoneSlab.COBBLESTONEFLIP);
+			} else if (!placedPlank && roads.toWest() && chunkOdds.flipCoin()) {
 				placedPlank = true;
-				chunk.setBlocks(4, 6, sewerY, 5, 11, sewerTunnelSlab, sewerTunnelSlabData);
+				chunk.setBlocks(5, 6, sewerY, 6, 10, sewerPlankMaterial, sewerPlankData);
 			}
-			if (!placedPlank && roads.toEast() && chunkOdds.flipCoin()) {
+			if (centerEast) { 
+				generateDoor(chunk, 11, sewerY, 10, Direction.Door.EASTBYSOUTHEAST);
+				chunk.setStoneSlab(11, sewerY, 7, Direction.StoneSlab.COBBLESTONEFLIP);
+				chunk.setStoneSlab(11, sewerY, 8, Direction.StoneSlab.COBBLESTONEFLIP);
+			} else if (!placedPlank && roads.toEast() && chunkOdds.flipCoin()) {
 				placedPlank = true;
-				chunk.setBlocks(10, 12, sewerY, 5, 11, sewerTunnelSlab, sewerTunnelSlabData);
+				chunk.setBlocks(10, 11, sewerY, 6, 10, sewerPlankMaterial, sewerPlankData);
 			}
-//			
-//			// populate the vaults
-//			if (vaultNorthWest) {
-//				if (!(roads.toNorth() && roads.toWest())) // special case for manholes
-//					generateTreat(generator, chunk, 2, sewerY, 2);
-//			}
-//			if (vaultNorthEast) {
-//				generateTreat(generator, chunk, 13, sewerY, 2);
-//			}
-//			if (vaultSouthWest) {
-//				generateTreat(generator, chunk, 2, sewerY, 13);
-//			}
-//			if (vaultSouthEast) {
-//				generateTreat(generator, chunk, 13, sewerY, 13);
-//			}
-//			if (centerNorth && centerSouth && centerWest && centerEast) {
-//				
-//				// look carefully, these are actually different
-//				switch(chunkOdds.getRandomInt(4)) {
-//				case 1:
-//					generateTreat(generator, chunk, 6, sewerY, 6);
-//					generateTrick(generator, chunk, 9, sewerY, 9);
-//					break;
-//				case 2:
-//					generateTreat(generator, chunk, 9, sewerY, 6);
-//					generateTrick(generator, chunk, 6, sewerY, 9);
-//					break;
-//				case 3:
-//					generateTreat(generator, chunk, 6, sewerY, 9);
-//					generateTrick(generator, chunk, 9, sewerY, 6);
-//					break;
-//				default:
-//					generateTreat(generator, chunk, 9, sewerY, 9);
-//					generateTrick(generator, chunk, 6, sewerY, 6);
-//					break;
-//				}
-//			} else {
-//				if (centerNorth) {
-//					if (vaultNorthWest && !vaultNorthEast)
-//						generateTrick(generator, chunk, 6, sewerY, 2);
-//					else if (vaultNorthEast && !vaultNorthWest)
-//						generateTrick(generator, chunk, 9, sewerY, 2);
-//				}
-//				if (centerSouth) {
-//					if (vaultSouthWest && !vaultSouthEast)
-//						generateTrick(generator, chunk, 6, sewerY, 13);
-//					else if (vaultSouthEast && !vaultSouthWest)
-//						generateTrick(generator, chunk, 9, sewerY, 13);
-//				}
-//				if (centerWest) {
-//					if (vaultNorthWest && !vaultSouthWest)
-//						generateTrick(generator, chunk, 2, sewerY, 6);
-//					else if (vaultSouthWest && !vaultNorthWest)
-//						generateTrick(generator, chunk, 2, sewerY, 9);
-//				}
-//				if (centerEast) {
-//					if (vaultNorthEast && !vaultSouthEast)
-//						generateTrick(generator, chunk, 13, sewerY, 6);
-//					else if (vaultSouthEast && !vaultNorthEast)
-//						generateTrick(generator, chunk, 13, sewerY, 9);
-//				}
-//			}
-//			
-//			// now the vines
-//			for (int i = 2; i < 14; i++) {
-//				generateHangingVine(chunk, base2Y - 1, Direction.Vine.NORTH, i, 2, i, 1);
-////				generateHangingVine(chunk, base2Y - 1, Direction.Vine.NORTH, i, 5, i, 4);
-////				generateHangingVine(chunk, base2Y - 1, Direction.Vine.SOUTH, i, 10, i, 11);
-//				generateHangingVine(chunk, base2Y - 1, Direction.Vine.SOUTH, i, 13, i, 14);
-//					
-//				generateHangingVine(chunk, base2Y - 1, Direction.Vine.WEST, 2, i, 1, i);
-////				generateHangingVine(chunk, base2Y - 1, Direction.Vine.WEST, 5, i, 4, i);
-////				generateHangingVine(chunk, base2Y - 1, Direction.Vine.EAST, 10, i, 11, i);
-//				generateHangingVine(chunk, base2Y - 1, Direction.Vine.EAST, 13, i, 14, i);
-//			}
-
-			destroyLot(generator, sewerBottomLevel, sewerTopLevel);
+			
+			// populate the vaults
+			if (vaultNorthWest) {
+				if (!(roads.toNorth() && roads.toWest())) // special case for manholes
+					generateTreat(generator, chunk, 2, sewerY, 2);
+			}
+			if (vaultNorthEast) {
+				generateTreat(generator, chunk, 13, sewerY, 2);
+			}
+			if (vaultSouthWest) {
+				generateTreat(generator, chunk, 2, sewerY, 13);
+			}
+			if (vaultSouthEast) {
+				generateTreat(generator, chunk, 13, sewerY, 13);
+			}
+			if (centerNorth && centerSouth && centerWest && centerEast) {
+				
+				// look carefully, these are actually different
+				switch(chunkOdds.getRandomInt(4)) {
+				case 1:
+					generateTreat(generator, chunk, 6, sewerY, 6);
+					generateTrick(generator, chunk, 9, sewerY, 9);
+					break;
+				case 2:
+					generateTreat(generator, chunk, 9, sewerY, 6);
+					generateTrick(generator, chunk, 6, sewerY, 9);
+					break;
+				case 3:
+					generateTreat(generator, chunk, 6, sewerY, 9);
+					generateTrick(generator, chunk, 9, sewerY, 6);
+					break;
+				default:
+					generateTreat(generator, chunk, 9, sewerY, 9);
+					generateTrick(generator, chunk, 6, sewerY, 6);
+					break;
+				}
+			} else {
+				if (centerNorth) {
+					if (vaultNorthWest && !vaultNorthEast)
+						generateTrick(generator, chunk, 6, sewerY, 2);
+					else if (vaultNorthEast && !vaultNorthWest)
+						generateTrick(generator, chunk, 9, sewerY, 2);
+				}
+				if (centerSouth) {
+					if (vaultSouthWest && !vaultSouthEast)
+						generateTrick(generator, chunk, 6, sewerY, 13);
+					else if (vaultSouthEast && !vaultSouthWest)
+						generateTrick(generator, chunk, 9, sewerY, 13);
+				}
+				if (centerWest) {
+					if (vaultNorthWest && !vaultSouthWest)
+						generateTrick(generator, chunk, 2, sewerY, 6);
+					else if (vaultSouthWest && !vaultNorthWest)
+						generateTrick(generator, chunk, 2, sewerY, 9);
+				}
+				if (centerEast) {
+					if (vaultNorthEast && !vaultSouthEast)
+						generateTrick(generator, chunk, 13, sewerY, 6);
+					else if (vaultSouthEast && !vaultNorthEast)
+						generateTrick(generator, chunk, 13, sewerY, 9);
+				}
+			}
+			
+			// now the vines
+			for (int i = 2; i < 14; i++) {
+				generateHangingVine(chunk, base2Y - 1, Direction.Vine.NORTH, i, 2, i, 1);
+//				generateHangingVine(chunk, base2Y - 1, Direction.Vine.NORTH, i, 5, i, 4);
+//				generateHangingVine(chunk, base2Y - 1, Direction.Vine.SOUTH, i, 10, i, 11);
+				generateHangingVine(chunk, base2Y - 1, Direction.Vine.SOUTH, i, 13, i, 14);
+					
+				generateHangingVine(chunk, base2Y - 1, Direction.Vine.WEST, 2, i, 1, i);
+//				generateHangingVine(chunk, base2Y - 1, Direction.Vine.WEST, 5, i, 4, i);
+//				generateHangingVine(chunk, base2Y - 1, Direction.Vine.EAST, 10, i, 11, i);
+				generateHangingVine(chunk, base2Y - 1, Direction.Vine.EAST, 13, i, 14, i);
+			}
 		}
-	}
-	
-	protected void generateDrain( RealChunk chunk, int sewerY, int sidewalkLevel, Direction.Facing dir ) {
-		
-		switch (dir) {
-			case NORTH:
-				chunk.setBlocks(8, 9, sewerY, sidewalkLevel, 2, 3, Material.AIR);
-				
-				chunk.setBlocks(7, 8, sewerY, sidewalkLevel, 2, 4, sewerTunnelMaterial);
-				chunk.setBlocks(9, 10, sewerY, sidewalkLevel, 2, 4, sewerTunnelMaterial);
-				
-				chunk.setBlocks(8, 9, sewerY, sidewalkLevel, 1, 2, sewerTunnelMaterial);
-				chunk.setBlocks(8, 9, sewerY, sidewalkLevel-1, 3, 4, sewerTunnelMaterial);
-				
-				chunk.setBlocks(7, 10, sewerY, sewerY-1, 1, 4, sewerTunnelMaterial);
-				chunk.setBlock(8, sewerY, 3, Material.AIR);
-				
-				chunk.setBlock(7, sewerY, 4, Material.STEP);
-				chunk.setBlock(9, sewerY, 4, Material.STEP);
-				chunk.setBlocks(8, sewerY+1, sewerY+4, 3, Material.STEP, (byte) 5);
-				
-				chunk.setBlocks(7, 8, sewerY, sewerY+4, 4, 5, sewerTunnelMaterial);
-				chunk.setBlocks(9, 10, sewerY, sewerY+4, 4, 5, sewerTunnelMaterial);
-				
-				chunk.setBlock(8, sidewalkLevel-1, 3, Material.SMOOTH_STAIRS, Direction.Stair.SOUTH.getData());
-				chunk.setBlock(8, sidewalkLevel-1, 2, Material.IRON_FENCE);
-				chunk.setBlock(8, sidewalkLevel-2, 2, Material.WATER, true);
-				break;
-			case SOUTH:
-				chunk.setBlocks(8, 9, sewerY, sidewalkLevel, 13, 14, Material.AIR);
-				
-				chunk.setBlocks(7, 8, sewerY, sidewalkLevel, 12, 14, sewerTunnelMaterial);
-				chunk.setBlocks(9, 10, sewerY, sidewalkLevel, 12, 14, sewerTunnelMaterial);
-				
-				chunk.setBlocks(8, 9, sewerY, sidewalkLevel, 12, 13, sewerTunnelMaterial);
-				chunk.setBlocks(8, 9, sewerY, sidewalkLevel-1, 14, 15, sewerTunnelMaterial);
-				
-				chunk.setBlocks(7, 10, sewerY, sewerY-1, 12, 15, sewerTunnelMaterial);
-				chunk.setBlock(8, sewerY, 12, Material.AIR);
-				
-				chunk.setBlock(7, sewerY, 11, Material.STEP);
-				chunk.setBlock(9, sewerY, 11, Material.STEP);
-				chunk.setBlocks(8, sewerY+1, sewerY+4, 12, Material.STEP, (byte) 5);
-				
-				chunk.setBlock(8, sidewalkLevel-1, 12, Material.SMOOTH_STAIRS, Direction.Stair.NORTH.getData());
-				chunk.setBlock(8, sidewalkLevel-1, 13, Material.IRON_FENCE);
-				chunk.setBlock(8, sidewalkLevel-2, 13, Material.WATER, true);
-				break;
-			case EAST:
-				chunk.setBlocks(13, 14, sewerY, sidewalkLevel, 8, 9, Material.AIR);
-				
-				chunk.setBlocks(12, 14, sewerY, sidewalkLevel, 7, 8, sewerTunnelMaterial);
-				chunk.setBlocks(12, 14, sewerY, sidewalkLevel, 9, 10, sewerTunnelMaterial);
-				
-				chunk.setBlocks(12, 13, sewerY, sidewalkLevel-1, 8, 9, sewerTunnelMaterial);
-				chunk.setBlocks(14, 15, sewerY, sidewalkLevel, 8, 9, sewerTunnelMaterial);
-				
-				chunk.setBlocks(12, 15, sewerY, sewerY-1, 7, 10, sewerTunnelMaterial);
-				chunk.setBlock(12, sewerY, 8, Material.AIR);
-				
-				chunk.setBlock(11, sewerY, 7, Material.STEP);
-				chunk.setBlock(11, sewerY, 9, Material.STEP);
-				chunk.setBlocks(12, sewerY+1, sewerY+4, 8, Material.STEP, (byte) 5);
-				
-				chunk.setBlock(12, sidewalkLevel-1, 8, Material.SMOOTH_STAIRS, Direction.Stair.WEST.getData());
-				chunk.setBlock(13, sidewalkLevel-1, 8, Material.IRON_FENCE);
-				chunk.setBlock(13, sidewalkLevel-2, 8, Material.WATER, true);
-				break;
-			case WEST:
-				chunk.setBlocks(2, 3, sewerY, sidewalkLevel, 8, 9, Material.AIR);
-				
-				chunk.setBlocks(2, 4, sewerY, sidewalkLevel, 7, 8, sewerTunnelMaterial);
-				chunk.setBlocks(2, 4, sewerY, sidewalkLevel, 9, 10, sewerTunnelMaterial);
-				
-				chunk.setBlocks(1, 2, sewerY, sidewalkLevel, 8, 9, sewerTunnelMaterial);
-				chunk.setBlocks(3, 4, sewerY, sidewalkLevel-1, 8, 9, sewerTunnelMaterial);
-				
-				chunk.setBlocks(1, 4, sewerY, sewerY-1, 7, 10, sewerTunnelMaterial);
-				chunk.setBlock(3, sewerY, 8, Material.AIR);
-				
-				chunk.setBlock(4, sewerY, 7, Material.STEP);
-				chunk.setBlock(4, sewerY, 9, Material.STEP);
-				chunk.setBlocks(3, sewerY+1, sewerY+4, 8, Material.STEP, (byte) 5);
-				
-				chunk.setBlock(3, sidewalkLevel-1, 8, Material.SMOOTH_STAIRS, Direction.Stair.EAST.getData());
-				chunk.setBlock(2, sidewalkLevel-1, 8, Material.IRON_FENCE);
-				chunk.setBlock(2, sidewalkLevel-2, 8, Material.WATER, true);
-				break;
-		}
-		
 	}
 	
 	protected void generateNSCrosswalk(RealChunk chunk, int x1, int x2, int y, int z1, int z2, boolean crosswalk) {
@@ -1396,18 +1156,13 @@ public class RoadLot extends ConnectedLot {
 	}
 	
 	protected void decayRoad(RealChunk chunk, int x1, int x2, int y, int z1, int z2) {
-		int amount = (x2 - x1) * (z2 - z1) / 3;
+		int amount = (x2 - x1) * (z2 - z1) / 10;
 		while (amount > 0) {
 			int x = x1 + chunkOdds.getRandomInt(x2 - x1);
 			int z = z1 + chunkOdds.getRandomInt(z2 - z1);
-			if (chunkOdds.playOdds(DataContext.oddsUnlikely))
+			if (chunkOdds.flipCoin())
 				chunk.setBlock(x, y, z, Material.COBBLESTONE);
-			else if (chunkOdds.playOdds(DataContext.oddsPrettyUnlikely))
-				chunk.setBlock(x, y, z, Material.MOSSY_COBBLESTONE);
-			else if (chunkOdds.playOdds(DataContext.oddsVeryUnlikely)) {
-				chunk.setBlock(x, y, z, Material.DIRT);
-				chunk.setBlock(x, y+1, z, Material.LONG_GRASS, (byte) chunkOdds.getRandomInt(2) );
-			} else if ( chunkOdds.playOdds(DataContext.oddsVeryUnlikely) )
+			else
 				chunk.setBlock(x, y, z, Material.STEP.getId(), (byte) 3);
 			amount--;
 		}
@@ -1445,16 +1200,15 @@ public class RoadLot extends ConnectedLot {
 	
 	protected boolean generateLightPost(WorldGenerator generator, RealChunk chunk, DataContext context, int sidewalkLevel, int x, int z) {
 		chunk.setBlock(x, sidewalkLevel, z, lightpostbaseMaterial);
-		chunk.setBlock(x, sidewalkLevel+1, z, lightpostMaterial);
 		if (generator.settings.includeDecayedRoads) {
-			int y = sidewalkLevel + 2;
-			while (y < sidewalkLevel + lightpostHeight + 2) {
-			if (chunkOdds.playOdds(0.25))
-				break;
-				chunk.setBlock(x, y, z, lightpostStemMaterial);
+			int y = sidewalkLevel + 1;
+			while (y < sidewalkLevel + lightpostHeight + 1) {
+				if (chunkOdds.playOdds(0.25))
+					break;
+				chunk.setBlock(x, y, z, lightpostMaterial);
 				y++;
 			}
-			if (y > sidewalkLevel + lightpostHeight + 1) {
+			if (y > sidewalkLevel + lightpostHeight) {
 				if (chunkOdds.playOdds(0.75))
 					chunk.setBlock(x, y, z, context.lightMat, true);
 				return true;

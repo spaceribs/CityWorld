@@ -3,6 +3,10 @@ package me.daddychurchill.CityWorld.Plugins;
 import org.bukkit.Material;
 
 import me.daddychurchill.CityWorld.WorldGenerator;
+import me.daddychurchill.CityWorld.Buildings.Populators.HouseBedrooms;
+import me.daddychurchill.CityWorld.Buildings.Populators.HouseDiningRooms;
+import me.daddychurchill.CityWorld.Buildings.Populators.HouseKitchens;
+import me.daddychurchill.CityWorld.Buildings.Populators.HouseLivingRooms;
 import me.daddychurchill.CityWorld.Context.DataContext;
 import me.daddychurchill.CityWorld.Plugins.LootProvider.LootLocation;
 import me.daddychurchill.CityWorld.Support.Direction;
@@ -14,9 +18,14 @@ import me.daddychurchill.CityWorld.Support.Direction.TrapDoor;
 
 public class HouseProvider extends Provider {
 
+	private static RoomProvider contentsKitchen = new HouseKitchens();
+	private static RoomProvider contentsBedroom = new HouseBedrooms();
+	private static RoomProvider contentsDiningRoom = new HouseDiningRooms();
+	private static RoomProvider contentsLivingRoom = new HouseLivingRooms();
+	
 	public HouseProvider() {
 		super();
-		// TODO Auto-generated constructor stub
+
 	}
 	
 	public final static HouseProvider loadProvider(WorldGenerator generator) {
@@ -146,7 +155,7 @@ public class HouseProvider extends Provider {
 	private final static Material materialStair = Material.WOOD_STAIRS;
 	private final static Material materialUnderStairs = Material.WOOD;
 	
-	private final static int MinSize = 4;
+	private final static int MinSize = 5;//4;
 	private final static int MaxSize = 6;
 	private final static int MissingRoomOdds = 5; // 1/n of the time a room is missing
 	
@@ -327,13 +336,12 @@ public class HouseProvider extends Provider {
 					doorEast = roomEast;
 				}
 				
-				chunk.setBlock((x2 - x1) / 2 + x1, y1, (z2 - z1) / 2 + z1, Material.CHEST);
+//				chunk.setBlock((x2 - x1) / 2 + x1, y1, (z2 - z1) / 2 + z1, Material.CHEST);
 				break;
 			case DINING:
 				
-				chunk.setBlock((x2 - x1) / 2 + x1, y1, (z2 - z1) / 2 + z1, Material.FENCE);
-				chunk.setBlock((x2 - x1) / 2 + x1, y1 + 1, (z2 - z1) / 2 + z1, Material.WOOD_PLATE);
-				
+//				chunk.setBlock((x2 - x1) / 2 + x1, y1, (z2 - z1) / 2 + z1, Material.FENCE);
+//				chunk.setBlock((x2 - x1) / 2 + x1, y1 + 1, (z2 - z1) / 2 + z1, Material.WOOD_PLATE);
 				break;
 			case ENTRY:
 				
@@ -658,7 +666,7 @@ public class HouseProvider extends Provider {
 				rooms[0][roomX][roomZ].style = Room.Style.DINING;
 			}
 			
-			// put the bedroom in the last spot
+			// put the bed in the last spot
 			roomZ = flip(roomZ);
 			rooms[0][roomX][roomZ].missing = false;
 			rooms[0][roomX][roomZ].style = Room.Style.BED;
@@ -742,7 +750,7 @@ public class HouseProvider extends Provider {
 				for (int x = 1; x < chunk.width - 1; x++) {
 					for (int z = 1; z < chunk.width - 1; z++) {
 						int yAt = y + roofY;
-						if (chunk.getBlock(x, yAt + 1, z) != materialAir && chunk.getBlock(x, yAt + 1, z) != Material.CHEST) {
+						if (chunk.getBlock(x, yAt + 1, z) != materialAir) {
 							chunk.setBlock(x, yAt, z, materialAir);
 						}
 					}
@@ -819,17 +827,23 @@ public class HouseProvider extends Provider {
 	}
 	
 	private Material pickWallMaterial(Odds odds) {
-		switch (odds.getRandomInt(6)) {
+		switch (odds.getRandomInt(9)) {
 		case 1:
 			return Material.COBBLESTONE;
 		case 2:
-			return Material.STONE;
+			return Material.MOSSY_COBBLESTONE;
 		case 3:
-			return Material.SMOOTH_BRICK;
+			return Material.STONE;
 		case 4:
-			return Material.BRICK;
+			return Material.SMOOTH_BRICK;
 		case 5:
 			return Material.SANDSTONE;
+		case 6:
+			return Material.NETHER_BRICK;
+		case 7:
+			return Material.BRICK;
+		case 8:
+			return Material.CLAY;
 		default:
 			return Material.WOOD;
 		}
@@ -864,14 +878,16 @@ public class HouseProvider extends Provider {
 	}
 
 	private Material pickRoofMaterial(Odds odds) {
-		switch (odds.getRandomInt(5)) {
+		switch (odds.getRandomInt(6)) {
 		case 1:
 			return Material.COBBLESTONE;
 		case 2:
-			return Material.STONE;
+			return Material.MOSSY_COBBLESTONE;
 		case 3:
-			return Material.SMOOTH_BRICK;
+			return Material.STONE;
 		case 4:
+			return Material.SMOOTH_BRICK;
+		case 5:
 			return Material.SANDSTONE;
 		default:
 			return Material.WOOD;

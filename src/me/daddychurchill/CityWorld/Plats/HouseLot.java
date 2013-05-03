@@ -17,6 +17,11 @@ public class HouseLot extends IsolatedLot {
 	}
 	
 	@Override
+	public PlatLot newLike(PlatMap platmap, int chunkX, int chunkZ) {
+		return new HouseLot(platmap, chunkX, chunkZ);
+	}
+
+	@Override
 	public int getBottomY(WorldGenerator generator) {
 		return generator.streetLevel;
 	}

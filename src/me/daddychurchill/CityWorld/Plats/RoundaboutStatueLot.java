@@ -14,8 +14,8 @@ public class RoundaboutStatueLot extends IsolatedLot {
 
 	private enum StatueBase { WATER, GRASS, PEDESTAL };
 	
-	private final static byte curbId = (byte) Material.DOUBLE_STEP.getId();
-	private final static byte brickId = (byte) Material.SMOOTH_BRICK.getId();
+	public final static byte curbId = (byte) Material.DOUBLE_STEP.getId();
+	public final static byte brickId = (byte) Material.SMOOTH_BRICK.getId();
 	
 	private StatueBase statueBase;
 	
@@ -23,6 +23,11 @@ public class RoundaboutStatueLot extends IsolatedLot {
 		super(platmap, chunkX, chunkZ);
 		
 		style = LotStyle.ROUNDABOUT;
+	}
+
+	@Override
+	public PlatLot newLike(PlatMap platmap, int chunkX, int chunkZ) {
+		return new RoundaboutStatueLot(platmap, chunkX, chunkZ);
 	}
 
 	@Override

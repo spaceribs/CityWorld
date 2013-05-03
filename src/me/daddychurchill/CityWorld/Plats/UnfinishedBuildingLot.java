@@ -43,6 +43,11 @@ public class UnfinishedBuildingLot extends BuildingLot {
 	}
 
 	@Override
+	public PlatLot newLike(PlatMap platmap, int chunkX, int chunkZ) {
+		return new UnfinishedBuildingLot(platmap, chunkX, chunkZ);
+	}
+
+	@Override
 	public int getBottomY(WorldGenerator generator) {
 		return generator.streetLevel - FloorHeight * (depth - 1) - 3;
 	}
@@ -72,9 +77,9 @@ public class UnfinishedBuildingLot extends BuildingLot {
 				drawFence(generator, chunk, context, 0, generator.streetLevel + 1, neighborBasements);
 			
 			// one floor please
-			drawExteriorWalls(chunk, context, floorAt, FloorHeight, 0, 0, false,
+			drawExteriorParts(chunk, context, floorAt, FloorHeight, 0, 0, false,
 					dirtMaterial, dirtMaterial, neighborBasements);
-			drawExteriorWalls(chunk, context, floorAt, FloorHeight, 1, 1, false,
+			drawExteriorParts(chunk, context, floorAt, FloorHeight, 1, 1, false,
 					wallMaterial, wallMaterial, neighborBasements);
 			
 			// ceilings if needed
@@ -135,11 +140,12 @@ public class UnfinishedBuildingLot extends BuildingLot {
 					int floorAt = generator.streetLevel - FloorHeight * floor - 2;
 					
 					// plain walls please
-					drawStairsWalls(chunk, floorAt, basementFloorHeight, inset, inset, 
-							StairWell.CENTER, Material.AIR, false, floor == depth - 1);
+					drawStairsWalls(chunk, floorAt, basementFloorHeight, StairWell.CENTER, 
+							Material.AIR, false, floor == depth - 1);
 
 					// place the stairs and such
-					drawStairs(chunk, floorAt, FloorHeight, inset, inset, StairWell.CENTER, stairMaterial, stairPlatformMaterial);
+					drawStairs(chunk, floorAt, FloorHeight, StairWell.CENTER, 
+							stairMaterial, stairPlatformMaterial);
 				}
 			}
 			
@@ -152,12 +158,13 @@ public class UnfinishedBuildingLot extends BuildingLot {
 						
 						// fancy walls... maybe
 						if (floor > 0 || (floor == 0 && (depth > 0 || height > 1)))
-							drawStairsWalls(chunk, floorAt, aboveFloorHeight, inset, inset, 
-									StairWell.CENTER, Material.AIR, floor == height - 1, floor == 0 && depth == 0);
+							drawStairsWalls(chunk, floorAt, aboveFloorHeight, StairWell.CENTER, 
+									Material.AIR, floor == height - 1, floor == 0 && depth == 0);
 						
 						// more stairs and such
 						if (floor < height - 1)
-							drawStairs(chunk, floorAt, FloorHeight, inset, inset, StairWell.CENTER, stairMaterial, stairPlatformMaterial);
+							drawStairs(chunk, floorAt, FloorHeight, StairWell.CENTER, 
+									stairMaterial, stairPlatformMaterial);
 					}
 				}
 			}
