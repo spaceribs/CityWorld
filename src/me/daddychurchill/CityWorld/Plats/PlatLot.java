@@ -2,6 +2,8 @@ package me.daddychurchill.CityWorld.Plats;
 
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+import org.bukkit.block.Sign;
+import org.bukkit.entity.EntityType;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
 import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
@@ -172,6 +174,106 @@ public abstract class PlatLot {
 		generator.decayBlocks.destroyWithin(x1, x1 + SupportChunk.chunksBlockWidth, y1, y2, z1, z1 + SupportChunk.chunksBlockWidth);
 	}
 	
+	protected void setChestsAndSpawners(WorldGenerator generator, RealChunk chunk, Double chestOdds, Double spawnerOdds, int y1, int y2, String chestName) {
+		int x1 = chunkX * SupportChunk.chunksBlockWidth;
+		int z1 = chunkZ * SupportChunk.chunksBlockWidth;
+		setChestsAndSpawnersWithin(generator, x1, x1 + SupportChunk.chunksBlockWidth, y1, y2, z1, z1 + SupportChunk.chunksBlockWidth, chunk, chestOdds, spawnerOdds, chestName);
+	}
+	
+	protected void setChestsAndSpawnersWithin(WorldGenerator generator, int x1, int x2, int y1, int y2, int z1, int z2, RealChunk chunk, Double chestOdds, Double spawnerOdds, String chestName){
+		for(int z=z1;z<z2;z++){ 
+			for(int x=x1;x<x2;x++){
+				for(int y=y1;y<y2;y++) {
+					Material material = chunk.getBlock(x, y, z);
+					if (material == Material.CHEST) {
+						if (chunkOdds.playOdds(chestOdds)) {
+							chunk.setChest(x, y, z, chunkOdds, generator.lootProvider, chestName);
+						} else {
+							chunk.clearBlock(x, y, z);
+						}
+					} else if (material == Material.MOB_SPAWNER) {
+						if (chunkOdds.playOdds(spawnerOdds)) {
+							chunk.setSpawner(x, y, z, EntityType.ZOMBIE );
+						} else {
+							chunk.clearBlock(x, y, z);
+						}
+					} else if (material == Material.WALL_SIGN || material == Material.SIGN_POST) {
+						Sign sign = (Sign) chunk.getActualBlock(x, y, z).getState();
+						if (sign.getLine(0).contains("[[CHEST]]") ) {
+							
+							String newChestName = sign.getLine(1).trim();
+							newChestName = (newChestName.length() < 2 || newChestName == null ) ? chestName : newChestName;
+							Double newChestOdds = chestOdds;
+							
+							try {
+								newChestOdds = Double.parseDouble( sign.getLine(2).trim() );
+								newChestOdds = (newChestOdds <= 0 || newChestOdds == null ) ? chestOdds : newChestOdds;
+							} catch (IllegalArgumentException ex) {
+								newChestOdds = chestOdds;
+							}
+							
+							Byte meta = 0x0;
+							
+							// 2:North 3:South 4:West 5:East
+							if (material == Material.SIGN_POST) {
+								switch(sign.getRawData()){
+									case 0x8:
+										meta = 0x2;
+										break;
+									case 0x0:
+										meta = 0x3;
+										break;
+									case 0x4:
+										meta = 0x4;
+										break;
+									case 0xC:
+										meta = 0x5;
+										break;
+									default:
+										meta = 0x2;
+										break;
+								}
+							} else {
+								meta = sign.getRawData();
+							}
+							
+							if (chunkOdds.playOdds(newChestOdds)) {
+								chunk.clearBlock(x, y, z);
+								chunk.setBlock(x, y, z, Material.CHEST, meta);
+								chunk.setChest(x, y, z, chunkOdds, generator.lootProvider, newChestName);
+							} else {
+								chunk.clearBlock(x, y, z);
+							}
+						} else if (sign.getLine(0).contains("[[SPAWNER]]") ) {
+							try {
+								chunk.clearBlock(x, y, z);
+								
+								Double newSpawnerOdds = spawnerOdds;
+								
+								try {
+									newSpawnerOdds = Double.parseDouble( sign.getLine(2).trim() );
+									newSpawnerOdds = (newSpawnerOdds <= 0 || newSpawnerOdds == null ) ? chestOdds : newSpawnerOdds;
+								} catch (IllegalArgumentException ex) {
+									newSpawnerOdds = chestOdds;
+								}
+								
+								if (chunkOdds.playOdds(newSpawnerOdds)) {
+									chunk.setSpawner(x, y, z, EntityType.valueOf( sign.getLine(1).trim() ) );
+								} else {
+									chunk.clearBlock(x, y, z);
+								}
+							} catch (IllegalArgumentException ex) {
+								if (chunkOdds.playOdds(spawnerOdds)) {
+									chunk.setSpawner(x, y, z, EntityType.ZOMBIE );
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	public void destroyBuilding(WorldGenerator generator, int y, int floors) {
 		destroyLot(generator, y, y + DataContext.FloorHeight * (floors + 1));
 	}
@@ -207,23 +309,24 @@ public abstract class PlatLot {
 	private void generateHorizontalMineLevel(WorldGenerator generator, ByteChunk chunk, int y) {
 		int y1 = y + 6;
 		int y2 = y1 + 1;
+		int y3 = y1 + 6;
 		
 		// draw the shafts/walkways
 		boolean pathFound = false;
 		if (generator.shapeProvider.isHorizontalNSShaft(chunk.chunkX, y, chunk.chunkZ)) {
-			generateMineShaftSpace(chunk, 6, 10, y1, y1 + 4, 0, 6);
+			generateMineShaftSpace(chunk, 6, 10, y1, y3, 0, 6);
 			generateMineNSSupport(chunk, 6, y2, 1);
 			generateMineNSSupport(chunk, 6, y2, 4);
-			generateMineShaftSpace(chunk, 6, 10, y1, y1 + 4, 10, 16);
+			generateMineShaftSpace(chunk, 6, 10, y1, y3, 10, 16);
 			generateMineNSSupport(chunk, 6, y2, 11);
 			generateMineNSSupport(chunk, 6, y2, 14);
 			pathFound = true;
 		}
 		if (generator.shapeProvider.isHorizontalWEShaft(chunk.chunkX, y, chunk.chunkZ)) {
-			generateMineShaftSpace(chunk, 0, 6, y1, y1 + 4, 6, 10);
+			generateMineShaftSpace(chunk, 0, 6, y1, y3, 6, 10);
 			generateMineWESupport(chunk, 1, y2, 6);
 			generateMineWESupport(chunk, 4, y2, 6);
-			generateMineShaftSpace(chunk, 10, 16, y1, y1 + 4, 6, 10);
+			generateMineShaftSpace(chunk, 10, 16, y1, y3, 6, 10);
 			generateMineWESupport(chunk, 11, y2, 6);
 			generateMineWESupport(chunk, 14, y2, 6);
 			pathFound = true;
@@ -231,12 +334,12 @@ public abstract class PlatLot {
 		
 		// draw the center bit
 		if (pathFound)
-			generateMineShaftSpace(chunk, 6, 10, y1, y1 + 4, 6, 10);
+			generateMineShaftSpace(chunk, 6, 10, y1, y3, 6, 10);
 	}
 	
-	private final static byte shaftBridgeId = (byte) Material.WOOD.getId(); 
-	private final static byte shaftSupportId = (byte) Material.FENCE.getId();
-	private final static byte shaftBeamId = (byte) Material.WOOD.getId();
+	private final static byte shaftBridgeId = (byte) Material.SMOOTH_BRICK.getId(); 
+	private final static byte shaftSupportId = (byte) Material.COBBLE_WALL.getId();
+	private final static byte shaftBeamId = (byte) Material.SMOOTH_BRICK.getId();
 
 	private void generateMineShaftSpace(ByteChunk chunk, int x1, int x2, int y1, int y2, int z1, int z2) {
 		chunk.setEmptyBlocks(x1, x2, y1, z1, z2, shaftBridgeId);
@@ -255,11 +358,9 @@ public abstract class PlatLot {
 			
 		// in a tunnel
 		} else {
-			chunk.setBlock(x, y, z, shaftSupportId);
-			chunk.setBlock(x, y + 1, z, shaftSupportId);
-			chunk.setBlock(x + 3, y, z, shaftSupportId);
-			chunk.setBlock(x + 3, y + 1, z, shaftSupportId);
-			chunk.setBlocks(x, x + 4, y + 2, z, z + 1, shaftBeamId);
+			chunk.setBlocks(x, y, y+4, z, shaftSupportId);
+			chunk.setBlocks(x+3, y, y+4, z, shaftSupportId);
+			chunk.setBlocks(x, x + 4, y+4, z, z + 1, shaftBeamId);
 		}
 	}
 	
@@ -274,18 +375,15 @@ public abstract class PlatLot {
 			
 		// in a tunnel
 		} else {
-			chunk.setBlock(x, y, z, shaftSupportId);
-			chunk.setBlock(x, y + 1, z, shaftSupportId);
-			chunk.setBlock(x, y, z + 3, shaftSupportId);
-			chunk.setBlock(x, y + 1, z + 3, shaftSupportId);
-			chunk.setBlocks(x, x + 1, y + 2, z, z + 4, shaftBeamId);
+			chunk.setBlocks(x, y, y+4, z, shaftSupportId);
+			chunk.setBlocks(x, y, y+4, z + 3, shaftSupportId);
+			chunk.setBlocks(x, x + 1, y+4, z, z + 4, shaftBeamId);
 		}
 	}
 	
 	private void generateMineSupport(ByteChunk chunk, int x, int y, int z) {
-		int aboveSupport = chunk.findLastEmptyAbove(x, y, z);
-		if (aboveSupport < maxHeight)
-			chunk.setBlocks(x, y + 1, aboveSupport + 1, z, shaftSupportId);
+		int belowSupport = chunk.findLastEmptyBelow(x, y, z);
+		chunk.setBlocks(x, belowSupport, y, z, shaftSupportId);
 	}
 	
 	public void generateMines(WorldGenerator generator, RealChunk chunk) {

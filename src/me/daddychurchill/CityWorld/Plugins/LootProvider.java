@@ -12,10 +12,11 @@ public abstract class LootProvider extends Provider {
 
 	// Based on work contributed by drew-bahrue (https://github.com/echurchill/CityWorld/pull/2)
 	
-	public enum LootLocation {SEWER, MINE, BUNKER, STORAGESHED};
+	public enum LootLocation {SEWER, MINE, BUNKER, STORAGESHED, HOUSE, OFFICE, APARTMENT, HOSPITAL, CONSTRUCTION, MUNICIPAL, INDUSTRIAL, PARK};
 	
 	public void setLoot(Odds odds, LootLocation chestLocation, Block block) {}
-
+	public void setLoot(Odds odds, String chestName, Block block) {}
+	
 	public static LootProvider loadProvider(WorldGenerator generator) {
 
 		LootProvider provider = null;

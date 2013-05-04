@@ -53,7 +53,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 	protected int constructMin;
 	protected int constructRange;
 	
-	public final static int landFlattening = 32;
+	public final static int landFlattening = 64;
 	public final static int seaFlattening = 4;
 	public final static int landFactor1to2 = 3;
 	public final static int noiseVerticalScale = 3;
@@ -62,7 +62,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 
 	public final static double landFrequency1 = 1.50;
 	public final static double landAmplitude1 = 20.0;
-	public final static double landHorizontalScale1 = 1.0 / 2048.0;
+	public final static double landHorizontalScale1 = 1.0 / 4096.0;
 	public final static double landFrequency2 = 1.0;
 	public final static double landAmplitude2 = landAmplitude1 / landFactor1to2;
 	public final static double landHorizontalScale2 = landHorizontalScale1 * landFactor1to2;
@@ -81,7 +81,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 	
 	public final static double caveScale = 1.0 / 64.0;
 	public final static double caveScaleY = caveScale * 2;
-	public final static double caveThreshold = 0.75; // smaller the number the more larger the caves will be
+	public final static double caveThreshold = 0.50; // smaller the number the more larger the caves will be
 	
 	public final static double mineScale = 1.0 / 4.0;
 	public final static double mineScaleY = mineScale;
@@ -107,7 +107,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 		
 		// get ranges
 		height = world.getMaxHeight();
-		seaLevel = world.getSeaLevel();
+		seaLevel = world.getSeaLevel() - 2;
 		landRange = height - seaLevel - fudgeVerticalScale + landFlattening;
 		seaRange = seaLevel - fudgeVerticalScale + seaFlattening;
 		constructMin = seaLevel;

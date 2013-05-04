@@ -391,32 +391,16 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 		case 1:
 			return Material.COBBLESTONE;
 		case 2:
-			return Material.SAND;
-		case 3:
-			return Material.GRAVEL;
-		case 4:
 			return Material.WOOD;
-		case 5:
-			return Material.SANDSTONE;
-		case 6:
-			return Material.WOOL;
-		case 7:
+		case 3:
 			return Material.DOUBLE_STEP;
-		case 8:
+		case 4:
 			return Material.BRICK;
-		case 9:
-			return Material.MOSSY_COBBLESTONE;
-		case 10:
-			return Material.CLAY;
-		case 11:
-			return Material.NETHERRACK;
-		case 12:
-			return Material.SOUL_SAND;
-		case 13:
+		case 5:
 			return Material.SMOOTH_BRICK;
-		case 14:
+		case 6:
 			return Material.NETHER_BRICK;
-		case 15:
+		case 7:
 			return Material.QUARTZ_BLOCK;
 		default:
 			return Material.STONE;
@@ -424,30 +408,20 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 	}
 
 	protected Material pickRoofMaterial() {
-		switch (chunkOdds.getRandomInt(13)) {
+		switch (chunkOdds.getRandomInt(7)) {
 		case 1:
 			return Material.COBBLESTONE;
 		case 2:
 			return Material.WOOD;
 		case 3:
-			return Material.SANDSTONE;
-		case 4:
-			return Material.WOOL;
-		case 5:
 			return Material.DOUBLE_STEP;
-		case 6:
+		case 4:
 			return Material.BRICK;
-		case 7:
-			return Material.MOSSY_COBBLESTONE;
-		case 8:
-			return Material.CLAY;
-		case 9:
-			return Material.NETHERRACK;
-		case 10:
+		case 5:
 			return Material.SMOOTH_BRICK;
-		case 11:
+		case 6:
 			return Material.NETHER_BRICK;
-		case 12:
+		case 7:
 			return Material.QUARTZ_BLOCK;
 		default:
 			return Material.STONE;
@@ -553,30 +527,20 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 	}
 
 	protected Material pickCeilingMaterial() {
-		switch (chunkOdds.getRandomInt(13)) {
+		switch (chunkOdds.getRandomInt(7)) {
 		case 1:
 			return Material.COBBLESTONE;
 		case 2:
 			return Material.WOOD;
 		case 3:
-			return Material.SANDSTONE;
-		case 4:
-			return Material.WOOL;
-		case 5:
 			return Material.DOUBLE_STEP;
-		case 6:
+		case 4:
 			return Material.BRICK;
-		case 7:
-			return Material.MOSSY_COBBLESTONE;
-		case 8:
-			return Material.CLAY;
-		case 9:
-			return Material.NETHERRACK;
-		case 10:
+		case 5:
 			return Material.SMOOTH_BRICK;
-		case 11:
+		case 6:
 			return Material.NETHER_BRICK;
-		case 12:
+		case 7:
 			return Material.QUARTZ_BLOCK;
 		default:
 			return Material.STONE;

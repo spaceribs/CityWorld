@@ -487,6 +487,12 @@ public class RealChunk extends SupportChunk {
 			lootProvider.setLoot(odds, lootLocation, block);
 		}
 	}
+	public void setChest(int x, int y, int z, Odds odds, LootProvider lootProvider, String chestName) {
+		Block block = chunk.getBlock(x, y, z);
+		if (block.getTypeId() == chestId) {
+			lootProvider.setLoot(odds, chestName, block);
+		}
+	}
 
 	private final static int spawnerId = Material.MOB_SPAWNER.getId();
 	public void setSpawner(int x, int y, int z, EntityType aType) {

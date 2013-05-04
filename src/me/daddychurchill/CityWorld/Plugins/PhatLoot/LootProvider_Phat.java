@@ -17,6 +17,11 @@ public class LootProvider_Phat extends LootProvider {
 		PhatLoot phatLoot = getByName(name);
 		phatLoot.addChest(block);
 	}
+	@Override
+	public void setLoot(Odds odds, String chestName, Block block) {
+		PhatLoot phatLoot = getByName(chestName);
+		phatLoot.addChest(block);
+	}
 	
 	private static PhatLoot getByName(String name){
 		PhatLoot phatLoot;

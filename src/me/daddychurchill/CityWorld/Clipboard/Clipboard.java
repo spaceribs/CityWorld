@@ -13,6 +13,10 @@ import me.daddychurchill.CityWorld.Support.SupportChunk;
 public abstract class Clipboard {
 
 	public String name;
+	public String chestName = "Chest";
+	public double chestOdds = 0.25D;
+	public String spawnerType = "ZOMBIE";
+	public double spawnerOdds = 0.50D;
 	public double oddsOfAppearance = DataContext.oddsSomewhatUnlikely;
 	public int groundLevelY = 0;
 	public boolean broadcastLocation = false;

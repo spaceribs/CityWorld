@@ -4,20 +4,21 @@ import java.util.Stack;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.util.noise.SimplexOctaveGenerator;
 import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
 
 public class WorldBlocks extends SupportChunk {
 
 	private boolean doPhysics;
-//	WorldGenerator generator;
+	WorldGenerator generator;
 	Odds odds;
 	
 	public WorldBlocks(WorldGenerator generator, Odds odds) {
 		super(generator);
 		
 		doPhysics = false;
-//		this.generator = generator;
+		this.generator = generator;
 		this.odds = odds;
 	}
 
@@ -293,24 +294,131 @@ public class WorldBlocks extends SupportChunk {
 		return world.getBlockAt(x, y, z).getTypeId() == grassId;
 	}
 	
+	public boolean isSupporting(Block block) {
+		return (
+			block.getType() != Material.LEAVES 
+			&& block.getType() != Material.VINE
+			&& block.getType() != Material.LOG
+			&& !block.isEmpty()
+		);
+	}
+	
 	public void destroyWithin(int x1, int x2, int y1, int y2, int z1, int z2) {
-		int count = Math.max(1, (y2 - y1) / DataContext.FloorHeight);
 		
-		// now destroy it
-		while (count > 0) {
-			
-			// find a place
-			int cx = getBlockX(odds.getRandomInt(x2 - x1) + x1);
-			int cz = getBlockZ(odds.getRandomInt(z2 - z1) + z1);
-			int cy = odds.getRandomInt(Math.max(1, y2 - y1)) + y1;
-			int radius = odds.getRandomInt(3) + 3;
-			
-			// make it go away
-			desperseArea(cx, cy, cz, radius);
-			
-			// done with this round
-			count--;
+		double holeScale = 1.0 / 20.0;
+		double leavesScale = 1.0 / 10.0;
+		
+		long seed = generator.getWorldSeed();
+		SimplexOctaveGenerator noiseGen = new SimplexOctaveGenerator(seed,2);
+		
+		for(int z=z1;z<z2;z++){ 
+			for(int x=x1;x<x2;x++){
+				for(int y=y1;y<y2;y++) {
+					
+					double holeNoise = noiseGen.noise(x * holeScale, y * holeScale, z * holeScale, 0.3D, 0.6D, true);
+					double leavesNoise = noiseGen.noise(x * leavesScale, y * leavesScale, z * leavesScale, 0.3D, 0.6D, false);
+					
+					Block block = world.getBlockAt(x, y, z);
+					
+					if (!block.isEmpty() && ( holeNoise > 0.5D ) ) {
+						block.setType(Material.AIR);
+					} else if ( holeNoise > 0.30D ) {
+						switch(block.getType()) {
+							case STONE:
+								if(odds.flipCoin())
+									block.setType(Material.COBBLESTONE);
+								else
+									block.setType(Material.MOSSY_COBBLESTONE);
+								break;
+							case SANDSTONE:
+								block.setTypeIdAndData(Material.SANDSTONE_STAIRS.getId(), odds.getRandomByte(4), true);
+								break;
+							case BRICK:
+								block.setTypeIdAndData(Material.BRICK_STAIRS.getId(), odds.getRandomByte(4), true);
+								break;
+							case COBBLESTONE:
+								block.setTypeIdAndData(Material.MOSSY_COBBLESTONE.getId(), odds.getRandomByte(4), true);
+								break;
+							case SMOOTH_BRICK:
+								block.setTypeIdAndData(Material.SMOOTH_BRICK.getId(), odds.getRandomByte(3), true);
+								break;
+							case WOOD:
+								switch(block.getData()){
+									case 0:
+										block.setTypeIdAndData(Material.WOOD_STAIRS.getId(), odds.getRandomByte(4), true);
+										break;
+									case 1:
+										block.setTypeIdAndData(Material.SPRUCE_WOOD_STAIRS.getId(), odds.getRandomByte(4), true);
+										break;
+									case 2:
+										block.setTypeIdAndData(Material.BIRCH_WOOD_STAIRS.getId(), odds.getRandomByte(4), true);
+										break;
+									default:
+										block.setTypeIdAndData(Material.JUNGLE_WOOD_STAIRS.getId(), odds.getRandomByte(4), true);
+										break;
+								}
+								break;
+							default:
+								block.setType(Material.AIR);
+								break;
+						}
+						
+						Block[] neighbors = {
+							block.getRelative(0, 1, 0),
+							block.getRelative(0, 0, -1),
+							block.getRelative(0, 0, 1),
+							block.getRelative(1, 0, 0),
+							block.getRelative(-1, 0, 0),
+							block.getRelative(0, -1, 0)
+						};
+						
+						if ( leavesNoise > 0.1D && holeNoise > 0.30D && block.isEmpty() ) {
+							int support = 0;
+							
+							for(int n=0;n<neighbors.length;n++)
+								support += this.isSupporting(neighbors[n]) ? 1 : 0;
+							
+							if (support > 0)
+								block.setTypeIdAndData(Material.LEAVES.getId(), odds.getRandomByte(4) , true);
+						}
+						if ( block.isEmpty() && odds.flipCoin() ) {
+							
+							byte vineMeta = 0;
+							
+							if( !neighbors[1].isEmpty() && neighbors[1].getType() != Material.VINE )
+								vineMeta += 4;
+							if( !neighbors[2].isEmpty() && neighbors[2].getType() != Material.VINE )
+								vineMeta += 1;
+							if( !neighbors[3].isEmpty() && neighbors[3].getType() != Material.VINE )
+								vineMeta += 8;
+							if( !neighbors[4].isEmpty() && neighbors[4].getType() != Material.VINE )
+								vineMeta += 2;
+							
+							if (vineMeta > 0)
+								block.setTypeIdAndData(Material.VINE.getId(), vineMeta, true);
+						}
+					}
+				}
+			}
 		}
+		
+//		int count = Math.max(1, (y2 - y1) / DataContext.FloorHeight);
+//		
+//		// now destroy it
+//		while (count > 0) {
+//			
+//			// find a place
+//			int cx = getBlockX(odds.getRandomInt(x2 - x1) + x1);
+//			int cz = getBlockZ(odds.getRandomInt(z2 - z1) + z1);
+//			int cy = odds.getRandomInt(Math.max(1, y2 - y1)) + y1;
+//			int radius = odds.getRandomInt(3) + 3;
+//			
+//			// make it go away
+//			desperseArea(cx, cy, cz, radius);
+//			
+//			// done with this round
+//			count--;
+//		}
 	}
 	
 	private static class debrisItem {
@@ -326,9 +434,23 @@ public class WorldBlocks extends SupportChunk {
 	private void disperseLine(int x1, int x2, int y, int z1, int z2, Stack<debrisItem> debris) {
 		for (int x = x1; x < x2; x++) {
 			for (int z = z1; z < z2; z++) {
+				
 				Block block = world.getBlockAt(x, y, z);
-				if (!block.isEmpty()) {
-					debris.push(new debrisItem(block.getTypeId(), block.getData()));
+				
+				int blockId = block.getTypeId();
+				if ( blockId != glassId && blockId != thinGlassId ) {
+					
+					if (!block.isEmpty()) {
+						debris.push(new debrisItem(blockId, block.getData()));
+						
+						if( odds.playOdds( DataContext.oddsExtremelyUnlikely ) ) {
+							block.setTypeId(airId);
+						} else {
+							if (( x == x1 || x == x2-1 ) || ( z == z1 || z == z2-1 ))
+								block.setTypeIdAndData(Material.AIR.getId(), (byte) odds.getRandomInt(3) , true);
+						}
+					}
+				} else {
 					block.setTypeId(airId);
 				}
 			}
@@ -399,7 +521,7 @@ public class WorldBlocks extends SupportChunk {
 				// look out for half blocks
 				Block block = getActualBlock(x, y - 1, z);
 				int blockId = block.getTypeId();
-				
+					
 				// partial blocks
 				if (blockId == stepId || blockId == snowId)
 					block.setTypeIdAndData(item.typeId, item.data, false);
@@ -431,6 +553,8 @@ public class WorldBlocks extends SupportChunk {
 		desperseSphere(x, y, z, radius, debris);
 		
 		// now sprinkle blocks around
-		sprinkleDebris(x, y, z, radius, debris);
+		if (odds.playOdds(DataContext.oddsVeryUnlikely)) {
+			sprinkleDebris(x, y, z, radius, debris);
+		}
 	}
 }
