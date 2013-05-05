@@ -51,6 +51,10 @@ public class Odds {
 		return (byte) random.nextInt(range);
 	}
 	
+	public byte getRandomByte(int range) {
+		return (byte) random.nextInt(range);
+	}
+	
 	public byte getRandomByte(byte min, byte range) {
 		return (byte) (min + random.nextInt(range));
 	}
