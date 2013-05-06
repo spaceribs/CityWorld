@@ -10,5 +10,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/Users/abrewer/Dropbox/Development/libraries/tekkit/Tekkit.jar"/>
+	<classpathentry kind="src" path="/PhatLoots"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

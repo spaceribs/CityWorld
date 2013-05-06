@@ -1,6 +1,6 @@
-<?xml version="1.0" encoding="WINDOWS-1252" standalone="no"?>
+<?xml version="1.0" encoding="MacRoman" standalone="no"?>
 <jardesc>
-    <jar path="C:/Users/Eddie/Desktop/Minecraft/plugins/CityWorld.jar"/>
+    <jar path="/Users/abrewer/Dropbox/Development/libraries/craftbukkit/plugins/CityWorld.jar"/>
     <options buildIfNeeded="true" compress="true" descriptionLocation="/CityWorld/CityWorldToMinecraft.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="true" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
@@ -11,9 +11,9 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="true" exportOutputFolder="false">
-        <file path="/CityWorld/.project"/>
         <file path="/CityWorld/.classpath"/>
         <javaElement handleIdentifier="=CityWorld/src"/>
         <file path="/CityWorld/plugin.yml"/>
+        <file path="/CityWorld/.project"/>
     </selectedElements>
 </jardesc>

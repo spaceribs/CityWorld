@@ -461,6 +461,26 @@ public class PlatMap {
 		
 		// what way are we facing?
 		Direction.Facing facing = odds.getFacing();
+
+		// find a road next to this lot and make it face that.
+		PlatLot toNorth = this.getLot(placeX, placeZ - 1);
+		PlatLot toEast = this.getLot(placeX + 1, placeZ);
+		PlatLot toWest = this.getLot(placeX - 1, placeZ);
+		PlatLot toSouth = this.getLot(placeX, placeZ + 1);
+		
+		if ( toNorth != null ) {
+			if ( toNorth.style == LotStyle.ROAD )
+				facing = Direction.Facing.NORTH;
+		} else if ( toEast != null ) {
+			if ( toEast.style == LotStyle.ROAD )
+				facing = Direction.Facing.EAST;
+		} else if ( toWest != null ) {
+			if ( toWest.style == LotStyle.ROAD )
+				facing = Direction.Facing.WEST;
+		} else if ( toSouth != null ) {
+			if ( toSouth.style == LotStyle.ROAD )
+				facing = Direction.Facing.SOUTH;
+		}
 		
 		// calculate the various template plats
 		for (int x = 0; x < chunksX; x++) {
