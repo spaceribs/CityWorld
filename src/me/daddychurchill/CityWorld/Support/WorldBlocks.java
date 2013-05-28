@@ -9,16 +9,18 @@ import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
 
 public class WorldBlocks extends SupportChunk {
+	
+	//WARNING: the x,z coordinates in this variant of SupportChunk are world absolute (unlike byte and real chunks)
 
 	private boolean doPhysics;
-	WorldGenerator generator;
+//	WorldGenerator generator;
 	Odds odds;
 	
 	public WorldBlocks(WorldGenerator generator, Odds odds) {
 		super(generator);
 		
 		doPhysics = false;
-		this.generator = generator;
+//		this.generator = generator;
 		this.odds = odds;
 	}
 
@@ -35,13 +37,8 @@ public class WorldBlocks extends SupportChunk {
 	}
 	
 	@Override
-	public boolean isType(int x, int y, int z, int type) {
-		return world.getBlockAt(x, y, z).getTypeId() == type;
-	}
-
-	@Override
-	public boolean isEmpty(int x, int y, int z) {
-		return world.getBlockAt(x, y, z).isEmpty();
+	public int getBlockType(int x, int y, int z) {
+		return getActualBlock(x, y, z).getTypeId();
 	}
 	
 	@Override
@@ -290,19 +287,6 @@ public class WorldBlocks extends SupportChunk {
 		return blocky + height;
 	}
 	
-	public boolean isPlantable(int x, int y, int z) {
-		return world.getBlockAt(x, y, z).getTypeId() == grassId;
-	}
-	
-	public boolean isSupporting(Block block) {
-		return (
-			block.getType() != Material.LEAVES 
-			&& block.getType() != Material.VINE
-			&& block.getType() != Material.LOG
-			&& !block.isEmpty()
-		);
-	}
-	
 	public void destroyWithin(int x1, int x2, int y1, int y2, int z1, int z2) {
 		
 		double holeScale = 1.0 / 20.0;
@@ -401,24 +385,6 @@ public class WorldBlocks extends SupportChunk {
 				}
 			}
 		}
-		
-//		int count = Math.max(1, (y2 - y1) / DataContext.FloorHeight);
-//		
-//		// now destroy it
-//		while (count > 0) {
-//			
-//			// find a place
-//			int cx = getBlockX(odds.getRandomInt(x2 - x1) + x1);
-//			int cz = getBlockZ(odds.getRandomInt(z2 - z1) + z1);
-//			int cy = odds.getRandomInt(Math.max(1, y2 - y1)) + y1;
-//			int radius = odds.getRandomInt(3) + 3;
-//			
-//			// make it go away
-//			desperseArea(cx, cy, cz, radius);
-//			
-//			// done with this round
-//			count--;
-//		}
 	}
 	
 	private static class debrisItem {
@@ -521,7 +487,7 @@ public class WorldBlocks extends SupportChunk {
 				// look out for half blocks
 				Block block = getActualBlock(x, y - 1, z);
 				int blockId = block.getTypeId();
-					
+				
 				// partial blocks
 				if (blockId == stepId || blockId == snowId)
 					block.setTypeIdAndData(item.typeId, item.data, false);
