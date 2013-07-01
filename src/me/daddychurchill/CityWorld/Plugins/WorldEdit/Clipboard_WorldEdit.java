@@ -26,7 +26,7 @@ public class Clipboard_WorldEdit extends Clipboard {
 	private int facingCount;
 	private boolean flipableX = false;
 	private boolean flipableZ = false;
-	private boolean rotatable = true;
+//  private boolean Rotatable = false;
 //	private boolean ScalableXZ = false;
 //	private boolean ScalableY = false;
 //	private int FloorHeightY = DataContext.FloorHeight;
@@ -35,7 +35,6 @@ public class Clipboard_WorldEdit extends Clipboard {
 	private final static String tagGroundLevelY = "GroundLevelY";
 	private final static String tagFlipableX = "FlipableX";
 	private final static String tagFlipableZ = "FlipableZ";
-	private final static String tagRotatable = "Rotatable";
 //	private final static String tagScalableX = "ScalableX";
 //	private final static String tagScalableZ = "ScalableZ";
 //	private final static String tagScalableY = "ScalableY";
@@ -64,7 +63,6 @@ public class Clipboard_WorldEdit extends Clipboard {
 		metaYaml.addDefault(tagGroundLevelY, groundLevelY);
 		metaYaml.addDefault(tagFlipableX, flipableX);
 		metaYaml.addDefault(tagFlipableZ, flipableZ);
-		metaYaml.addDefault(tagRotatable, rotatable);
 //		metaYaml.addDefault(tagScalableX, ScalableX);
 //		metaYaml.addDefault(tagScalableZ, ScalableZ);
 //		metaYaml.addDefault(tagScalableY, ScalableY);
@@ -84,7 +82,6 @@ public class Clipboard_WorldEdit extends Clipboard {
 			groundLevelY = Math.max(0, metaYaml.getInt(tagGroundLevelY, groundLevelY));
 			flipableX = metaYaml.getBoolean(tagFlipableX, flipableX);
 			flipableZ = metaYaml.getBoolean(tagFlipableZ, flipableZ);
-			rotatable = metaYaml.getBoolean(tagRotatable, rotatable);
 //			ScalableX = metaYaml.getBoolean(tagScalableX, ScalableX) && sizeX == 3;
 //			ScalableZ = metaYaml.getBoolean(tagScalableZ, ScalableZ) && sizeZ == 3;
 //			ScalableY = metaYaml.getBoolean(tagScalableY, ScalableY);
@@ -130,8 +127,6 @@ public class Clipboard_WorldEdit extends Clipboard {
 			facingCount *= 2;
 		if (flipableZ)
 			facingCount *= 2;
-		if (rotatable)
-			facingCount = 4;
 		
 		//TODO we should allocate only facing count, then allocate the size based on what comes out of the rotation.. once I do rotation
 		// allocate room
@@ -156,16 +151,6 @@ public class Clipboard_WorldEdit extends Clipboard {
 			cuboid.flip(FlipDirection.NORTH_SOUTH);
 			copyCuboid(cuboid, 1);
 		}
-		
-		if (rotatable) {
-			cuboid.rotate2D(90);
-			copyCuboid(cuboid, 1);
-			cuboid.rotate2D(90);
-			copyCuboid(cuboid, 2);
-			cuboid.rotate2D(90);
-			copyCuboid(cuboid, 3);
-		}
-		
 	}
 	
 	private void copyCuboid(CuboidClipboard cuboid, int facing) {
@@ -182,20 +167,20 @@ public class Clipboard_WorldEdit extends Clipboard {
 	private int getFacingIndex(Direction.Facing facing) {
 		int result = 0;
 		switch (facing) {
-		case NORTH:
-			result = 1;
-			break;
-		case EAST:
-			result = 2;
-			break;
 		case SOUTH:
-			result = 3;
-			break;
-		default:
 			result = 0;
 			break;
+		case WEST:
+			result = 1;
+			break;
+		case NORTH:
+			result = 2;
+			break;
+		default: // case EAST:
+			result = 2;
+			break;
 		}
-		return result;
+		return Math.min(facingCount - 1, result);
 	}
 	
 	@Override
