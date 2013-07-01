@@ -413,7 +413,7 @@ public class WorldBlocks extends SupportChunk {
 				Block block = world.getBlockAt(x, y, z);
 				
 				int blockId = block.getTypeId();
-				if ( blockId != glassId && blockId != thinGlassId ) {
+				if ( blockId != Material.GLASS.getId() && blockId != Material.THIN_GLASS.getId() ) {
 					
 					if (!block.isEmpty()) {
 						debris.push(new debrisItem(blockId, block.getData()));

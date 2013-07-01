@@ -161,7 +161,7 @@ public abstract class ShapeProvider extends Provider {
 				chunk.setBlock(x, y, z, stratumId);
 		
 		// run cave generator
-		caveProvider.populate(generator.getWorld(), odds, chunk);
+		//caveProvider.populate(generator.getWorld(), odds, chunk);
 
 		// aggregate bits
 		for (int y = stratumY; y < subsurfaceY - 1; y++)
