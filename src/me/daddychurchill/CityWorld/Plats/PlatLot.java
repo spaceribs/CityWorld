@@ -75,7 +75,6 @@ public abstract class PlatLot {
 
 	protected final static byte pavementId = (byte) Material.STONE.getId();
 	protected final static byte crosswalkId = (byte) Material.CLAY.getId();
-	protected final static byte sidewalkId = (byte) Material.STEP.getId();
 	
 	protected final static int snowMaterialId = Material.SNOW.getId();
 	protected final static Material snowMaterial = Material.SNOW;
@@ -130,6 +129,14 @@ public abstract class PlatLot {
 		blockYs = null;
 	}
 	
+	protected int getSidewalkLevel(WorldGenerator generator) {
+		return generator.streetLevel + 1;
+	}
+	
+	protected byte getSidewalkId() {
+		return (byte) Material.STEP.getId();
+	}
+	
 	protected int getBlockY(int x, int z) {
 		return blockYs == null ? 0 : blockYs.getBlockY(x, z);
 	}
@@ -139,6 +146,7 @@ public abstract class PlatLot {
 	}
 	
 	public abstract int getBottomY(WorldGenerator generator);
+	public abstract int getTopY(WorldGenerator generator);
 	
 	public void generateChunk(WorldGenerator generator, PlatMap platmap, ByteChunk chunk, BiomeGrid biomes, DataContext context, int platX, int platZ) {
 		initializeDice(platmap, chunk.chunkX, chunk.chunkZ);

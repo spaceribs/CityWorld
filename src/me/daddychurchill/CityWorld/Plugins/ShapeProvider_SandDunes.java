@@ -1,6 +1,7 @@
 package me.daddychurchill.CityWorld.Plugins;
 
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
@@ -20,10 +21,6 @@ import me.daddychurchill.CityWorld.Support.Odds;
 
 public class ShapeProvider_SandDunes extends ShapeProvider_Normal {
 
-	public final static Material floodMat = Material.SAND;
-	public final static byte floodId = (byte) Material.SAND.getId();
-	public final static byte subFloodId = (byte) Material.SANDSTONE.getId();
-	
 	protected int floodY;
 	
 	private SimplexOctaveGenerator duneFeature1;
@@ -102,6 +99,16 @@ public class ShapeProvider_SandDunes extends ShapeProvider_Normal {
 	}
 
 	@Override
+	public int findLowestFloodY(WorldGenerator generator) {
+		return floodY;
+	}
+
+	@Override
+	protected Biome remapBiome(WorldGenerator generator, PlatLot lot, Biome biome) {
+		return Biome.DESERT_HILLS;
+	}
+
+	@Override
 	protected void generateStratas(WorldGenerator generator, PlatLot lot,
 			ByteChunk chunk, int x, int z, byte substratumId, byte stratumId,
 			int stratumY, byte subsurfaceId, int subsurfaceY, byte surfaceId,
@@ -112,7 +119,7 @@ public class ShapeProvider_SandDunes extends ShapeProvider_Normal {
 				subsurfaceId, subsurfaceY, surfaceId, surfaceCaves);
 		
 		// cover it up a bit
-		actualGenerateFlood(generator, lot, chunk, x, z, subsurfaceY);
+		actualGenerateSand(generator, lot, chunk, x, z, subsurfaceY);
 	}
 	
 	@Override
@@ -126,14 +133,44 @@ public class ShapeProvider_SandDunes extends ShapeProvider_Normal {
 				subsurfaceId, subsurfaceY, surfaceId, surfaceCaves);
 		
 		// cover it up a bit
-		actualGenerateFlood(generator, lot, chunk, x, z, subsurfaceY);
+		actualGenerateSand(generator, lot, chunk, x, z, subsurfaceY);
 	}
 	
-	protected void actualGenerateFlood(WorldGenerator generator, PlatLot lot, ByteChunk chunk, int x, int z, int subsurfaceY) {
+	protected void actualGenerateSand(WorldGenerator generator, PlatLot lot, ByteChunk chunk, int x, int z, int subsurfaceY) {
 		int y = findFloodY(generator, chunk.getBlockX(x), chunk.getBlockZ(z));
 		if (y > subsurfaceY) {
 			chunk.setBlocks(x, subsurfaceY, y - 2, z, subFloodId);
 			chunk.setBlocks(x, y - 2, y, z, floodId);
 		}
 	}
+	
+	private final static Material floodMat = Material.SAND;
+	private final static byte floodId = (byte) Material.SAND.getId();
+	private final static byte subFloodId = (byte) Material.SANDSTONE.getId();
+	
+	@Override
+	public byte findFloodIdAt(WorldGenerator generator, int blockY) {
+		if (blockY < floodY)
+			return floodId;
+		else
+			return super.findFloodIdAt(generator, blockY);
+	}
+	
+	@Override
+	public Material findFloodMaterialAt(WorldGenerator generator, int blockY) {
+		if (blockY < floodY)
+			return floodMat;
+		else
+			return super.findFloodMaterialAt(generator, blockY);
+	}
+	
+//	@Override
+//	public byte findCoverIdAt(WorldGenerator generator, int blockY) {
+//		return 
+//		if (blockY < floodY)
+//			return snowCoverId;
+//		else
+//			return super.findCoverIdAt(generator, blockY);
+//	}
+	
 }

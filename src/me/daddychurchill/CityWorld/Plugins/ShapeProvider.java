@@ -1,5 +1,7 @@
 package me.daddychurchill.CityWorld.Plugins;
 
+import org.bukkit.Material;
+import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
 import org.bukkit.util.noise.NoiseGenerator;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
@@ -32,6 +34,7 @@ public abstract class ShapeProvider extends Provider {
 	public abstract void preGenerateBlocks(WorldGenerator generator, PlatLot lot, RealChunk chunk, CachedYs blockYs);
 	public abstract void postGenerateBlocks(WorldGenerator generator, PlatLot lot, RealChunk chunk, CachedYs blockYs);
 	
+	protected abstract Biome remapBiome(WorldGenerator generator, PlatLot lot, Biome biome);
 	protected abstract DataContext getContext(PlatMap platmap);
 	protected abstract void allocateContexts(WorldGenerator generator);
 	public abstract String getCollectionName();
@@ -61,12 +64,35 @@ public abstract class ShapeProvider extends Provider {
 		return findBlockY(generator, blockX, blockZ);
 	}
 	
+	public double findPerciseFloodY(WorldGenerator generator, int blockX, int blockZ) {
+		return getSeaLevel();
+	}
+	
 	public int findFloodY(WorldGenerator generator, int blockX, int blockZ) {
 		return getSeaLevel();
 	}
 	
 	public int findHighestFloodY(WorldGenerator generator) {
 		return getSeaLevel();
+	}
+	
+	public int findLowestFloodY(WorldGenerator generator) {
+		return getSeaLevel();
+	}
+	
+	private final static Material airMat = Material.AIR;
+	private final static byte airId = (byte) airMat.getId();
+	
+	public byte findFloodIdAt(WorldGenerator generator, int blockY) {
+		return airId;
+	}
+	
+	public Material findFloodMaterialAt(WorldGenerator generator, int blockY) {
+		return airMat;
+	}
+	
+	public byte findCoverIdAt(WorldGenerator generator, int blockY) {
+		return airId;
 	}
 	
 	public PlatLot createNaturalLot(WorldGenerator generator, PlatMap platmap, int x, int z) {
@@ -102,7 +128,7 @@ public abstract class ShapeProvider extends Provider {
 		case SANDDUNES:
 			return new ShapeProvider_SandDunes(generator, odds);
 		case SNOWDUNES:
-			return new ShapeProvider_Snowdunes(generator, odds);
+			return new ShapeProvider_SnowDunes(generator, odds);
 		//case UNDERGROUND
 		//case LUNAR: // curved surface?
 		default: // NORMAL

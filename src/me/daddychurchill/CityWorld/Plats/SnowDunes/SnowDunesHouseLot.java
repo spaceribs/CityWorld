@@ -1,23 +1,23 @@
-package me.daddychurchill.CityWorld.Plats.SandDunes;
+package me.daddychurchill.CityWorld.Plats.SnowDunes;
 
 import org.bukkit.Material;
 
 import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
-import me.daddychurchill.CityWorld.Plats.Urban.ParkLot;
+import me.daddychurchill.CityWorld.Plats.Rural.HouseLot;
 import me.daddychurchill.CityWorld.Support.PlatMap;
 
-public class SandDunesParkLot extends ParkLot {
+public class SnowDunesHouseLot extends HouseLot {
 
-	public SandDunesParkLot(PlatMap platmap, int chunkX, int chunkZ,
-			long globalconnectionkey) {
-		super(platmap, chunkX, chunkZ, globalconnectionkey);
+	public SnowDunesHouseLot(PlatMap platmap, int chunkX, int chunkZ) {
+		super(platmap, chunkX, chunkZ);
 		// TODO Auto-generated constructor stub
 	}
 
+
 	@Override
 	public PlatLot newLike(PlatMap platmap, int chunkX, int chunkZ) {
-		return new SandDunesParkLot(platmap, chunkX, chunkZ, connectedkey);
+		return new SnowDunesHouseLot(platmap, chunkX, chunkZ);
 	}
 
 	@Override

@@ -36,7 +36,7 @@ public class RoadLot extends ConnectedLot {
 	protected final static byte sewerFloorId = (byte) Material.COBBLESTONE.getId();
 	protected final static byte sewerWallId = (byte) sewerWallMaterial.getId();
 	protected final static byte sewerCeilingId = sewerFloorId;
-	protected final static Material sewerPlankMaterial = Material.STEP; //TODO should be Material.WOODSTEP (or whatever it is called)
+	protected final static Material sewerPlankMaterial = Material.WOOD_STEP;
 	protected final static byte sewerPlankData = 2;
 	
 	protected final static byte retainingWallId = (byte) Material.SMOOTH_BRICK.getId();
@@ -147,7 +147,12 @@ public class RoadLot extends ConnectedLot {
 	
 	@Override
 	public int getBottomY(WorldGenerator generator) {
-		return generator.streetLevel;
+		return generator.streetLevel; //TODO what about sewers? - (generator.settings.includeSewers && cityRoad) ? 
+	}
+	
+	@Override
+	public int getTopY(WorldGenerator generator) {
+		return generator.streetLevel + DataContext.FloorHeight * 2 + 1; //TODO is this really right?
 	}
 	
 	@Override
@@ -169,7 +174,8 @@ public class RoadLot extends ConnectedLot {
 		int sewerY = base1Y + 1;
 		int base2Y = base1Y + DataContext.FloorHeight + 1;
 		int pavementLevel = generator.streetLevel;
-		int sidewalkLevel = pavementLevel + 1;
+		int sidewalkLevel = getSidewalkLevel(generator);
+		byte sidewalkId = getSidewalkId();
 		boolean doSewer = generator.settings.includeSewers && cityRoad;
 		
 		// look around
@@ -1283,7 +1289,8 @@ public class RoadLot extends ConnectedLot {
 	}
 	
 	protected void generateRoundedOut(WorldGenerator generator, DataContext context, ByteChunk chunk, int x, int z, boolean toNorth, boolean toEast) {
-		int sidewalkLevel = generator.streetLevel + 1;
+		int sidewalkLevel = getSidewalkLevel(generator);
+		byte sidewalkId = getSidewalkId();
 		
 		// long bits
 		for (int i = 0; i < 4; i++) {

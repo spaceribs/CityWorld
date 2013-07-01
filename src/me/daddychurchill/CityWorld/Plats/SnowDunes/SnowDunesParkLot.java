@@ -1,4 +1,4 @@
-package me.daddychurchill.CityWorld.Plats.SandDunes;
+package me.daddychurchill.CityWorld.Plats.SnowDunes;
 
 import org.bukkit.Material;
 
@@ -7,9 +7,9 @@ import me.daddychurchill.CityWorld.Plats.PlatLot;
 import me.daddychurchill.CityWorld.Plats.Urban.ParkLot;
 import me.daddychurchill.CityWorld.Support.PlatMap;
 
-public class SandDunesParkLot extends ParkLot {
+public class SnowDunesParkLot extends ParkLot {
 
-	public SandDunesParkLot(PlatMap platmap, int chunkX, int chunkZ,
+	public SnowDunesParkLot(PlatMap platmap, int chunkX, int chunkZ,
 			long globalconnectionkey) {
 		super(platmap, chunkX, chunkZ, globalconnectionkey);
 		// TODO Auto-generated constructor stub
@@ -17,7 +17,7 @@ public class SandDunesParkLot extends ParkLot {
 
 	@Override
 	public PlatLot newLike(PlatMap platmap, int chunkX, int chunkZ) {
-		return new SandDunesParkLot(platmap, chunkX, chunkZ, connectedkey);
+		return new SnowDunesParkLot(platmap, chunkX, chunkZ, connectedkey);
 	}
 
 	@Override
