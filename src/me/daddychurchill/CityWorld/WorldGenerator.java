@@ -285,7 +285,7 @@ public class WorldGenerator extends ChunkGenerator {
 		int platZ = calcOrigin(chunkZ);
 
 		// calculate the plat's key
-		Long platkey = Long.valueOf(((long) platX * (long) Integer.MAX_VALUE + (long) platZ));
+		Long platkey = Long.valueOf(((long) platX * (long) Integer.MAX_VALUE + platZ));
 
 		// get the right plat
 		PlatMap platmap = platmaps.get(platkey);

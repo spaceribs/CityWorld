@@ -19,6 +19,7 @@ public class CommandCityWorld implements CommandExecutor {
         this.plugin = plugin;
     }
 
+	@Override
 	public boolean onCommand(CommandSender sender, Command command, String label, String[] split) 
     {
 		if (sender instanceof Player) {
@@ -43,8 +44,8 @@ public class CommandCityWorld implements CommandExecutor {
 //					else if (split[n].compareToIgnoreCase("FLOATING") == 0)
 //						style = WorldStyle.FLOATING;
 //					
-//					else if (split[n].compareToIgnoreCase("FLOODED") == 0)
-//						style = WorldStyle.FLOODED;
+					else if (split[n].compareToIgnoreCase("FLOODED") == 0)
+						style = WorldStyle.FLOODED;
 //					
 //					else if (split[n].compareToIgnoreCase("SANDDUNES") == 0)
 //						style = WorldStyle.SANDDUNES;

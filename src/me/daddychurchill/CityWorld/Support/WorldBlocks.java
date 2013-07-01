@@ -13,14 +13,14 @@ public class WorldBlocks extends SupportChunk {
 	//WARNING: the x,z coordinates in this variant of SupportChunk are world absolute (unlike byte and real chunks)
 
 	private boolean doPhysics;
-//	WorldGenerator generator;
+	WorldGenerator generator;
 	Odds odds;
 	
 	public WorldBlocks(WorldGenerator generator, Odds odds) {
 		super(generator);
 		
 		doPhysics = false;
-//		this.generator = generator;
+		this.generator = generator;
 		this.odds = odds;
 	}
 
@@ -285,6 +285,15 @@ public class WorldBlocks extends SupportChunk {
 	public int setLayer(int blocky, int height, int inset, Material material) {
 		setBlocks(inset, width - inset, blocky, blocky + height, inset, width - inset, material);
 		return blocky + height;
+	}
+	
+	public boolean isSupporting(Block block) {
+		return (
+			block.getType() != Material.LEAVES 
+			&& block.getType() != Material.VINE
+			&& block.getType() != Material.LOG
+			&& !block.isEmpty()
+		);
 	}
 	
 	public void destroyWithin(int x1, int x2, int y1, int y2, int z1, int z2) {

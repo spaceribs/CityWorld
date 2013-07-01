@@ -173,6 +173,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 	}
 	
 	private final static double oddsOfCentralPark = DataContext.oddsUnlikely;
+	@Override
 	protected DataContext getContext(PlatMap platmap) {
 		
 		// how natural is this platmap?

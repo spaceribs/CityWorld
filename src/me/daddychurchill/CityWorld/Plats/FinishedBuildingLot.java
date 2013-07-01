@@ -134,6 +134,7 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 		}
 	}
 
+	@Override
 	public boolean makeConnected(PlatLot relative) {
 		boolean result = super.makeConnected(relative);
 

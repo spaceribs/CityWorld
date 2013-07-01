@@ -10,6 +10,7 @@ import org.bukkit.inventory.ItemStack;
 public class LootProvider_Normal extends LootProvider {
 
 	// Based on work contributed by drew-bahrue (https://github.com/echurchill/CityWorld/pull/2)
+	@Override
 	public void setLoot(Odds odds, LootLocation lootLocation, Block block) {
 		Chest chest = (Chest) block.getState();
 		Inventory inv = chest.getInventory();

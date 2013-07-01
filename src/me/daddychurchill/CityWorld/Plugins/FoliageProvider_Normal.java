@@ -45,9 +45,6 @@ public class FoliageProvider_Normal extends FoliageProvider {
 			case COVER:
 				generator.oreProvider.dropSnow(generator, chunk, x, y + 5, z);
 				break;
-			case BUSHES:
-				chunk.setBlock(x, y, z, Material.LEAVES, odds.getRandomByte(3) );
-				break;
 			}
 		}
 		return true;

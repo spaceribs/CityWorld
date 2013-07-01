@@ -55,6 +55,7 @@ public class PasteProvider_WorldEdit extends PasteProvider {
 	
 	private FilenameFilter matchSchematics() {
 		return new FilenameFilter() {
+			@Override
 			public boolean accept(File dir, String name) {
 				return name.endsWith(".schematic");
 			}

@@ -4,7 +4,7 @@ import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
 import me.daddychurchill.CityWorld.Plats.BuildingLot;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
-import me.daddychurchill.CityWorld.Plats.RoadLot;
+//import me.daddychurchill.CityWorld.Plats.RoadLot;
 import me.daddychurchill.CityWorld.Support.ByteChunk;
 import me.daddychurchill.CityWorld.Support.PlatMap;
 import me.daddychurchill.CityWorld.Support.RealChunk;
@@ -38,7 +38,7 @@ public class StorageLot extends BuildingLot {
 		
 		// top it off
 		chunk.setLayer(groundY, generator.oreProvider.subsurfaceId);
-		chunk.setLayer(groundY + 1, RoadLot.pavementId);
+		chunk.setLayer(groundY + 1, PlatLot.pavementId);
 		
 		// fence please
 		drawFence(generator, chunk, context, 1, groundY + 2, neighbors);

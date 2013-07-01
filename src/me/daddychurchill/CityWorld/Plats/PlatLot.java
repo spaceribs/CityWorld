@@ -631,6 +631,6 @@ public abstract class PlatLot {
 	}
 
 	protected byte getAirId(WorldGenerator generator, int y) {
-		return (byte) airId;
+		return airId;
 	}
 }

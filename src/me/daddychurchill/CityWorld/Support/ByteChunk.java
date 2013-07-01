@@ -53,6 +53,7 @@ public class ByteChunk extends SupportChunk {
 			setBlock(x, y, z, materialId);
 	}
 	
+	@Override
 	public void setBlocks(int x, int y1, int y2, int z, byte materialId) {
 		for (int y = y1; y < y2; y++)
 			setBlock(x, y, z, materialId);

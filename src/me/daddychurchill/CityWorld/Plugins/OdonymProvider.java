@@ -20,7 +20,7 @@ public abstract class OdonymProvider extends Provider {
 	}
 	
 	protected Random getRandomFor(int i) {
-		return new Random((long) i * (long) Integer.MAX_VALUE + (long) baseSeed);
+		return new Random((long) i * (long) Integer.MAX_VALUE + baseSeed);
 	}
 	
 	public void decaySign(Odds odds, String[] text) {

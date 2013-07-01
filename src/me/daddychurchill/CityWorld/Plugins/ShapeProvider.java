@@ -45,6 +45,8 @@ public abstract class ShapeProvider extends Provider {
 
 	private SimplexNoiseGenerator macroShape;
 	private SimplexNoiseGenerator microShape;
+	
+	protected CaveProvider caveProvider;
 	protected Odds odds;
 	
 	public int getStructureLevel() {
@@ -121,11 +123,19 @@ public abstract class ShapeProvider extends Provider {
 		int blockZ = chunk.chunkZ * chunk.width + z;
 		
 		// stony bits
+//		for (int y = 2; y < stratumY; y++)
+//			if (lot.isValidStrataY(generator, blockX, y, blockZ) && generator.shapeProvider.notACave(generator, blockX, y, blockZ)) {
+//				chunk.setBlock(x, y, z, stratumId);
+//			} else if (y <= OreProvider.lavaFieldLevel && generator.settings.includeLavaFields)
+//				chunk.setBlock(x, y, z, OreProvider.stillLavaId);
+		
+		// start with all stone
 		for (int y = 2; y < stratumY; y++)
-			if (lot.isValidStrataY(generator, blockX, y, blockZ) && generator.shapeProvider.notACave(generator, blockX, y, blockZ))
+			if (lot.isValidStrataY(generator, blockX, y, blockZ))
 				chunk.setBlock(x, y, z, stratumId);
-			else if (y <= OreProvider.lavaFieldLevel && generator.settings.includeLavaFields)
-				chunk.setBlock(x, y, z, OreProvider.stillLavaId);
+		
+		// run cave generator
+		caveProvider.populate(generator.getWorld(), odds, chunk);
 
 		// aggregate bits
 		for (int y = stratumY; y < subsurfaceY - 1; y++)
