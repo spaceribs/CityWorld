@@ -296,10 +296,20 @@ public class WorldBlocks extends SupportChunk {
 		);
 	}
 	
+	public boolean isValid(Block block) {
+		return (
+			block.getType() != Material.GRASS 
+			&& block.getType() != Material.DIRT
+		);
+	}
+	
 	public void destroyWithin(int x1, int x2, int y1, int y2, int z1, int z2) {
 		
 		double holeScale = 1.0 / 20.0;
 		double leavesScale = 1.0 / 10.0;
+		double fulldecay = 0.5D;
+		double partialdecay = fulldecay - 0.2D;
+		double leavesdecay = 0.1D;
 		
 		long seed = generator.getWorldSeed();
 		SimplexOctaveGenerator noiseGen = new SimplexOctaveGenerator(seed,2);
@@ -313,9 +323,9 @@ public class WorldBlocks extends SupportChunk {
 					
 					Block block = world.getBlockAt(x, y, z);
 					
-					if (!block.isEmpty() && ( holeNoise > 0.5D ) ) {
+					if (!block.isEmpty() && isValid(block) && ( holeNoise > fulldecay ) ) {
 						block.setType(Material.AIR);
-					} else if ( holeNoise > 0.30D ) {
+					} else if ( holeNoise > partialdecay ) {
 						switch(block.getType()) {
 							case STONE:
 								if(odds.flipCoin())
@@ -365,7 +375,7 @@ public class WorldBlocks extends SupportChunk {
 							block.getRelative(0, -1, 0)
 						};
 						
-						if ( leavesNoise > 0.1D && holeNoise > 0.30D && block.isEmpty() ) {
+						if ( leavesNoise > leavesdecay && holeNoise > partialdecay && block.isEmpty() ) {
 							int support = 0;
 							
 							for(int n=0;n<neighbors.length;n++)

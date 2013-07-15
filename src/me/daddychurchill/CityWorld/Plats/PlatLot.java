@@ -202,7 +202,7 @@ public abstract class PlatLot {
 						} else {
 							chunk.clearBlock(x, y, z);
 						}
-					} else if (material == Material.MOB_SPAWNER) {
+					} else if (material == Material.MOB_SPAWNER || material == Material.SPONGE) {
 						if (chunkOdds.playOdds(spawnerOdds)) {
 							chunk.setSpawner(x, y, z, EntityType.ZOMBIE );
 						} else {

@@ -14,7 +14,6 @@ public class SurfaceProvider_Normal extends SurfaceProvider {
 
 	public SurfaceProvider_Normal(Odds odds) {
 		super(odds);
-		// TODO Auto-generated constructor stub
 	}
 
 	@Override

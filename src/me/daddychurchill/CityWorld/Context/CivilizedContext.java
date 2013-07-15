@@ -24,7 +24,7 @@ public abstract class CivilizedContext extends DataContext {
 		oddsOfSimilarBuildingRounding = oddsExtremelyLikely; 
 		oddsOfStairWallMaterialIsWallMaterial = oddsExtremelyLikely; 
 		
-		oddsOfUnfinishedBuildings = oddsLikely; 
+		oddsOfUnfinishedBuildings = oddsVeryUnlikely;
 		oddsOfOnlyUnfinishedBasements = oddsVeryLikely; 
 		oddsOfCranes = oddsVeryLikely; 
 		
