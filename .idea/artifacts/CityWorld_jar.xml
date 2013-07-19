@@ -1,0 +1,16 @@
+<component name="ArtifactManager">
+  <artifact build-on-make="true" name="CityWorld:jar">
+    <output-path>$PROJECT_DIR$/classes/artifacts/CityWorld_jar</output-path>
+    <root id="root">
+      <element id="archive" name="CityWorld.jar">
+        <element id="module-output" name="CityWorld" />
+        <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
+      </element>
+      <element id="library" level="project" name="WorldEdit" />
+      <element id="library" level="project" name="BukkitForge-1.5.1-292" />
+      <element id="library" level="project" name="Tekkit" />
+      <element id="library" level="project" name="PhatLoots" />
+      <element id="library" level="project" name="craftbukkit-1.5.2-R1.0" />
+    </root>
+  </artifact>
+</component>

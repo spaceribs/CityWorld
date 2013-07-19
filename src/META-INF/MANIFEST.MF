@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: WorldEdit.jar BukkitForge-1.5.1-292.jar Tekkit.jar PhatLoo
+ ts.jar craftbukkit-1.5.2-R1.0.jar
+

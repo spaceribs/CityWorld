@@ -1,5 +1,6 @@
 package me.daddychurchill.CityWorld.Plugins;
 
+import me.daddychurchill.CityWorld.Plugins.AthmosCaves.NodeCaves;
 import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Context.ConstructionContext;
 import me.daddychurchill.CityWorld.Context.DataContext;
@@ -420,13 +421,18 @@ public class ShapeProvider_Normal extends ShapeProvider {
 		return mineShape.noise(chunkX * mineScale, chunkY * mineScale + 0.5, chunkZ * mineScale) > 0.0;
 	}
 
+    private NodeCaves caveGen = new NodeCaves();
 	@Override
 	public boolean notACave(WorldGenerator generator, int blockX, int blockY, int blockZ) {
 		if (generator.settings.includeCaves) {
-			double cave = caveShape.noise(blockX * caveScale, blockY * caveScale, blockZ * caveScale);
-			return !(Math.abs(cave) < caveThreshold);
-		} else
-			return true;
+//			double cave = caveShape.noise(blockX * caveScale, blockY * caveScale, blockZ * caveScale);
+//			if(!(Math.abs(cave) < caveThreshold)) // Is it a cave depending on simple noise?
+//                return false;
+            return !caveGen.isCave(generator,blockX,blockY,blockZ);
+
+
+		}
+		return true;
 	}
 	
 	public boolean isSurfaceCaveAt(double chunkX, double chunkZ) {

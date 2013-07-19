@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="FractCave">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/FractCave.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
