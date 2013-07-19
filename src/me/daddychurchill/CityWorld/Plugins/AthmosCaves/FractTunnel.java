@@ -10,6 +10,7 @@ import me.daddychurchill.CityWorld.WorldGenerator;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Created with IntelliJ IDEA.
@@ -53,11 +54,12 @@ public class FractTunnel {
             fractCave.CaveGen(output,input);
             MWNumericArray m = (MWNumericArray) output[0];
             int[][] matrix = (int[][]) m.toIntArray();
-
-            System.out.println(Arrays.deepToString(matrix));
-
+            //System.out.println(Arrays.deepToString(matrix));
+//            log.info("matlab returned");
             for(int i=0;i< matrix[0].length;i++){
-                tunnelBlocks.addAll(getSphere(matrix[0][i],matrix[1][i],matrix[2][i],4)); //FIXME radius shouldn't be hardcoded...
+                Set<XYZ> sphere = getSphere(matrix[0][i],matrix[1][i],matrix[2][i],4);
+                //log.info("adding "+sphere.size() + " blocks");
+                tunnelBlocks.addAll(sphere); //FIXME radius shouldn't be hardcoded...
             }
 
         } catch (MWException e) {
@@ -80,7 +82,9 @@ public class FractTunnel {
                 }
             }
         }
+
         return blocks;
+
     }
 
     private static double norm(int x,int y, int z){
