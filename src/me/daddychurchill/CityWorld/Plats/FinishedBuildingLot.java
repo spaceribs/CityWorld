@@ -409,13 +409,21 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 			return Material.NETHER_BRICK;
 		case 7:
 			return Material.QUARTZ_BLOCK;
+		case 16:
+			return Material.HARD_CLAY;
+		case 17:
+			return Material.STAINED_CLAY;
+		case 18:
+			return Material.COAL_BLOCK;
+		case 19:
+			return Material.ENDER_STONE;
 		default:
 			return Material.STONE;
 		}
 	}
 
 	protected Material pickRoofMaterial() {
-		switch (chunkOdds.getRandomInt(7)) {
+		switch (chunkOdds.getRandomInt(17)) {
 		case 1:
 			return Material.COBBLESTONE;
 		case 2:
@@ -428,7 +436,7 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 			return Material.SMOOTH_BRICK;
 		case 6:
 			return Material.NETHER_BRICK;
-		case 7:
+		case 12:
 			return Material.QUARTZ_BLOCK;
 		default:
 			return Material.STONE;
@@ -443,18 +451,13 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 			return Material.COBBLE_WALL;
 
 		case NETHERRACK:
-//		case NETHER_BRICK:
 			return Material.NETHER_FENCE;
 			
-//		case SANDSTONE:
-		case SAND:
-//		case CLAY:
-		case WOOD:
-//		case BRICK:
-			return Material.FENCE;
-		
 		default: 
-			return wall;
+			if (chunkOdds.playOdds(DataContext.oddsSomewhatUnlikely))
+				return Material.FENCE;
+			else
+				return wall;
 		}
 	}
 
@@ -467,7 +470,6 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 		case STONE:
 		case SMOOTH_BRICK:
 		case CLAY:
-//		case IRON_BLOCK:
 		case DOUBLE_STEP:
 			return Material.SMOOTH_STAIRS;
 
@@ -484,15 +486,16 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 			return Material.SANDSTONE_STAIRS;
 			
 		case QUARTZ_BLOCK:
+		case COAL_BLOCK:
 			return Material.QUARTZ_STAIRS;
 		
-		default: // WOOD
+		default: // all other materials
 			return Material.WOOD_STAIRS;
 		}
 	}
 
-	private Material pickStairPlatformMaterial(Material wall) {
-		switch (wall) {
+	private Material pickStairPlatformMaterial(Material stair) {
+		switch (stair) {
 		case COBBLESTONE_STAIRS:
 			return Material.COBBLESTONE;
 		case SMOOTH_STAIRS:
@@ -518,18 +521,21 @@ public abstract class FinishedBuildingLot extends BuildingLot {
 		case SMOOTH_BRICK:
 			return Material.IRON_FENCE;
 
-//		case IRON_BLOCK:
 		case DOUBLE_STEP:
 		case WOOL:
 		case BRICK:
+		case COAL_BLOCK:
 			return Material.THIN_GLASS;
 		
 		case NETHERRACK:
 		case NETHER_BRICK:
 			return Material.NETHER_FENCE;
 		
-		default: // SANDSTONE, WOOD, SAND, CLAY
-			return Material.FENCE;
+		default: // SANDSTONE, WOOD, SAND, CLAY, HARD_CLAY, STAINED_CLAY
+			if (chunkOdds.playOdds(DataContext.oddsSomewhatUnlikely))
+				return Material.GLASS;
+			else
+				return Material.FENCE;
 		}
 	}
 

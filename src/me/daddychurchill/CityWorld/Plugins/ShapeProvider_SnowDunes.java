@@ -23,9 +23,6 @@ import me.daddychurchill.CityWorld.Support.RealChunk;
 
 public class ShapeProvider_SnowDunes extends ShapeProvider_Normal {
 
-	public final static Material floodMat = Material.SNOW_BLOCK;
-	public final static byte floodId = (byte) Material.SNOW_BLOCK.getId();
-	
 	protected int floodY;
 	
 	private SimplexOctaveGenerator duneFeature1;
@@ -33,10 +30,10 @@ public class ShapeProvider_SnowDunes extends ShapeProvider_Normal {
 //	private SimplexOctaveGenerator duneNoise;
 	
 	private final static int featureOctaves = 2;
-	private final static int featureVerticalScale = 4;
+	private final static int featureVerticalScale = 5;
 	private final static double featureFrequency = 1.50;
 	private final static double featureAmplitude = 1;
-	private final static double featureHorizontalScale = 1.0 / 32.0;
+	private final static double featureHorizontalScale = 1.0 / 64.0;
 	
 //	private final static int noiseOctaves = 16;
 //	private final static int noiseVerticalScale = 3;
@@ -47,7 +44,7 @@ public class ShapeProvider_SnowDunes extends ShapeProvider_Normal {
 	public ShapeProvider_SnowDunes(WorldGenerator generator, Odds odds) {
 		super(generator, odds);
 		
-		floodY = seaLevel + (featureVerticalScale / 2 * 3);
+		floodY = seaLevel + 15;
 
 		long seed = generator.getWorldSeed();
 		duneFeature1 = new SimplexOctaveGenerator(seed + 20, featureOctaves);
@@ -109,6 +106,35 @@ public class ShapeProvider_SnowDunes extends ShapeProvider_Normal {
 		return floodY;
 	}
 
+	private final static Material snowMat = Material.SNOW_BLOCK;
+//	private final static Material snowMat = Material.GLASS;
+	private final static byte snowId = (byte) snowMat.getId();
+	private final static byte snowCoverId = (byte) Material.SNOW.getId();
+	
+	@Override
+	public byte findAtmosphereIdAt(WorldGenerator generator, int blockY) {
+		if (blockY < floodY)
+			return snowId;
+		else
+			return super.findAtmosphereIdAt(generator, blockY);
+	}
+	
+	@Override
+	public Material findAtmosphereMaterialAt(WorldGenerator generator, int blockY) {
+		if (blockY < floodY)
+			return snowMat;
+		else
+			return super.findAtmosphereMaterialAt(generator, blockY);
+	}
+	
+	@Override
+	public byte findGroundCoverIdAt(WorldGenerator generator, int blockY) {
+		if (blockY < floodY)
+			return snowCoverId;
+		else
+			return super.findGroundCoverIdAt(generator, blockY);
+	}
+	
 	@Override
 	protected Biome remapBiome(WorldGenerator generator, PlatLot lot, Biome biome) {
 		return Biome.ICE_MOUNTAINS;
@@ -121,11 +147,10 @@ public class ShapeProvider_SnowDunes extends ShapeProvider_Normal {
 			int coverY, byte coverId, boolean surfaceCaves) {
 
 		// do the default bit
-		actualGenerateStratas(generator, lot, chunk, x, z, substratumId, stratumId, stratumY, 
-				subsurfaceId, subsurfaceY, surfaceId, surfaceCaves);
+		super.generateStratas(generator, lot, chunk, x, z, substratumId, stratumId, stratumY, subsurfaceId, subsurfaceY, surfaceId, coverY, coverId, surfaceCaves);
 		
 		// cover it up a bit
-		actualGenerateSnow(generator, lot, chunk, x, z, subsurfaceY);
+		actualGenerateSnow(generator, lot, chunk, x, z, coverY);
 	}
 	
 	@Override
@@ -135,74 +160,96 @@ public class ShapeProvider_SnowDunes extends ShapeProvider_Normal {
 			boolean surfaceCaves) {
 
 		// do the default bit
-		actualGenerateStratas(generator, lot, chunk, x, z, substratumId, stratumId, stratumY, 
-				subsurfaceId, subsurfaceY, surfaceId, surfaceCaves);
+		super.generateStratas(generator, lot, chunk, x, z, substratumId, stratumId, stratumY, subsurfaceId, subsurfaceY, surfaceId, surfaceCaves);
 		
 		// cover it up a bit
 		actualGenerateSnow(generator, lot, chunk, x, z, subsurfaceY);
 	}
 	
-	protected void actualGenerateSnow(WorldGenerator generator, PlatLot lot, ByteChunk chunk, int x, int z, int subsurfaceY) {
-		int y = findFloodY(generator, chunk.getBlockX(x), chunk.getBlockZ(z));
-		if (y > subsurfaceY) {
-			y = chunk.findLastEmptyBelow(x, y + 1, z);
-			if (!chunk.isPartialHeight(x, y - 1, z))
-				chunk.setBlocks(x, subsurfaceY, y, z, floodId);
-		}
+	protected void actualGenerateSnow(WorldGenerator generator, PlatLot lot, ByteChunk chunk, int x, int z, int y) {
+		int baseY = chunk.findLastEmptyBelow(x, y + 1, z);
+		int snowY = findFloodY(generator, chunk.getBlockX(x), chunk.getBlockZ(z));
+		if (snowY > baseY) 
+			chunk.setBlocks(x, baseY, snowY, z, snowId);
 	}
-	
-	private static int snowId = Material.SNOW.getId();
 	
 	@Override
 	public void postGenerateBlocks(WorldGenerator generator, PlatLot lot, RealChunk chunk, CachedYs blockYs) {
 		
-		// add the snow
-		ShapeProvider shape = generator.shapeProvider;
-//		OreProvider ore = generator.oreProvider;
-		
 		// let the other guy do it's thing
 		super.postGenerateBlocks(generator, lot, chunk, blockYs);
-
-		// shape the world
+		
+		// where to start?
+		int topY = lot.getTopY(generator);
+		
+		// now sprinkle snow
 		for (int x = 0; x < chunk.width; x++) {
 			for (int z = 0; z < chunk.width; z++) {
-				int surfaceY = blockYs.getBlockY(x, z);
-				
-				// where to drop the snow
-				double floodY = shape.findPerciseFloodY(generator, chunk.getBlockX(x), chunk.getBlockZ(z));
-				byte amount = (byte) NoiseGenerator.floor((floodY - Math.floor(floodY)) * 8.0);
-				int y = NoiseGenerator.floor(floodY);
-				if (surfaceY > floodY)
-					y = surfaceY;
-				
-				// find the bottom
-				y = chunk.findLastEmptyBelow(x, y + 1, z);
-				if (chunk.isEmpty(x, y, z)) {
-					if (!chunk.isPartialHeight(x, y - 1, z))
-						chunk.setBlock(x, y, z, snowId, amount, false);
-					y++;
-				}
-				
-				// see if there is more we can do
-				boolean thisOneEmpty = false;
-				boolean lastOneSolid = false;
-				while (amount > 0 && y < chunk.height) {
-					y++;
-					thisOneEmpty = chunk.isEmpty(x, y, z);
-					if (lastOneSolid && thisOneEmpty) {
-						if (!chunk.isPartialHeight(x, y - 1, z))
-							chunk.setBlock(x, y, z, snowId, amount, false);
-						amount--;
-					}
-					lastOneSolid = !thisOneEmpty;
+				double snowCoverY = findPerciseFloodY(generator, chunk.getBlockX(x), chunk.getBlockZ(z));
+				int snowY = chunk.findFirstEmpty(x, Math.max(topY, NoiseGenerator.floor(snowCoverY)), z);
+				if (!chunk.isPartialHeight(x, snowY - 1, z)) {
+					byte snowAmount = (byte) NoiseGenerator.floor((snowCoverY - Math.floor(snowCoverY)) * 8.0);
+					if (snowAmount > 3 & chunk.getBlockType(x, snowY - 1, z) != snowId)
+						snowAmount = (byte)(7 - snowAmount);
+					chunk.setBlock(x, snowY, z, snowCoverId, snowAmount, false);
 				}
 			}
 		}
+		
+		// add the snow
+//		ShapeProvider shape = generator.shapeProvider;
+//		OreProvider ore = generator.oreProvider;
+		
+//		// let the other guy do it's thing
+//		super.postGenerateBlocks(generator, lot, chunk, blockYs);
+		
+//		// how tall can it be?
+//		int maxY = lot.getTopY(generator);
+//
+//		// shape the world
+//		for (int x = 0; x < chunk.width; x++) {
+//			for (int z = 0; z < chunk.width; z++) {
+//				int surfaceY = blockYs.getBlockY(x, z);
+//				
+//				// where to drop the snow
+//				double floodY = shape.findPerciseFloodY(generator, chunk.getBlockX(x), chunk.getBlockZ(z));
+//				byte amount = (byte) NoiseGenerator.floor((floodY - Math.floor(floodY)) * 8.0);
+//				int y = NoiseGenerator.floor(floodY);
+//				if (surfaceY > floodY)
+//					y = surfaceY;
+//				
+//				// find the bottom
+////				y = chunk.findLastEmptyBelow(x, maxY, z);
+////				if (chunk.isEmpty(x, y, z)) {
+////					if (!chunk.isPartialHeight(x, y - 1, z))
+////						chunk.setBlock(x, y, z, snowCoverId, amount, false);
+////					y--;
+////				}
+//				if (chunk.isEmpty(x, y, z)) {
+//					chunk.setBlock(x, y - 1, z, Material.GLASS);
+//					chunk.setBlock(x, y, z, snowCoverId, amount, false);
+//				}
+//				
+////				// see if there is more we can do
+////				boolean thisOneEmpty = false;
+////				boolean lastOneSolid = false;
+////				while (amount > 0 && y < chunk.height) {
+////					y++;
+////					thisOneEmpty = chunk.isEmpty(x, y, z);
+////					if (lastOneSolid && thisOneEmpty) {
+////						if (!chunk.isPartialHeight(x, y - 1, z))
+////							chunk.setBlock(x, y, z, snowCoverId, amount, false);
+////						amount--;
+////					}
+////					lastOneSolid = !thisOneEmpty;
+////				}
+//			}
+//		}
 	}
 	
 //	public void dropSnow(WorldGenerator generator, RealChunk chunk, int x, int y, int z, byte level) {
 //		y = chunk.findLastEmptyBelow(x, y + 1, z);
 //		if (chunk.isEmpty(x, y, z))
-//			chunk.setBlock(x, y, z, snowId, level, false);
+//			chunk.setBlock(x, y, z, snowCoverId, level, false);
 //	}
 }

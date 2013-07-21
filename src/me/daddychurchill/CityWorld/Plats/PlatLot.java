@@ -7,6 +7,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
 import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
+import me.daddychurchill.CityWorld.Plugins.ShapeProvider;
 import me.daddychurchill.CityWorld.Plugins.LootProvider.LootLocation;
 import me.daddychurchill.CityWorld.Plugins.OreProvider.OreLocation;
 import me.daddychurchill.CityWorld.Plugins.SpawnProvider.SpawnerLocation;
@@ -630,15 +631,17 @@ public abstract class PlatLot {
 		generator.surfaceProvider.generateSurface(generator, this, chunk, blockYs, includeTrees);
 	}
 	
-	// these can change
-	private Material airMaterial = Material.AIR;
-	private byte airId = (byte) airMaterial.getId();
-	
-	protected Material getAirMaterial(WorldGenerator generator, int y) {
-		return airMaterial;
+	protected byte getAirId(WorldGenerator generator, int y) {
+		if (getTopY(generator) <= y)
+			return ShapeProvider.airId;
+		else
+			return generator.shapeProvider.findAtmosphereIdAt(generator, y);
 	}
 
-	protected byte getAirId(WorldGenerator generator, int y) {
-		return airId;
+	protected Material getAirMaterial(WorldGenerator generator, int y) {
+		if (getTopY(generator) <= y)
+			return ShapeProvider.airMat;
+		else
+			return generator.shapeProvider.findAtmosphereMaterialAt(generator, y);
 	}
 }
