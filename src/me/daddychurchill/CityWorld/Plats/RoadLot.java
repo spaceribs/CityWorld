@@ -1172,12 +1172,12 @@ public class RoadLot extends ConnectedLot {
                     break;
                 case 3:
                 case 4:
-                case 5: //30%
+                case 5:
+                case 6://40%
                     chunk.setBlock(x, y, z, Material.COBBLESTONE);
                     break;
-                case 6:
                 case 7:
-                case 8: //30%
+                case 8: //20%
                     chunk.setBlock(x,y,z,Material.DIRT);
                     chunk.setBlock(x,y+1,z,Material.LONG_GRASS.getId(), chunkOdds.getRandomByte(3)); // 0=DEAD, 1=NORMAL, 2=FERN_LIKE
                     break;
