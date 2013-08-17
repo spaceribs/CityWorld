@@ -1,0 +1,6 @@
+
+Possible speed ups:
+
+* Don't use Java Random, use XORShift generator
+* better memory handling of schematics
+* hardcode less, let the java illiterates play with the parameters

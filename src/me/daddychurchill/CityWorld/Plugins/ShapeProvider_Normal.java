@@ -178,7 +178,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 		
 		// how natural is this platmap?
 		float nature = platmap.getNaturePercent();
-		if (nature == 0.0) {
+		if (nature < 0.7) {
 			if (platmap.getOddsGenerator().playOdds(oddsOfCentralPark))
 				return parkContext;
 			else
@@ -421,14 +421,14 @@ public class ShapeProvider_Normal extends ShapeProvider {
 		return mineShape.noise(chunkX * mineScale, chunkY * mineScale + 0.5, chunkZ * mineScale) > 0.0;
 	}
 
-    private NodeCaves caveGen = new NodeCaves();
+
 	@Override
 	public boolean notACave(WorldGenerator generator, int blockX, int blockY, int blockZ) {
 		if (generator.settings.includeCaves) {
-//			double cave = caveShape.noise(blockX * caveScale, blockY * caveScale, blockZ * caveScale);
-//			if(!(Math.abs(cave) < caveThreshold)) // Is it a cave depending on simple noise?
-//                return false;
-            return !caveGen.isCave(generator,blockX,blockY,blockZ);
+			double cave = caveShape.noise(blockX * caveScale, blockY * caveScale, blockZ * caveScale);
+			if(!(Math.abs(cave) < caveThreshold)) // Is it a cave depending on simple noise?
+                return false;
+            //return !NodeCaves.isCave(generator,blockX,blockY,blockZ);
 
 
 		}

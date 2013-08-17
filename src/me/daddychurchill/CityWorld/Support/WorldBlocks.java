@@ -307,7 +307,7 @@ public class WorldBlocks extends SupportChunk {
 		
 		double holeScale = 1.0 / 20.0;
 		double leavesScale = 1.0 / 10.0;
-		double fulldecay = 0.5D;
+		double fulldecay = 0.5D;                    // TODO: make those less hardcoded, maybe a command to use them on a per build basis
 		double partialdecay = fulldecay - 0.2D;
 		double leavesdecay = 0.1D;
 		

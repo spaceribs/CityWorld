@@ -38,7 +38,7 @@ public class CaveNode extends XYZ{
     public boolean equals(Object o){
         if(o instanceof CaveNode){
             CaveNode n = (CaveNode) o;
-            return super.equals(n)&&n.localseed==localseed; // if coordinates are equal, seed should be too
+            return super.equals(n);//&&n.localseed==localseed; // if coordinates are equal, seed should be too
         }
         return false;
     }
