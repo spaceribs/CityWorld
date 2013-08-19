@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import me.daddychurchill.CityWorld.WorldGenerator;
@@ -46,6 +47,7 @@ public class Clipboard_WorldEdit extends Clipboard {
 	private final static String tagChestOdds = "ChestOdds";
 	private final static String tagSpawnerType = "SpawnerType";
 	private final static String tagSpawnerOdds = "SpawnerOdds";
+    //private final static String tagEntranceFacing = "EntranceFacing";
 	
 	public Clipboard_WorldEdit(WorldGenerator generator, File file) throws Exception {
 		super(generator, file);
@@ -74,6 +76,7 @@ public class Clipboard_WorldEdit extends Clipboard {
 		metaYaml.addDefault(tagChestOdds, chestOdds);
 		metaYaml.addDefault(tagSpawnerType, spawnerType);
 		metaYaml.addDefault(tagSpawnerOdds, spawnerOdds);
+        //metaYaml.addDefault(tagEntranceFacing, entranceFacing);
 		
 		// start reading it
 		File metaFile = new File(file.getAbsolutePath() + metaExtension);
@@ -93,8 +96,9 @@ public class Clipboard_WorldEdit extends Clipboard {
 			chestOdds = Math.max(0.0, Math.min(1.0, metaYaml.getDouble(tagChestOdds, chestOdds)));
 			spawnerType = metaYaml.getString(tagSpawnerType, spawnerType);
 			spawnerOdds = Math.max(0.0, Math.min(1.0, metaYaml.getDouble(tagSpawnerOdds, spawnerOdds)));
+            //entranceFacing = metaYaml.getString(tagEntranceFacing,entranceFacing);
 		}
-		
+
 		// load the actual blocks
 		CuboidClipboard cuboid = SchematicFormat.getFormat(file).load(file);
 		
@@ -127,6 +131,8 @@ public class Clipboard_WorldEdit extends Clipboard {
 			facingCount *= 2;
 		if (flipableZ)
 			facingCount *= 2;
+//        if (sizeX==sizeZ)
+//            facingCount =4; // we can rotate it
 		
 		//TODO we should allocate only facing count, then allocate the size based on what comes out of the rotation.. once I do rotation
 		// allocate room
@@ -134,6 +140,7 @@ public class Clipboard_WorldEdit extends Clipboard {
 		
 		// copy the cubes for each direction
 		copyCuboid(cuboid, 0); // normal one
+
 		if (flipableX) {
 			cuboid.flip(FlipDirection.WEST_EAST);
 			copyCuboid(cuboid, 1);
@@ -150,8 +157,84 @@ public class Clipboard_WorldEdit extends Clipboard {
 		} else if (flipableZ) {
 			cuboid.flip(FlipDirection.NORTH_SOUTH);
 			copyCuboid(cuboid, 1);
-		}
+		}else {
+//            if(sizeX==sizeZ){ // Yey, we can rotate it easily!
+//                try {
+//                    blocks[1] = rotateSquare90(blocks[0]); // rotated once...   90deg
+//                    blocks[2] = rotateSquare90(blocks[1]); // twice             180deg
+//                    blocks[3] = rotateSquare90(blocks[2]); // triple            270deg
+//                }catch (Exception e){
+//                    generator.reportException("Unable to rotate build.",e);
+//                    facingCount=1;
+//                }
+//
+//            }
+        }
 	}
+
+    /**
+     * Rotates an cuboid with a square footprint or do nothing
+     * if not square
+     * @param blocks array of all the blocks of the cuboid
+     * @return same blocks, but footprint rotated by 90 degrees
+     */
+    private BaseBlock[][][] rotateSquare90(BaseBlock[][][] blocks){
+        if(blocks.length!=blocks[0][0].length){
+
+            throw new RuntimeException("Tried to rotate non-quadratic schematic, sorry I panicked :(");
+        }
+        int size = blocks.length;
+        BaseBlock[][][] rotatedBlocks = new BaseBlock[size][blocks[0].length][size];
+
+        //first transpose
+        for(int x=0;x<size;x++){
+            for(int z=0;z<size;z++){
+                moveRotColumn(blocks, rotatedBlocks, x, z, z, x);
+            }
+        }
+        //then reverse columns
+        for(int x=0;x<size;x++){
+            for(int z=0;z<(size/2);z++){
+                swapColumn(rotatedBlocks,z,x,size-z-1,x);
+            }
+        }
+        return rotatedBlocks;
+    }
+
+    /**
+     * Swaps a column in the array of blocks
+     * @param blocks
+     * @param x1    x position of first column
+     * @param z1    z position of first column
+     * @param x2    x position of second column
+     * @param z2    z position of second column
+     */
+    private void swapColumn(BaseBlock[][][] blocks,int x1,int z1,int x2, int z2){
+        BaseBlock temp;
+        for(int y=0;y< blocks[0].length;y++){
+            temp = blocks[x1][y][z1];
+            blocks[x1][y][z1] = blocks[x2][y][z2]; // FIXME
+            blocks[x2][y][z2] = temp;
+        }
+    }
+
+    /**
+     * Moves and rotates a column by 90deg in the array of blocks
+     * @param blocks1 source array
+     * @param blocks2 destination array
+     * @param x1    x position of source column
+     * @param z1    z position of source column
+     * @param x2    x position of destination column
+     * @param z2    z position of destination column
+     */
+    private void moveRotColumn(BaseBlock[][][] blocks1, BaseBlock[][][] blocks2, int x1, int z1, int x2, int z2){
+        BaseBlock temp;
+        for(int y=0;y< blocks1[0].length;y++){
+            temp = blocks1[x1][y][z1];
+            temp.setData(temp.rotate90()); // TODO does this work?
+            blocks2[x2][y][z2] = temp;
+        }
+    }
 	
 	private void copyCuboid(CuboidClipboard cuboid, int facing) {
 	    for (int x = 0; x < sizeX; x++)
@@ -165,7 +248,7 @@ public class Clipboard_WorldEdit extends Clipboard {
 	}
 	
 	private int getFacingIndex(Direction.Facing facing) {
-		int result = 0;
+		int result;
 		switch (facing) {
 		case SOUTH:
 			result = 0;
@@ -176,12 +259,31 @@ public class Clipboard_WorldEdit extends Clipboard {
 		case NORTH:
 			result = 2;
 			break;
-		default: // case EAST:
+        case EAST:
+            result = 3; //fixme
+            break;
+		default:
 			result = 2;
 			break;
 		}
 		return Math.min(facingCount - 1, result);
 	}
+
+    private int getFacingIndex(String facing) {
+        int result=2;
+        facing.toLowerCase();
+
+        if(facing.equals("south")){
+            result=0;
+        }else if(facing.equals("west")){
+            result=1;
+        }else if(facing.equals("north")){
+            result=2;
+        }else if(facing.equals("east")){
+            result=3;
+        }
+        return Math.min(facingCount - 1, result);
+    }
 	
 	@Override
 	public void paste(WorldGenerator generator, RealChunk chunk, Direction.Facing facing, int blockX, int blockY, int blockZ) {
