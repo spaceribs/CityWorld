@@ -1,5 +1,6 @@
 package me.daddychurchill.CityWorld.Plats;
 
+import me.daddychurchill.CityWorld.Support.*;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Sign;
@@ -10,14 +11,7 @@ import me.daddychurchill.CityWorld.Context.DataContext;
 import me.daddychurchill.CityWorld.Plugins.LootProvider.LootLocation;
 import me.daddychurchill.CityWorld.Plugins.OreProvider.OreLocation;
 import me.daddychurchill.CityWorld.Plugins.SpawnProvider.SpawnerLocation;
-import me.daddychurchill.CityWorld.Support.ByteChunk;
-import me.daddychurchill.CityWorld.Support.CachedYs;
-import me.daddychurchill.CityWorld.Support.Direction;
-import me.daddychurchill.CityWorld.Support.PlatMap;
 import me.daddychurchill.CityWorld.Support.Direction.Stair;
-import me.daddychurchill.CityWorld.Support.Odds;
-import me.daddychurchill.CityWorld.Support.RealChunk;
-import me.daddychurchill.CityWorld.Support.SupportChunk;
 
 public abstract class PlatLot {
 	
@@ -80,7 +74,9 @@ public abstract class PlatLot {
 	protected final static Material snowMaterial = Material.SNOW;
 	protected final static Material stoneMaterial = Material.STONE;
 	protected final static Material rootMaterial = Material.GRASS;
-	
+
+    // Options for decay
+
 	public abstract long getConnectedKey();
 	public abstract boolean makeConnected(PlatLot relative);
 	public abstract boolean isConnectable(PlatLot relative);
@@ -179,11 +175,17 @@ public abstract class PlatLot {
 		deinitializeContext();
 	}
 	
-	protected void destroyLot(WorldGenerator generator, int y1, int y2) {
-		int x1 = chunkX * SupportChunk.chunksBlockWidth;
-		int z1 = chunkZ * SupportChunk.chunksBlockWidth;
-		generator.decayBlocks.destroyWithin(x1, x1 + SupportChunk.chunksBlockWidth, y1, y2, z1, z1 + SupportChunk.chunksBlockWidth);
+	protected void destroyLot(WorldGenerator generator, int y1, int y2) { //TODO deprecated
+        int x1 = chunkX * SupportChunk.chunksBlockWidth;
+        int z1 = chunkZ * SupportChunk.chunksBlockWidth;
+        generator.decayBlocks.destroyWithin(x1, x1 + SupportChunk.chunksBlockWidth, y1, y2, z1, z1 + SupportChunk.chunksBlockWidth);
 	}
+
+    protected void destroyLot(WorldGenerator generator, int y1, int y2,DecayOption decayOption) {
+        int x1 = chunkX * SupportChunk.chunksBlockWidth;
+        int z1 = chunkZ * SupportChunk.chunksBlockWidth;
+        generator.decayBlocks.destroyWithin(x1, x1 + SupportChunk.chunksBlockWidth, y1, y2, z1, z1 + SupportChunk.chunksBlockWidth,decayOption);
+    }
 	
 	protected void setChestsAndSpawners(WorldGenerator generator, RealChunk chunk, Double chestOdds, Double spawnerOdds, int y1, int y2, String chestName) {
 		int x1 = chunkX * SupportChunk.chunksBlockWidth;

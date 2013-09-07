@@ -9,6 +9,7 @@ import com.sk89q.worldedit.blocks.BaseBlock;
 import com.sk89q.worldedit.bukkit.BukkitWorld;
 import com.sk89q.worldedit.schematic.SchematicFormat;
 import me.daddychurchill.CityWorld.Clipboard.Clipboard;
+import me.daddychurchill.CityWorld.Support.DecayOption;
 import me.daddychurchill.CityWorld.Support.Direction;
 import me.daddychurchill.CityWorld.Support.RealChunk;
 import me.daddychurchill.CityWorld.WorldGenerator;
@@ -47,6 +48,11 @@ public class Clipboard_WorldEdit_Facing extends Clipboard {
 	private final static String tagChestOdds = "ChestOdds";
 	private final static String tagSpawnerType = "SpawnerType";
 	private final static String tagSpawnerOdds = "SpawnerOdds";
+    private final static String tagDecayOptionFullThreshold = "DecayFullThreshold";
+    private final static String tagDecayOptionPartialThreshold = "DecayPartialThreshold";
+    private final static String tagDecayOptionLeavesThreshold = "DecayLeavesThreshold";
+    private final static String tagDecayOptionHoleScale = "DecayHoleScale";
+    private final static String tagDecayOptionLeavesScale = "DecayLeavesScale";
     //private final static String tagEntranceFacing = "EntranceFacing";
 
     private final static String ext_south = "_south";
@@ -118,6 +124,13 @@ public class Clipboard_WorldEdit_Facing extends Clipboard {
 		metaYaml.addDefault(tagSpawnerType, spawnerType);
 		metaYaml.addDefault(tagSpawnerOdds, spawnerOdds);
         //metaYaml.addDefault(tagEntranceFacing, entranceFacing);
+        // DecayOptions, Thresholds
+        metaYaml.addDefault(tagDecayOptionFullThreshold, DecayOption.getDefaultDecayOptions().getFulldecay());
+        metaYaml.addDefault(tagDecayOptionPartialThreshold, DecayOption.getDefaultDecayOptions().getPartialdecay());
+        metaYaml.addDefault(tagDecayOptionLeavesThreshold, DecayOption.getDefaultDecayOptions().getLeavesdecay());
+        // DecayOptions, Scales
+        metaYaml.addDefault(tagDecayOptionHoleScale, DecayOption.getDefaultDecayOptions().getHoleScale());
+        metaYaml.addDefault(tagDecayOptionLeavesScale, DecayOption.getDefaultDecayOptions().getLeavesdecay());
 		
 		// start reading it
 		File metaFile = new File(basePath + metaExtension);
@@ -138,6 +151,14 @@ public class Clipboard_WorldEdit_Facing extends Clipboard {
 			spawnerType = metaYaml.getString(tagSpawnerType, spawnerType);
 			spawnerOdds = Math.max(0.0, Math.min(1.0, metaYaml.getDouble(tagSpawnerOdds, spawnerOdds)));
             //entranceFacing = metaYaml.getString(tagEntranceFacing,entranceFacing);
+
+            //Decay Options
+            double holeScale = metaYaml.getDouble(tagDecayOptionHoleScale);
+            double leavesScale = metaYaml.getDouble(tagDecayOptionLeavesScale);
+            double fullThreshold = metaYaml.getDouble(tagDecayOptionFullThreshold);
+            double partialThreshold = metaYaml.getDouble(tagDecayOptionPartialThreshold);
+            double leavesThreshold = metaYaml.getDouble(tagDecayOptionLeavesThreshold);
+            decayOptions = new DecayOption(holeScale,leavesScale,fullThreshold,partialThreshold,leavesThreshold);
 		}
 
         // try and save the meta data if we can
@@ -203,70 +224,6 @@ public class Clipboard_WorldEdit_Facing extends Clipboard {
             copyCuboid(cuboid, facing);
         }
 	}
-
-    /**
-     * Rotates an cuboid with a square footprint or do nothing
-     * if not square
-     * @param blocks array of all the blocks of the cuboid
-     * @return same blocks, but footprint rotated by 90 degrees
-     */
-    private BaseBlock[][][] rotateSquare90(BaseBlock[][][] blocks){
-        if(blocks.length!=blocks[0][0].length){
-
-            throw new RuntimeException("Tried to rotate non-quadratic schematic, sorry I panicked :(");
-        }
-        int size = blocks.length;
-        BaseBlock[][][] rotatedBlocks = new BaseBlock[size][blocks[0].length][size];
-
-        //first transpose
-        for(int x=0;x<size;x++){
-            for(int z=0;z<size;z++){
-                moveRotColumn(blocks, rotatedBlocks, x, z, z, x);
-            }
-        }
-        //then reverse columns
-        for(int x=0;x<size;x++){
-            for(int z=0;z<(size/2);z++){
-                swapColumn(rotatedBlocks,z,x,size-z-1,x);
-            }
-        }
-        return rotatedBlocks;
-    }
-
-    /**
-     * Swaps a column in the array of blocks
-     * @param blocks
-     * @param x1    x position of first column
-     * @param z1    z position of first column
-     * @param x2    x position of second column
-     * @param z2    z position of second column
-     */
-    private void swapColumn(BaseBlock[][][] blocks,int x1,int z1,int x2, int z2){
-        BaseBlock temp;
-        for(int y=0;y< blocks[0].length;y++){
-            temp = blocks[x1][y][z1];
-            blocks[x1][y][z1] = blocks[x2][y][z2]; // FIXME
-            blocks[x2][y][z2] = temp;
-        }
-    }
-
-    /**
-     * Moves and rotates a column by 90deg in the array of blocks
-     * @param blocks1 source array
-     * @param blocks2 destination array
-     * @param x1    x position of source column
-     * @param z1    z position of source column
-     * @param x2    x position of destination column
-     * @param z2    z position of destination column
-     */
-    private void moveRotColumn(BaseBlock[][][] blocks1, BaseBlock[][][] blocks2, int x1, int z1, int x2, int z2){
-        BaseBlock temp;
-        for(int y=0;y< blocks1[0].length;y++){
-            temp = blocks1[x1][y][z1];
-            temp.setData(temp.rotate90()); // TODO does this work?
-            blocks2[x2][y][z2] = temp;
-        }
-    }
 	
 	private void copyCuboid(CuboidClipboard cuboid, int facing) {
 	    for (int x = 0; x < sizeX; x++)

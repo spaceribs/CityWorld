@@ -2,6 +2,7 @@ package me.daddychurchill.CityWorld.Clipboard;
 
 import java.io.File;
 
+import me.daddychurchill.CityWorld.Support.DecayOption;
 import org.bukkit.Material;
 
 import me.daddychurchill.CityWorld.WorldGenerator;
@@ -22,6 +23,8 @@ public abstract class Clipboard {
     //public String entranceFacing = "south";
 	public boolean broadcastLocation = false;
 	public boolean decayable = true;
+
+    public DecayOption decayOptions = DecayOption.getDefaultDecayOptions();
 
 	public int sizeX;
 	public int sizeY;
