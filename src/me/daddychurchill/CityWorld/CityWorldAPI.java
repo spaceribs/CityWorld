@@ -6,6 +6,7 @@ import me.daddychurchill.CityWorld.Clipboard.ClipboardLot;
 import me.daddychurchill.CityWorld.Context.DataContext;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
 import me.daddychurchill.CityWorld.Plats.PlatLot.LotStyle;
+import me.daddychurchill.CityWorld.Support.DecayOption;
 import me.daddychurchill.CityWorld.Support.PlatMap;
 import me.daddychurchill.CityWorld.WorldGenerator;
 
@@ -187,4 +188,27 @@ public class CityWorldAPI {
 
 		return name;
 	}
+
+    public void setDecayOptions(Chunk c, DecayOption options){
+        WorldGenerator gen = (WorldGenerator) c.getWorld().getGenerator();
+        int chunkX = c.getX();
+        int chunkZ = c.getZ();
+
+        // Setup info - seams to require this to prevent NPE's when server is restarted.
+        gen.initializeWorldInfo(c.getWorld());
+
+        // figure out what everything looks like. Again :/
+        PlatMap platmap = gen.getPlatMap(chunkX, chunkZ);
+        if (platmap == null)
+            throw new IllegalArgumentException("PlatMap not found for specified chunk");
+
+        // figure out the lot
+        PlatLot lot = platmap.getMapLot(chunkX, chunkZ);
+
+        // Now check if lot is a clipboardlot to get schematic name
+        if (lot instanceof ClipboardLot) {
+            ClipboardLot clot = (ClipboardLot) lot;
+            clot.getClip().decayOptions = options;
+        }
+    }
 }
