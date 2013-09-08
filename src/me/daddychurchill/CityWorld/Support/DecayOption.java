@@ -1,5 +1,8 @@
 package me.daddychurchill.CityWorld.Support;
 
+import me.daddychurchill.CityWorld.CityWorld;
+import me.daddychurchill.CityWorld.CityWorldAPI;
+
 /**
  * Created with IntelliJ IDEA.
  * User: Thomas
@@ -15,6 +18,9 @@ public class DecayOption {
     private static final double defaultPartialdecay = 0.3D;
     private static final double defaultLeavesdecay = 0.1D;
 
+    private static final double defaultDecayIntensity = 1;
+
+
     private static final DecayOption defaultOptions = new DecayOption(defaultHoleScale,defaultLeavesScale,defaultFulldecay,defaultPartialdecay,defaultLeavesdecay);
 
     /**
@@ -26,12 +32,11 @@ public class DecayOption {
     }
 
     /* Decay Parameters */
-    private double holeScale = 1.0 / 20.0;
-    private double leavesScale = 1.0 / 10.0;
-    private double fulldecay = 0.5D;
-    private double partialdecay = fulldecay - 0.2D;
-    private double leavesdecay = 0.1D;
-
+    private double holeScale;
+    private double leavesScale;
+    private double fulldecay;
+    private double partialdecay;
+    private double leavesdecay;
 
     /**
      *
@@ -47,6 +52,26 @@ public class DecayOption {
         this.fulldecay = fulldecay;
         this.partialdecay = partialdecay;
         this.leavesdecay = leavesdecay;
+    }
+
+    /**
+     * calculates all the needed parameters out of 1 scale ranging from 0 (no decay) to 1 (heavy decay)
+     * @param intensity how intense shall decay be?
+     */
+    public DecayOption(double intensity) { //TODO Less hardcoded
+        if(intensity==0){ //absolutely no decay
+            fulldecay=1;
+            partialdecay=1;
+        }else if(intensity>0&&intensity<=1){
+            holeScale       = defaultHoleScale;
+            leavesScale     = defaultLeavesScale;
+            fulldecay       = 1-defaultFulldecay * intensity;
+            if(fulldecay<-0.8) fulldecay = -0.8;
+            partialdecay    = fulldecay-0.2D;
+            leavesdecay     = defaultLeavesdecay;
+        }else {
+            CityWorld.log.info("Illegal decay parameter, intensity must be in intervall [0,1]");
+        }
     }
 
     public double getHoleScale() {
@@ -92,5 +117,10 @@ public class DecayOption {
     public DecayOption setLeavesdecay(double leavesdecay) {
         this.leavesdecay = leavesdecay;
         return this;
+    }
+
+
+    public static double getDefaultDecayIntensity() {
+        return defaultDecayIntensity;
     }
 }

@@ -47,7 +47,7 @@ public class CityWorldSettings {
 	public boolean includeFloatingSubsurface = true;
 
 	public boolean includeTekkitMaterials = false;
-	public boolean forceLoadWorldEdit = false;
+	public boolean forceLoadWorldEdit = true; //FIXME should be false...
 	public boolean forceLoadTekkit = false;
 	
 	public int centerPointOfChunkRadiusX = 0;

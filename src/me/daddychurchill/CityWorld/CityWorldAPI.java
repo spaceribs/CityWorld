@@ -189,7 +189,7 @@ public class CityWorldAPI {
 		return name;
 	}
 
-    public void setDecayOptions(Chunk c, DecayOption options){
+    public void setDecayOptions(Chunk c, DecayOption options){ // TODO untested
         WorldGenerator gen = (WorldGenerator) c.getWorld().getGenerator();
         int chunkX = c.getX();
         int chunkZ = c.getZ();

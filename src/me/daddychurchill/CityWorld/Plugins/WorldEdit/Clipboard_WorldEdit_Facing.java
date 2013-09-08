@@ -48,11 +48,12 @@ public class Clipboard_WorldEdit_Facing extends Clipboard {
 	private final static String tagChestOdds = "ChestOdds";
 	private final static String tagSpawnerType = "SpawnerType";
 	private final static String tagSpawnerOdds = "SpawnerOdds";
-    private final static String tagDecayOptionFullThreshold = "DecayFullThreshold";
-    private final static String tagDecayOptionPartialThreshold = "DecayPartialThreshold";
-    private final static String tagDecayOptionLeavesThreshold = "DecayLeavesThreshold";
-    private final static String tagDecayOptionHoleScale = "DecayHoleScale";
-    private final static String tagDecayOptionLeavesScale = "DecayLeavesScale";
+//    private final static String tagDecayOptionFullThreshold = "DecayFullThreshold";
+//    private final static String tagDecayOptionPartialThreshold = "DecayPartialThreshold";
+//    private final static String tagDecayOptionLeavesThreshold = "DecayLeavesThreshold";
+//    private final static String tagDecayOptionHoleScale = "DecayHoleScale";
+//    private final static String tagDecayOptionLeavesScale = "DecayLeavesScale";
+    private final static String tagDecayIntensity = "DecayIntensity";
     //private final static String tagEntranceFacing = "EntranceFacing";
 
     private final static String ext_south = "_south";
@@ -125,12 +126,7 @@ public class Clipboard_WorldEdit_Facing extends Clipboard {
 		metaYaml.addDefault(tagSpawnerOdds, spawnerOdds);
         //metaYaml.addDefault(tagEntranceFacing, entranceFacing);
         // DecayOptions, Thresholds
-        metaYaml.addDefault(tagDecayOptionFullThreshold, DecayOption.getDefaultDecayOptions().getFulldecay());
-        metaYaml.addDefault(tagDecayOptionPartialThreshold, DecayOption.getDefaultDecayOptions().getPartialdecay());
-        metaYaml.addDefault(tagDecayOptionLeavesThreshold, DecayOption.getDefaultDecayOptions().getLeavesdecay());
-        // DecayOptions, Scales
-        metaYaml.addDefault(tagDecayOptionHoleScale, DecayOption.getDefaultDecayOptions().getHoleScale());
-        metaYaml.addDefault(tagDecayOptionLeavesScale, DecayOption.getDefaultDecayOptions().getLeavesdecay());
+        metaYaml.addDefault(tagDecayIntensity, DecayOption.getDefaultDecayIntensity());
 		
 		// start reading it
 		File metaFile = new File(basePath + metaExtension);
@@ -153,12 +149,8 @@ public class Clipboard_WorldEdit_Facing extends Clipboard {
             //entranceFacing = metaYaml.getString(tagEntranceFacing,entranceFacing);
 
             //Decay Options
-            double holeScale = metaYaml.getDouble(tagDecayOptionHoleScale);
-            double leavesScale = metaYaml.getDouble(tagDecayOptionLeavesScale);
-            double fullThreshold = metaYaml.getDouble(tagDecayOptionFullThreshold);
-            double partialThreshold = metaYaml.getDouble(tagDecayOptionPartialThreshold);
-            double leavesThreshold = metaYaml.getDouble(tagDecayOptionLeavesThreshold);
-            decayOptions = new DecayOption(holeScale,leavesScale,fullThreshold,partialThreshold,leavesThreshold);
+            double intensity = metaYaml.getDouble(tagDecayIntensity);
+            decayOptions = new DecayOption(intensity);
 		}
 
         // try and save the meta data if we can

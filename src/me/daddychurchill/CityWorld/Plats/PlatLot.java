@@ -174,7 +174,8 @@ public abstract class PlatLot {
 		// all done
 		deinitializeContext();
 	}
-	
+
+
 	protected void destroyLot(WorldGenerator generator, int y1, int y2) { //TODO deprecated
         int x1 = chunkX * SupportChunk.chunksBlockWidth;
         int z1 = chunkZ * SupportChunk.chunksBlockWidth;

@@ -300,6 +300,8 @@ public class WorldBlocks extends SupportChunk {
 		return (
 			block.getType() != Material.GRASS 
 			&& block.getType() != Material.DIRT
+            && block.getType() != Material.LEAVES
+            && block.getType() != Material.LOG
 		);
 	}
 
