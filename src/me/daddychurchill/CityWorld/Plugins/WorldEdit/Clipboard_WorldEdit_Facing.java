@@ -26,8 +26,6 @@ public class Clipboard_WorldEdit_Facing extends Clipboard {
 
 	private BaseBlock[][][][] blocks;
 	private int facingCount;
-	private boolean flipableX = false;
-	private boolean flipableZ = false;
 //  private boolean Rotatable = false;
 //	private boolean ScalableXZ = false;
 //	private boolean ScalableY = false;
@@ -35,8 +33,6 @@ public class Clipboard_WorldEdit_Facing extends Clipboard {
 
 	private final static String metaExtension = ".yml";
 	private final static String tagGroundLevelY = "GroundLevelY";
-	private final static String tagFlipableX = "FlipableX";
-	private final static String tagFlipableZ = "FlipableZ";
 //	private final static String tagScalableX = "ScalableX";
 //	private final static String tagScalableZ = "ScalableZ";
 //	private final static String tagScalableY = "ScalableY";
@@ -111,8 +107,6 @@ public class Clipboard_WorldEdit_Facing extends Clipboard {
 		
 		// add the defaults
 		metaYaml.addDefault(tagGroundLevelY, groundLevelY);
-		metaYaml.addDefault(tagFlipableX, flipableX);
-		metaYaml.addDefault(tagFlipableZ, flipableZ);
 //		metaYaml.addDefault(tagScalableX, ScalableX);
 //		metaYaml.addDefault(tagScalableZ, ScalableZ);
 //		metaYaml.addDefault(tagScalableY, ScalableY);
@@ -133,8 +127,6 @@ public class Clipboard_WorldEdit_Facing extends Clipboard {
 		if (metaFile.exists()) {
 			metaYaml.load(metaFile);
 			groundLevelY = Math.max(0, metaYaml.getInt(tagGroundLevelY, groundLevelY));
-			flipableX = metaYaml.getBoolean(tagFlipableX, flipableX);
-			flipableZ = metaYaml.getBoolean(tagFlipableZ, flipableZ);
 //			ScalableX = metaYaml.getBoolean(tagScalableX, ScalableX) && sizeX == 3;
 //			ScalableZ = metaYaml.getBoolean(tagScalableZ, ScalableZ) && sizeZ == 3;
 //			ScalableY = metaYaml.getBoolean(tagScalableY, ScalableY);
