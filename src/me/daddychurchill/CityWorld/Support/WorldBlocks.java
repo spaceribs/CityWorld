@@ -302,14 +302,36 @@ public class WorldBlocks extends SupportChunk {
 			&& block.getType() != Material.DIRT
 		);
 	}
-	
-	public void destroyWithin(int x1, int x2, int y1, int y2, int z1, int z2) {
-		
-		double holeScale = 1.0 / 20.0;
-		double leavesScale = 1.0 / 10.0;
-		double fulldecay = 0.5D;
-		double partialdecay = fulldecay - 0.2D;
-		double leavesdecay = 0.1D;
+
+    /**
+     * Destroys an area with default decay options
+     * @param x1 start x coordinate
+     * @param x2 end x coordinate
+     * @param y1 start y coordinate
+     * @param y2 end y coordinate
+     * @param z1 start z coordinate
+     * @param z2 end z coordinate
+     */
+    public void destroyWithin(int x1, int x2, int y1, int y2, int z1, int z2) {
+        destroyWithin(x1,x2,y1,y2,z1,z2, DecayOption.getDefaultDecayOptions());
+    }
+
+    /**
+     * Destroys an area with custom decay scale
+     * @param x1 start x coordinate
+     * @param x2 end x coordinate
+     * @param y1 start y coordinate
+     * @param y2 end y coordinate
+     * @param z1 start z coordinate
+     * @param z2 end z coordinate
+     * @param options decay options
+     */
+	public void destroyWithin(int x1, int x2, int y1, int y2, int z1, int z2, DecayOption options) {
+		double holeScale = options.getHoleScale();
+		double leavesScale = options.getLeavesScale();
+		double fulldecay = options.getFulldecay();
+		double partialdecay = options.getPartialdecay();
+		double leavesdecay = options.getLeavesdecay();
 		
 		long seed = generator.getWorldSeed();
 		SimplexOctaveGenerator noiseGen = new SimplexOctaveGenerator(seed,2);

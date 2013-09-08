@@ -1,6 +1,7 @@
 package me.daddychurchill.CityWorld.Support;
 
 public class Direction {
+
 	public enum Facing { // clockwise starting with South
 		SOUTH, // 0 - increasing Z
 		WEST,  // 1 - decreasing X

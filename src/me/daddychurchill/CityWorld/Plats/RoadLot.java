@@ -1164,10 +1164,29 @@ public class RoadLot extends ConnectedLot {
 		while (amount > 0) {
 			int x = x1 + chunkOdds.getRandomInt(x2 - x1);
 			int z = z1 + chunkOdds.getRandomInt(z2 - z1);
-			if (chunkOdds.flipCoin())
-				chunk.setBlock(x, y, z, Material.COBBLESTONE);
-			else
-				chunk.setBlock(x, y, z, Material.STEP.getId(), (byte) 3);
+
+            switch (chunkOdds.getRandomInt(10)){
+                case 0:
+                case 1:
+                case 2: //30%
+                    chunk.setBlock(x, y, z, Material.MOSSY_COBBLESTONE);
+                    break;
+                case 3:
+                case 4:
+                case 5:
+                case 6://40%
+                    chunk.setBlock(x, y, z, Material.COBBLESTONE);
+                    break;
+                case 7:
+                case 8: //20%
+                    chunk.setBlock(x,y,z,Material.DIRT);
+                    chunk.setBlock(x,y+1,z,Material.LONG_GRASS.getId(), chunkOdds.getRandomByte(3)); // 0=DEAD, 1=NORMAL, 2=FERN_LIKE
+                    break;
+                case 9: //10% since halfslabs are quite annoying
+                    chunk.setBlock(x, y, z, Material.STEP.getId(), (byte) 3);
+                    break;
+            }
+
 			amount--;
 		}
 	}

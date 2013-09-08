@@ -1,5 +1,6 @@
 package me.daddychurchill.CityWorld.Plugins;
 
+import me.daddychurchill.CityWorld.Plugins.AthmosCaves.NodeCaves;
 import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Context.ConstructionContext;
 import me.daddychurchill.CityWorld.Context.DataContext;
@@ -23,7 +24,6 @@ import me.daddychurchill.CityWorld.Support.RealChunk;
 import org.bukkit.World;
 import org.bukkit.block.Biome;
 import org.bukkit.generator.ChunkGenerator.BiomeGrid;
-import org.bukkit.util.noise.PerlinOctaveGenerator;
 import org.bukkit.util.noise.SimplexNoiseGenerator;
 import org.bukkit.util.noise.SimplexOctaveGenerator;
 
@@ -44,7 +44,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 	public SimplexOctaveGenerator seaShape;
 	public SimplexOctaveGenerator noiseShape;
 	public SimplexOctaveGenerator featureShape;
-	public PerlinOctaveGenerator caveShape;
+	public SimplexNoiseGenerator caveShape;
 	public SimplexNoiseGenerator mineShape;
 
 	protected int height;
@@ -80,9 +80,9 @@ public class ShapeProvider_Normal extends ShapeProvider {
 	public final static double featureAmplitude = 0.75;
 	public final static double featureHorizontalScale = 1.0 / 64.0;
 	
-	public final static double caveScale = 1.0 / 12.0;
+	public final static double caveScale = 1.0 / 128.0;
 	public final static double caveScaleY = caveScale * 2;
-	public final static double caveThreshold = 0.1; // smaller the number the more larger the caves will be
+	public final static double caveThreshold = 0.05; // smaller the number the more larger the caves will be
 	
 	public final static double mineScale = 1.0 / 4.0;
 	public final static double mineScaleY = mineScale;
@@ -103,9 +103,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 		featureShape = new SimplexOctaveGenerator(seed + 4, 2);
 		featureShape.setScale(featureHorizontalScale);
 		
-		caveShape = new PerlinOctaveGenerator(seed, 32);
-		caveShape.setScale(caveScale);
-		
+		caveShape = new SimplexNoiseGenerator(seed);
 		mineShape = new SimplexNoiseGenerator(seed + 1);
 		
 		// get ranges
@@ -180,7 +178,7 @@ public class ShapeProvider_Normal extends ShapeProvider {
 		
 		// how natural is this platmap?
 		float nature = platmap.getNaturePercent();
-		if (nature == 0.0) {
+		if (nature < 0.7) {
 			if (platmap.getOddsGenerator().playOdds(oddsOfCentralPark))
 				return parkContext;
 			else
@@ -423,14 +421,18 @@ public class ShapeProvider_Normal extends ShapeProvider {
 		return mineShape.noise(chunkX * mineScale, chunkY * mineScale + 0.5, chunkZ * mineScale) > 0.0;
 	}
 
+
 	@Override
 	public boolean notACave(WorldGenerator generator, int blockX, int blockY, int blockZ) {
 		if (generator.settings.includeCaves) {
-			double cave = caveShape.noise(blockX, blockY, blockZ, 0.4, 1, true);
-			//double cave = caveShape.noise(blockX, blockY, blockZ);
-			return (Math.abs(cave) < caveThreshold);
-		} else
-			return true;
+			double cave = caveShape.noise(blockX * caveScale, blockY * caveScale, blockZ * caveScale);
+			if(!(Math.abs(cave) < caveThreshold)) // Is it a cave depending on simple noise?
+                return false;
+            //return !NodeCaves.isCave(generator,blockX,blockY,blockZ);
+
+
+		}
+		return true;
 	}
 	
 	public boolean isSurfaceCaveAt(double chunkX, double chunkZ) {

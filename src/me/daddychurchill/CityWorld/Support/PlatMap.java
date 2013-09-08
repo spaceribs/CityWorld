@@ -416,7 +416,8 @@ public class PlatMap {
 		return false;
 	}
 
-	private final static int maxPlaceTries = 16;
+	private final static int maxPlaceTries = 16; //FIXME Would more tries help to populate more?
+
 	public void placeSpecificClip(WorldGenerator generator, Odds odds, Clipboard clip) {
 		int chunksX = clip.chunkX;
 		int chunksZ = clip.chunkZ;

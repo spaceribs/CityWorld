@@ -79,9 +79,20 @@ public class PasteProvider_WorldEdit extends PasteProvider {
 			File[] schematicFiles = contextFolder.listFiles(matchSchematics());
 			for (File schematicFile: schematicFiles) {
 				try {
-					
-					// load a clipboard
-					Clipboard clip = new Clipboard_WorldEdit(generator, schematicFile);
+                    Clipboard clip=null;
+					if(Clipboard_WorldEdit_Facing.isPrerotated(schematicFile.getName())){ // is it prerotated?
+                        if(Clipboard_WorldEdit_Facing.isPrerotatedSouth(schematicFile.getName())){
+                            clip = new Clipboard_WorldEdit_Facing(generator,schematicFile);
+                            generator.getPlugin().getLogger().info("loaded prerotated schematic: " + schematicFile.getName());
+                        }else{
+                            continue;
+                        }
+                    }else {
+                        // load a clipboard
+                        clip = new Clipboard_WorldEdit(generator, schematicFile);
+                    }
+
+
 					
 					// too big?
 					if (clip.chunkX > maxX || clip.chunkZ > maxZ) {
