@@ -32,12 +32,12 @@ public abstract class SurfaceProvider extends Provider {
 			int x, double perciseY, int z, boolean includeTrees);
 	
 	public void generateSurface(WorldGenerator generator, PlatLot lot, RealChunk chunk, CachedYs blockYs, boolean includeTrees) {
-		FoliageProvider foliage = generator.foliageProvider;
-		for (int x = 0; x < chunk.width; x++) {
-			for (int z = 0; z < chunk.width; z++) {
-				generateSurfacePoint(generator, lot, chunk, foliage, x, blockYs.getPerciseY(x, z), z, includeTrees);
-			}
-		}
+//		FoliageProvider foliage = generator.foliageProvider;
+//		for (int x = 0; x < chunk.width; x++) {
+//			for (int z = 0; z < chunk.width; z++) {
+//				generateSurfacePoint(generator, lot, chunk, foliage, x, blockYs.getPerciseY(x, z), z, includeTrees);
+//			}
+//		}
 	}
 	
 	// Based on work contributed by drew-bahrue (https://github.com/echurchill/CityWorld/pull/2)
