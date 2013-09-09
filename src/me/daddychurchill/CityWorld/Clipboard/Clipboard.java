@@ -19,7 +19,7 @@ public abstract class Clipboard {
 	public String spawnerType = "ZOMBIE";
 	public double spawnerOdds = 0.50D;
 	public double oddsOfAppearance = DataContext.oddsSomewhatUnlikely;
-	public int groundLevelY = 0;
+	public int groundLevelY = 1;
     //public String entranceFacing = "south";
 	public boolean broadcastLocation = false;
 	public boolean decayable = true;
