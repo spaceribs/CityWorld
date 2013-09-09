@@ -1,7 +1,6 @@
 package me.daddychurchill.CityWorld.Clipboard;
 
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.*;
 
 import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Support.Odds;
@@ -33,7 +32,7 @@ public class ClipboardList implements Iterable<Clipboard> {
 
 	@Override
 	public Iterator<Clipboard> iterator() {
-		return list.values().iterator();
+        return list.values().iterator();
 	}
 	
 	public int count() {
@@ -44,9 +43,13 @@ public class ClipboardList implements Iterable<Clipboard> {
 
 		// grab platmap's random
 		Odds odds = platmap.getOddsGenerator();
-		
+
+        // shuffle list, we don't want the same sequence over and over
+        ArrayList<Clipboard> schems = new ArrayList<Clipboard>(list.values());
+        Collections.shuffle(schems,new Random(odds.getRandomLong())); //FIXME potentially very slow with too many schems, better pick some at random
+
 		// for each schematic
-		for (Clipboard clip: this) {
+		for (Clipboard clip: schems) {
 
 			// that succeeds the OddsOfAppearance
 			if (odds.playOdds(clip.oddsOfAppearance)) {

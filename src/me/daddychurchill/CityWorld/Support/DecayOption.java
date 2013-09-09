@@ -55,7 +55,7 @@ public class DecayOption {
     }
 
     /**
-     * calculates all the needed parameters out of 1 scale ranging from 0 (no decay) to 1 (heavy decay)
+     * calculates all the needed parameters out of 1 scale ranging from 0 (no decay) to around 2 (heavy decay), 1 for normal decay
      * @param intensity how intense shall decay be?
      */
     public DecayOption(double intensity) { //TODO Less hardcoded

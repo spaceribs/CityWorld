@@ -349,7 +349,7 @@ public class WorldBlocks extends SupportChunk {
 					
 					if (!block.isEmpty() && isValid(block) && ( holeNoise > fulldecay ) ) {
 						block.setType(Material.AIR);
-					} else if ( holeNoise > partialdecay ) {
+					} else if ( isValid(block) && holeNoise > partialdecay ) {
 						switch(block.getType()) {
 							case STONE:
 								if(odds.flipCoin())
