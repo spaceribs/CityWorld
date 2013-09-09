@@ -1,6 +1,5 @@
 package me.daddychurchill.CityWorld.Plugins;
 
-import me.daddychurchill.CityWorld.Plugins.AthmosCaves.NodeCaves;
 import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Context.ConstructionContext;
 import me.daddychurchill.CityWorld.Context.DataContext;

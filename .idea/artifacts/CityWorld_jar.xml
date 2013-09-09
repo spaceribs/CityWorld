@@ -6,13 +6,6 @@
         <element id="module-output" name="CityWorld" />
         <element id="file-copy" path="$PROJECT_DIR$/plugin.yml" />
       </element>
-      <element id="library" level="project" name="javabuilder" />
-      <element id="library" level="project" name="craftbukkit-1.5.2-R1.0" />
-      <element id="library" level="project" name="WorldEdit" />
-      <element id="library" level="project" name="Tekkit" />
-      <element id="library" level="project" name="FractCave" />
-      <element id="library" level="project" name="BukkitForge-1.5.1-292" />
-      <element id="library" level="project" name="PhatLoots" />
     </root>
   </artifact>
 </component>

@@ -3,12 +3,6 @@
 	<exclude-output/>
 	<contentEntry url="file://$MODULE_DIR$"/>
 	<levels>
-		<level name="craftbukkit-1.5.2-R1.0" value="project"/>
-		<level name="WorldEdit" value="project"/>
-		<level name="PhatLoots" value="project"/>
-		<level name="BukkitForge-1.5.1-292" value="project"/>
-		<level name="Tekkit" value="project"/>
-		<level name="FractCave" value="project"/>
-		<level name="javabuilder" value="project"/>
+		<level name="lib" value="project"/>
 	</levels>
 </component>

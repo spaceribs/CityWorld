@@ -8,7 +8,6 @@ import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
 import me.daddychurchill.CityWorld.Plats.ConstructLot;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
-import me.daddychurchill.CityWorld.Plugins.Tekkit.TekkitMaterial;
 import me.daddychurchill.CityWorld.Support.ByteChunk;
 import me.daddychurchill.CityWorld.Support.Direction;
 import me.daddychurchill.CityWorld.Support.PlatMap;
@@ -34,8 +33,8 @@ public class OilPlatformLot extends ConstructLot {
 	private final static byte supportId = (byte) Material.NETHER_BRICK.getId();
 	private final static byte topperId = (byte) Material.NETHER_BRICK_STAIRS.getId();
 	
-	//tekkit materials
-	private final static byte oilId = (byte) TekkitMaterial.STATIONARY_OIL;
+	//tekkit materials -> ditched
+	//private final static byte oilId = (byte) TekkitMaterial.STATIONARY_OIL;
 	
 	private final static int aboveSea = 6;
 
@@ -114,19 +113,21 @@ public class OilPlatformLot extends ConstructLot {
 		chunk.setBlocks(2, y3, y3 + 2, 13, supportId);
 		
 		// drill down
-		if (generator.settings.includeTekkitMaterials && minHeight > 20) { //place a blob of oil if it's a tekkit server (tekkit support by gunre)
-			int oilBlobYFloor = chunkOdds.getRandomInt(10) + 2;
-			chunk.setBlocks(5, 11, oilBlobYFloor + 1, oilBlobYFloor + 7, 5, 11, oilId);
-			chunk.setBlocks(6, 10, oilBlobYFloor, oilBlobYFloor + 8, 6, 10, oilId);
-			chunk.setBlocks(6, 10, oilBlobYFloor + 2, oilBlobYFloor + 6, 4, 12, oilId);
-			chunk.setBlocks(4, 12, oilBlobYFloor + 2, oilBlobYFloor + 6, 6, 10, oilId);
-			chunk.setBlocks(8, oilBlobYFloor, minHeight, 8, oilId);
-			chunk.setBlocks(8, minHeight, y4 + 3, 8, drillId);
-		} else {
-			chunk.setBlocks(8, 1, y4 + 3, 8, drillId); 
-		}
-		
-		// extra drill bits
+//		if (generator.settings.includeTekkitMaterials && minHeight > 20) { //place a blob of oil if it's a tekkit server (tekkit support by gunre)
+//			int oilBlobYFloor = chunkOdds.getRandomInt(10) + 2;
+//			chunk.setBlocks(5, 11, oilBlobYFloor + 1, oilBlobYFloor + 7, 5, 11, oilId);
+//			chunk.setBlocks(6, 10, oilBlobYFloor, oilBlobYFloor + 8, 6, 10, oilId);
+//			chunk.setBlocks(6, 10, oilBlobYFloor + 2, oilBlobYFloor + 6, 4, 12, oilId);
+//			chunk.setBlocks(4, 12, oilBlobYFloor + 2, oilBlobYFloor + 6, 6, 10, oilId);
+//			chunk.setBlocks(8, oilBlobYFloor, minHeight, 8, oilId);
+//			chunk.setBlocks(8, minHeight, y4 + 3, 8, drillId);
+//		} else {
+//			chunk.setBlocks(8, 1, y4 + 3, 8, drillId);
+//		}
+
+        chunk.setBlocks(8, 1, y4 + 3, 8, drillId);
+
+        // extra drill bits
 		chunk.setBlocks(5, y2 + 2, y3 + 2, 1, drillId);
 		chunk.setBlocks(7, y2 + 2, y3 + 2, 1, drillId);
 		//chunk.setBlocks(9, y2 + 2, y3 + 2, 1, drillId);

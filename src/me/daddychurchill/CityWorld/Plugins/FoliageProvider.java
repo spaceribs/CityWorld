@@ -2,7 +2,6 @@ package me.daddychurchill.CityWorld.Plugins;
 
 import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Context.DataContext;
-import me.daddychurchill.CityWorld.Plugins.Tekkit.FoliageProvider_Tekkit;
 import me.daddychurchill.CityWorld.Support.Odds;
 import me.daddychurchill.CityWorld.Support.RealChunk;
 import me.daddychurchill.CityWorld.Support.TreeCustomDelegate;
@@ -51,10 +50,9 @@ public abstract class FoliageProvider extends Provider {
 				break;
 			default:
 				if (generator.settings.includeTekkitMaterials) {
-					generator.reportMessage("[FoliageProvider] Found ForgeTekkit, enabling its foliage");
-	
+					generator.reportMessage("[FoliageProvider] Tekkit materials not supported!! You might want to disable Tekkit in config.yml");
 					//TODO provide nether, theend and decayed variants of Tekkit
-					provider = new FoliageProvider_Tekkit(odds);
+					//provider = new FoliageProvider_Tekkit(odds);
 				} else {
 					
 					switch (generator.worldEnvironment) {

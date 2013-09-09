@@ -1,7 +1,6 @@
 package me.daddychurchill.CityWorld;
 
 import me.daddychurchill.CityWorld.Context.DataContext;
-import me.daddychurchill.CityWorld.Plugins.Tekkit.TekkitMaterial;
 import me.daddychurchill.CityWorld.Support.MaterialStack;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -357,8 +356,8 @@ public class CityWorldSettings {
 			plugin.saveConfig();
 		}
 		
-		// what about tekkit?
-		includeTekkitMaterials = TekkitMaterial.isTekkitForgeEnabled() || forceLoadTekkit;
+		// what about tekkit? -> Ditched
+		//includeTekkitMaterials = TekkitMaterial.isTekkitForgeEnabled() || forceLoadTekkit;
 		
 	}
 	

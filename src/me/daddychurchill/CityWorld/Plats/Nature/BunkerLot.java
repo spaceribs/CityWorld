@@ -9,7 +9,6 @@ import me.daddychurchill.CityWorld.Plats.ConstructLot;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
 import me.daddychurchill.CityWorld.Plugins.LootProvider.LootLocation;
 import me.daddychurchill.CityWorld.Plugins.SpawnProvider.SpawnerLocation;
-import me.daddychurchill.CityWorld.Plugins.Tekkit.TekkitMaterial;
 import me.daddychurchill.CityWorld.Support.ByteChunk;
 import me.daddychurchill.CityWorld.Support.Direction;
 import me.daddychurchill.CityWorld.Support.PlatMap;
@@ -74,7 +73,6 @@ public class BunkerLot extends ConstructLot {
 	private final static byte lavaId = (byte) Material.STATIONARY_LAVA.getId();
 	private final static byte iceId = (byte) Material.ICE.getId();
 	private final static byte spongeId = (byte) Material.SPONGE.getId();
-	private final static byte oilId = (byte) TekkitMaterial.STATIONARY_OIL;
 	
 	//private final static int bilgeEmpty = 0;
 	private final static int bilgeWater = 1;
@@ -421,7 +419,7 @@ public class BunkerLot extends ConstructLot {
 		
 		// fill it
 		byte fillId;
-		switch (chunkOdds.getRandomInt(6)) {
+		switch (chunkOdds.getRandomInt(5)) {
 		case 1:
 			fillId = lavaId;
 			break;
@@ -434,11 +432,11 @@ public class BunkerLot extends ConstructLot {
 		case 4:
 			fillId = spongeId;
 			break;
-		case 5:
-			if (generator.settings.includeTekkitMaterials) { // tekkit support by gunre
-				fillId = oilId;
-				break;
-			} // else just fill with some more water
+//		case 5:
+//			if (generator.settings.includeTekkitMaterials) { // tekkit support by gunre
+//				fillId = oilId;
+//				break;
+//			} // else just fill with some more water
 		default:
 			fillId = waterId;
 			break;

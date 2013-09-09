@@ -2,12 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/craftbukkit-1.5.2-R1.0"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/WorldEdit"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/PhatLoots"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/BukkitForge-1.5.1-292"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Tekkit"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/FractCave"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/javabuilder"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/lib"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
