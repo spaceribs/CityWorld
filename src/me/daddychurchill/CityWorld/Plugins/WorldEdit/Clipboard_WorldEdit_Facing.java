@@ -59,6 +59,7 @@ public class Clipboard_WorldEdit_Facing extends Clipboard {
     private final static String fileext = ".schematic";
 
 
+
 	public Clipboard_WorldEdit_Facing(WorldGenerator generator, File file) throws Exception {
 		super(generator, file);
 	}
@@ -126,7 +127,7 @@ public class Clipboard_WorldEdit_Facing extends Clipboard {
 		File metaFile = new File(basePath + metaExtension);
 		if (metaFile.exists()) {
 			metaYaml.load(metaFile);
-			groundLevelY = Math.max(0, metaYaml.getInt(tagGroundLevelY, groundLevelY));
+			groundLevelY = Math.max(0, metaYaml.getInt(tagGroundLevelY, groundLevelY))+ nullspots_constant; // HARDCODED
 //			ScalableX = metaYaml.getBoolean(tagScalableX, ScalableX) && sizeX == 3;
 //			ScalableZ = metaYaml.getBoolean(tagScalableZ, ScalableZ) && sizeZ == 3;
 //			ScalableY = metaYaml.getBoolean(tagScalableY, ScalableY);

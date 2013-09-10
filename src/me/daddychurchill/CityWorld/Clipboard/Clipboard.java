@@ -13,6 +13,9 @@ import me.daddychurchill.CityWorld.Support.SupportChunk;
 
 public abstract class Clipboard {
 
+
+    protected final static int nullspots_constant = 1; //HARDCODED
+
 	public String name;
 	public String chestName = "Chest";
 	public double chestOdds = 0.25D;
@@ -23,6 +26,7 @@ public abstract class Clipboard {
     //public String entranceFacing = "south";
 	public boolean broadcastLocation = false;
 	public boolean decayable = true;
+
 
     public DecayOption decayOptions = DecayOption.getDefaultDecayOptions();
 

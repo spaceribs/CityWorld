@@ -109,7 +109,7 @@ public class PlatMap {
 		if (x >= 0 && x < Width && z >= 0 && z < Width)
 			return platLots[x][z];
 		else
-			return null; //FIXME better throw OutOfBoundsException ?
+			return null;
 	}
 	
 	public PlatLot getMapLot(int chunkX, int chunkZ) throws IndexOutOfBoundsException {
