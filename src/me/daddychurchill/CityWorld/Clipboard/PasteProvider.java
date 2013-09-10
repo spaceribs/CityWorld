@@ -38,18 +38,19 @@ public abstract class PasteProvider extends Provider {
 	
 	// Loosely based on work contributed by drew-bahrue (https://github.com/echurchill/CityWorld/pull/2)
 	public static PasteProvider loadProvider(WorldGenerator generator) {
+        PasteProvider provider;
+        if (!generator.settings.includeSchematics) { // Are schems disabled anyway?
+            generator.reportMessage("[PasteProvider] schemsatics disabled in config, skip loading");
+            return new PasteProvider_Normal(generator);
+        }
 
-		PasteProvider provider = null;
-		
-		// try worldedit...
-		provider = PasteProvider_WorldEdit.loadWorldEdit(generator);
-		
-		// default to stock PasteProvider
-		if (provider == null) {
-			generator.reportMessage("[PasteProvider] WorldEdit not found, schematics disabled");
-			provider = new PasteProvider_Normal(generator);
-		}
-	
+        // try worldedit...
+        provider = PasteProvider_WorldEdit.loadWorldEdit(generator);
+        // default to stock PasteProvider
+        if (provider == null) {
+            generator.reportMessage("[PasteProvider] WorldEdit not found, schematics disabled");
+            provider = new PasteProvider_Normal(generator);
+        }
 		return provider;
 	}
 }

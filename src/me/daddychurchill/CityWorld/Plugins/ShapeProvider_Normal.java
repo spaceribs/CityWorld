@@ -130,13 +130,13 @@ public class ShapeProvider_Normal extends ShapeProvider {
 				platmap.validateRoads();
 	
 				// place the buildings
-				if (generator.settings.includeBuildings) {
+				//if (generator.settings.includeBuildings) { //NOTE depends on context, redundant check
 		
 					// recalculate the context based on the "natural-ness" of the platmap
 					platmap.context = getContext(platmap);
 					platmap.context.populateMap(generator, platmap);
 					platmap.context.validateMap(generator, platmap);
-				}
+				//}
 				
 				// one last check
 				validateLots(generator, platmap);

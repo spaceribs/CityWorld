@@ -31,8 +31,8 @@ public abstract class Clipboard {
 	public int sizeZ;
 	public int blockCount;
 	
-	public int chunkX;
-	public int chunkZ;
+	public int chunkX; /** Size in chunks */
+	public int chunkZ; /** Size in chunks */
 	
 	public int insetNorth;
 	public int insetSouth;

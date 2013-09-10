@@ -25,7 +25,9 @@ public class NeighborhoodContext extends RuralContext {
 		Odds platmapOdds = platmap.getOddsGenerator();
 		
 		// let the user add their stuff first, then plug any remaining holes with our stuff
-		mapsSchematics.populate(generator, platmap);
+        if(generator.settings.includeSchematics){
+		    mapsSchematics.populate(generator, platmap);
+        }
 		
 		/// do we check for roads?
 		boolean checkForRoads = platmap.getNumberOfRoads() > 0;

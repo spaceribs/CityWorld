@@ -18,6 +18,7 @@ public class CityWorldSettings {
 	public boolean includeMines = true;
 	public boolean includeBunkers = true;
 	public boolean includeBuildings = true;
+    public boolean includeSchematics = true;
 	public boolean includeHouses = true;
 	public boolean includeFarms = true;
 
@@ -86,6 +87,7 @@ public class CityWorldSettings {
 	public final static String tagIncludeMines = "IncludeMines";
 	public final static String tagIncludeBunkers = "IncludeBunkers";
 	public final static String tagIncludeBuildings = "IncludeBuildings";
+    public final static String tagIncludeSchematics = "IncludeSchematics";
 	public final static String tagIncludeHouses = "IncludeHouses";
 	public final static String tagIncludeFarms = "IncludeFarms";
 
@@ -204,6 +206,7 @@ public class CityWorldSettings {
 			section.addDefault(tagIncludeMines, includeMines);
 			section.addDefault(tagIncludeBunkers, includeBunkers);
 			section.addDefault(tagIncludeBuildings, includeBuildings);
+            section.addDefault(tagIncludeSchematics, includeSchematics);
 			section.addDefault(tagIncludeHouses, includeHouses);
 			section.addDefault(tagIncludeFarms, includeFarms);
 			
@@ -243,6 +246,7 @@ public class CityWorldSettings {
 			includeMines = section.getBoolean(tagIncludeMines, includeMines);
 			includeBunkers = section.getBoolean(tagIncludeBunkers, includeBunkers);
 			includeBuildings = section.getBoolean(tagIncludeBuildings, includeBuildings);
+            includeSchematics= section.getBoolean(tagIncludeSchematics, includeSchematics);
 			includeHouses = section.getBoolean(tagIncludeHouses, includeHouses);
 			includeFarms = section.getBoolean(tagIncludeFarms, includeFarms);
 			
@@ -344,7 +348,7 @@ public class CityWorldSettings {
 			section.set(tagIncludeFloatingSubsurface, includeFloatingSubsurface);
 			
 			section.set(tagForceLoadWorldEdit, forceLoadWorldEdit);
-			section.set(tagForceLoadTekkit, forceLoadTekkit);
+            deprecateOption(section, tagForceLoadTekkit , "Tekkit no longer supported, sorry");
 			
 			// note the depreciations
 			deprecateOption(section, "IncludePavedRoads", "DEPRECATED: Use IncludeWoolRoads if you want the old style paved roads");

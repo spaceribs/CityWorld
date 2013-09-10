@@ -33,7 +33,7 @@ public class FloatingNatureContext extends NatureContext {
 		
 		//TODO, Nature doesn't handle schematics quite right yet
 		// let the user add their stuff first, then plug any remaining holes with our stuff
-		//mapsSchematics.populate(generator, platmap);
+		//mapsSchematics.populate(generator, platmap); //FIXME Don't forget includeSchematics option!
 		
 		// random fluff
 		Odds odds = platmap.getOddsGenerator();

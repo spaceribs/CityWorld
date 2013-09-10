@@ -22,9 +22,7 @@ public class ClipboardLot extends IsolatedLot {
 	// a place for our bits
 	private int edgeX1, edgeX2, edgeY1, edgeY2, edgeY3, edgeZ1, edgeZ2;
 	
-	public ClipboardLot(PlatMap platmap, int chunkX, int chunkZ, 
-			Clipboard clip, Direction.Facing facing, 
-			int lotX, int lotZ) {
+	public ClipboardLot(PlatMap platmap, int chunkX, int chunkZ, Clipboard clip, Direction.Facing facing,int lotX, int lotZ) {
 		super(platmap, chunkX, chunkZ);
 		
 		style = LotStyle.STRUCTURE;

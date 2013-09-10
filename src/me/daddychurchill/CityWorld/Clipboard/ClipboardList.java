@@ -41,6 +41,7 @@ public class ClipboardList implements Iterable<Clipboard> {
 	
 	public void populate(WorldGenerator generator, PlatMap platmap) {
 
+        //TODO Overhaul this!
 		// grab platmap's random
 		Odds odds = platmap.getOddsGenerator();
 
@@ -56,6 +57,7 @@ public class ClipboardList implements Iterable<Clipboard> {
 				platmap.placeSpecificClip(generator, odds, clip);
 			}
 		}
+
 	}
 
 	public Clipboard getSingleLot(WorldGenerator generator, PlatMap platmap, Odds odds, int placeX, int placeZ) {
