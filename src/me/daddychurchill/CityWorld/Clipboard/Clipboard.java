@@ -75,4 +75,9 @@ public abstract class Clipboard {
 	public abstract void paste(WorldGenerator generator, RealChunk chunk, Direction.Facing facing, 
 			int blockX, int blockY, int blockZ,
 			int x1, int x2, int y1, int y2, int z1, int z2);
+
+    @Override
+    public String toString() {
+        return name;    //To change body of overridden methods use File | Settings | File Templates.
+    }
 }

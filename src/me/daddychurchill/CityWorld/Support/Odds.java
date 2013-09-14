@@ -12,7 +12,12 @@ public class Odds {
 		super();
 		random = new Random(seed);
 	}
-	
+
+    /**
+     *
+     * @param chances [0,1], giving the chances of success in percent
+     * @return true if successful
+     */
 	public boolean playOdds(double chances) {
 		return random.nextDouble() < chances;
 	}
@@ -36,7 +41,12 @@ public class Odds {
 	public int getRandomInt() {
 		return random.nextInt();
 	}
-	
+
+    /**
+     * Returns random Integer
+     * @param range
+     * @return random integer in the interval [0,range)
+     */
 	public int getRandomInt(int range) {
 		return random.nextInt(range);
 	}

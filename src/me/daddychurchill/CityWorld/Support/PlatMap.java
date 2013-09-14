@@ -1,5 +1,6 @@
 package me.daddychurchill.CityWorld.Support;
 
+import me.daddychurchill.CityWorld.CityWorld;
 import me.daddychurchill.CityWorld.WorldGenerator;
 import me.daddychurchill.CityWorld.Clipboard.Clipboard;
 import me.daddychurchill.CityWorld.Clipboard.ClipboardLot;
@@ -416,7 +417,7 @@ public class PlatMap {
 		return false;
 	}
 
-	private final static int maxPlaceTries = 16; //FIXME Would more tries help to populate more?
+	private final static int maxPlaceTries = 3; //FIXME Would more tries help to populate more?
 
 	public void placeSpecificClip(WorldGenerator generator, Odds odds, Clipboard clip) {
 		int chunksX = clip.chunkX;
@@ -455,6 +456,44 @@ public class PlatMap {
 			}
 		}
 	}
+
+    public boolean placeSpecificClipAndCheck(WorldGenerator generator, Odds odds, Clipboard clip,int placeX,int placeZ) {
+        int chunksX = clip.chunkX;
+        int chunksZ = clip.chunkZ;
+
+        // find a lot that fits into the current platmap
+        for (int attempt = 0; attempt < maxPlaceTries; attempt++) {
+            // is this space completely empty?
+            boolean empty = true;
+            for (int x = placeX; x < placeX + chunksX; x++) {
+                for (int z = placeZ; z < placeZ + chunksZ; z++) {
+                    empty = platLots[x][z] == null;
+                    if (!empty)
+                        break;
+                }
+                if (!empty)
+                    break;
+            }
+
+            // found one?
+            if(empty){// (empty) {
+                CityWorld.log.info("should have been empty, but wasn't");
+
+//				generator.reportMessage("Placed " + clip.name + " at " +
+//						((placeX + originX) * SupportChunk.chunksBlockWidth) +
+//						", " +
+//						((placeZ + originZ) * SupportChunk.chunksBlockWidth));
+
+                // put it there
+                placeSpecificClip(generator, odds, clip, placeX, placeZ);
+
+                // all done
+                return true;
+            }
+
+        }
+        return false;
+    }
 
 	public void placeSpecificClip(WorldGenerator generator, Odds odds, Clipboard clip, int placeX, int placeZ) {
 		int chunksX = clip.chunkX;

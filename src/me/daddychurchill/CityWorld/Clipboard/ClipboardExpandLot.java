@@ -1,6 +1,8 @@
 package me.daddychurchill.CityWorld.Clipboard;
 
+import me.daddychurchill.CityWorld.CityWorld;
 import me.daddychurchill.CityWorld.Plats.PlatLot;
+import me.daddychurchill.CityWorld.Plats.RoadLot;
 import me.daddychurchill.CityWorld.Support.PlatMap;
 import me.daddychurchill.CityWorld.WorldGenerator;
 
@@ -32,7 +34,7 @@ public class ClipboardExpandLot {
     public void populate(WorldGenerator generator, PlatMap platmap,ClipboardList clipboardList){
         this.platMap=platmap;
         expandLot(); // find biggest rectangle
-
+        CityWorld.log.info("ExpandLot size="+this.sizeX+"/"+this.sizeZ);
         ClipboardPartitionLot partitionLot = new ClipboardPartitionLot(originChunkX,originChunkZ,sizeX,sizeZ);
         partitionLot.populate(generator,platmap,clipboardList);
 
@@ -63,19 +65,18 @@ public class ClipboardExpandLot {
                 sizeZ++;
                 expanded=true;
             }
+
         }while (expanded);
     }
 
 
     private boolean isExpandableXpositive(){
+        if(originChunkX+sizeX==PlatMap.Width) return false;
         int newX = originChunkX+sizeX+1;
         PlatLot lot;
         for(int i=originChunkZ;i<originChunkZ+sizeZ;i++){
             try {
-                lot = platMap.getMapLot(newX, i);
-                if(lot!=null){ //lot free?
-                    return false;
-                }
+                return !platMap.isExistingRoad(newX,i);
             }catch (IndexOutOfBoundsException e){ // out of bounds?
                return false;
             }
@@ -84,14 +85,12 @@ public class ClipboardExpandLot {
     }
 
     private boolean isExpandableXnegative(){
+        if(originChunkX<=0) return false;
         int newX = originChunkX-1;
         PlatLot lot;
         for(int i=originChunkZ;i<originChunkZ+sizeZ;i++){
             try {
-                lot = platMap.getMapLot(newX, i);
-                if(lot!=null){ //lot free?
-                    return false;
-                }
+                return !platMap.isExistingRoad(newX,i);
             }catch (IndexOutOfBoundsException e){ // out of bounds?
                 return false;
             }
@@ -100,14 +99,12 @@ public class ClipboardExpandLot {
     }
 
     private boolean isExpandableZpositive(){
+        if(originChunkZ+sizeZ==PlatMap.Width) return false;
         int newZ = originChunkZ+sizeZ+1;
         PlatLot lot;
         for(int i=originChunkX;i<originChunkX+sizeX;i++){
             try {
-                lot = platMap.getMapLot(newZ, i);
-                if(lot!=null){ //lot free?
-                    return false;
-                }
+                return !platMap.isExistingRoad(newZ,i);
             }catch (IndexOutOfBoundsException e){ // out of bounds?
                 return false;
             }
@@ -116,14 +113,12 @@ public class ClipboardExpandLot {
     }
 
     private boolean isExpandableZnegative(){
+        if(originChunkZ<=0) return false;
         int newZ = originChunkZ-1;
         PlatLot lot;
         for(int i=originChunkX;i<originChunkX+sizeX;i++){
             try {
-                lot = platMap.getMapLot(newZ, i);
-                if(lot!=null){ //lot free?
-                    return false;
-                }
+                return !platMap.isExistingRoad(newZ,i);
             }catch (IndexOutOfBoundsException e){ // out of bounds?
                 return false;
             }

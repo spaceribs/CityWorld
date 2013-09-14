@@ -110,7 +110,8 @@ public class PasteProvider_WorldEdit extends PasteProvider {
 					
 //					generator.reportMessage("[WorldEdit] Schematic " + schematicFile.getName() + " loaded");
 				} catch (Exception e) {
-					generator.reportException("[WorldEdit] Schematic " + schematicFile.getName() + " could NOT be loaded", e);
+                    generator.reportMessage("[WorldEdit] Schematic " + schematicFile.getName() + " could NOT be loaded");
+					//generator.reportException("[WorldEdit] Schematic " + schematicFile.getName() + " could NOT be loaded", e);
 				}
 			}
 		}
