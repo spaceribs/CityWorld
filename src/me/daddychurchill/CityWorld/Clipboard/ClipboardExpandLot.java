@@ -2,6 +2,7 @@ package me.daddychurchill.CityWorld.Clipboard;
 
 import me.daddychurchill.CityWorld.Plats.PlatLot;
 import me.daddychurchill.CityWorld.Support.PlatMap;
+import me.daddychurchill.CityWorld.WorldGenerator;
 
 /**
  * Created with IntelliJ IDEA.
@@ -10,7 +11,7 @@ import me.daddychurchill.CityWorld.Support.PlatMap;
  * Time: 22:44
  * To change this template use File | Settings | File Templates.
  */
-public class ExpandLot {
+public class ClipboardExpandLot {
     private int originChunkX;
     private int originChunkZ;
     private int sizeX;
@@ -20,18 +21,27 @@ public class ExpandLot {
     /**
      *
      */
-    public ExpandLot(int chunkX, int chunkZ, PlatMap platMap){
+    public ClipboardExpandLot(int chunkX, int chunkZ, PlatMap platMap){
         sizeX=1;
         sizeZ=1;
         originChunkX = chunkX;
         originChunkZ = chunkZ;
         this.platMap = platMap;
+    }
+
+    public void populate(WorldGenerator generator, PlatMap platmap,ClipboardList clipboardList){
+        this.platMap=platmap;
         expandLot(); // find biggest rectangle
+
+        ClipboardPartitionLot partitionLot = new ClipboardPartitionLot(originChunkX,originChunkZ,sizeX,sizeZ);
+        partitionLot.populate(generator,platmap,clipboardList);
+
     }
 
     private void expandLot(){
-        boolean expanded = false;
+        boolean expanded;
         do{
+            expanded = false;
             if(isExpandableXnegative()){
                 sizeX++;
                 originChunkX--;
